@@ -10,7 +10,7 @@ angular.module('Publicapp.contacts', [])
     };
 
     var load = function(callback) {
-      if (!Meteor.isCordova) {
+      if (!window.isCordova) {
         contacts = [];
         return;
       }

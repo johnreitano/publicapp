@@ -43,6 +43,8 @@ angular.module('Publicapp.auth', [])
   ctrl.errorMessage = '';
   ctrl.password = '';
 
+  console.log("hello world");
+
   ctrl.signIn = function() {
     if (Meteor.userId()) {
       Meteor.logout();
