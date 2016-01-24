@@ -9,7 +9,7 @@ angular.module('Publicapp.help', [])
         url: "/help",
         views: {
           'menuContent': {
-            templateUrl: "client/modules/help/help.html",
+            templateUrl: "modules/help/help.html",
             controller: "HelpCtrl"
           }
         },

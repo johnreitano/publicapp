@@ -10,7 +10,7 @@ angular.module('Publicapp.auth', [])
       url: '/sign-in',
       views: {
         'menuContent': {
-          templateUrl: "client/modules/auth/sign_in.html",
+          templateUrl: "modules/auth/sign_in.html",
           controller: 'AuthCtrl as vm'
         }
       }
@@ -20,7 +20,7 @@ angular.module('Publicapp.auth', [])
       url: '/sign-up',
       views: {
         'menuContent': {
-          templateUrl: "client/modules/auth/sign_up.html",
+          templateUrl: "modules/auth/sign_up.html",
           controller: 'AuthCtrl as vm'
         }
       }
