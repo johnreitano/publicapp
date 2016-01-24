@@ -9,7 +9,7 @@ angular.module('Publicapp.profile', [])
       url: "/profile/:id",
       views: {
         'menuContent': {
-          templateUrl: 'client/modules/profile/profile.html',
+          templateUrl: 'modules/profile/profile.html',
           controller: "ProfileCtrl as vm"
         }
       },

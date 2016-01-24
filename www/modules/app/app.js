@@ -110,9 +110,10 @@ angular.module('Publicapp', [
       abstract: true,
       templateUrl: "modules/app/sidemenu.html",
       controller: 'AppCtrl as app',
-    })
+    });
 
-    $urlRouterProvider.otherwise('/settings');
+    $urlRouterProvider.otherwise('/help');
+
 }])
 
 .controller('AppCtrl', function($scope) {

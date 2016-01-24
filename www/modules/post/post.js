@@ -8,7 +8,7 @@ angular.module('Publicapp.post', [])
       url: "/profile/:profileId/feed/post/:id",
       views: {
         'menuContent': {
-          templateUrl: "client/modules/post/post.html",
+          templateUrl: "modules/post/post.html",
           controller: "PostCtrl as vm"
         }
       },
@@ -19,7 +19,7 @@ angular.module('Publicapp.post', [])
       url: "/profile/:profileId/messages/post/:id",
       views: {
         'menuContent': {
-          templateUrl: "client/modules/post/post.html",
+          templateUrl: "modules/post/post.html",
           controller: "PostCtrl as vm"
         }
       },
@@ -41,7 +41,7 @@ angular.module('Publicapp.post', [])
       open: function($scope, user) {
         var modalInstance;
         var newScope = $scope.$new();
-        $ionicModal.fromTemplateUrl('client/modules/post/new_post.html', {
+        $ionicModal.fromTemplateUrl('modules/post/new_post.html', {
           scope: newScope,
           animation: 'slide-in-up'
         }).then(function(modal) {

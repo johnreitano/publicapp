@@ -9,7 +9,7 @@ angular.module('Publicapp.people', [])
         url: "/people",
         views: {
           'menuContent': {
-            templateUrl: "client/modules/people/people.html",
+            templateUrl: "modules/people/people.html",
             controller: "PeopleCtrl as vm"
           }
         },

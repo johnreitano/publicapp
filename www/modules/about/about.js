@@ -9,7 +9,7 @@ angular.module('Publicapp.about', [])
         url: "/about",
         views: {
           'menuContent': {
-            templateUrl: "client/modules/about/about.html",
+            templateUrl: "modules/about/about.html",
             controller: "AboutCtrl as vm"
           }
         },

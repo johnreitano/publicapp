@@ -29,6 +29,11 @@ angular.module('Publicapp.auth', [])
   }
 ])
 
+.factory("Auth", function($firebaseAuth) {
+  var usersRef = new Firebase("https//public.firebaseio.com/users");
+  return $firebaseAuth(usersRef);
+})
+
 .controller('AuthCtrl', function($scope, $state, $q, $rootScope, $location, $meteor, Contacts, SharedMethods) {
   var ctrl = this;
 

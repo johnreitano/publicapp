@@ -9,7 +9,7 @@ angular.module('Publicapp.settings', [])
         url: "/settings",
         views: {
           'menuContent': {
-            templateUrl: "client/modules/settings/settings.html",
+            templateUrl: "modules/settings/settings.html",
             controller: "SettingsCtrl"
           }
         },
