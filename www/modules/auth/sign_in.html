@@ -1,0 +1,31 @@
+<ion-view title="Sign In">
+  <ion-content>
+    <form role="form" ng-submit='vm.signIn()'>
+      <div class="list list-inset">
+        <label class="item item-input">
+          <input type="email"
+                 ng-model="vm.email"
+                 class="form-control"
+                 placeholder="Enter email"
+                 required>
+        </label>
+        <label class="item item-input">
+          <input type="password"
+                 ng-model="vm.password"
+                 placeholder="Password"
+                 required>
+        </label>
+      </div>
+
+      <p style="color:red">{{ vm.errorMessage }}</p>
+
+      <hr>
+      
+      <button type="submit" class="button button-block button-positive" style="width:90%;margin:1em auto;">Sign in</button>
+
+    </form>
+
+    <p class="text-center">Need to make an account? <a href="#/sign-up">Sign up</a></p>
+
+  </ion-content>
+</ion-view>

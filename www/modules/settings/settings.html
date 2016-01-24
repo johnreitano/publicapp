@@ -1,0 +1,66 @@
+<ion-view title="Settings">
+  <ion-content>
+    <form role="form" ng-submit='updateSettings()'>
+
+      <div class="list">
+        <label class="item item-input item-floating-label">
+          <span class="input-label">Name</span>
+          <input type="text"
+                 name="name"
+                 ng-model="vm.name"
+                 placeholder="Name"
+                 ng-required="true">
+        </label>
+        <label class="item item-input item-floating-label">
+          <span class="input-label">Mobile</span>
+          <input type="tel"
+                 name="mobile"
+                 ng-model="vm.phone"
+                 placeholder="Mobile"
+                 ng-required="true">
+        </label>
+        <label class="item item-input item-floating-label">
+          <span class="input-label">Email</span>
+          <input type="email"
+                 name="email"
+                 ng-model="vm.email"
+                 placeholder="Email"
+                 required>
+        </label>
+        <label class="item item-input item-floating-label">
+          <span class="input-label">Current Password</span>
+           <input type="password"
+                  name="password"
+                  ng-model="vm.password"
+                  placeholder="Current Password"
+                  required>
+        </label>
+        <label class="item item-input item-floating-label">
+          <span class="input-label">New Password</span>
+           <input type="password"
+                  name="newPassword"
+                  ng-model="newPassword"
+                  placeholder="New Password"
+                  required>
+        </label>
+        <label class="item item-input item-floating-label">
+          <span class="input-label">Confirm Password</span>
+           <input type="password"
+                  name="newPasswordConfirmation"
+                  ng-model="confirmPassword"
+                  placeholder="Confirm Password"
+                  required>
+        </label>
+      </div>
+
+      <hr>
+
+      <p style="color:red;">{{ errorMessage }}</p>
+
+      <button class="button button-block button-positive" 
+              ng-click="updateSettings()"
+              style="width:90%;margin:1em auto;">Update</button>
+
+    </form>
+  </ion-content>
+</ion-view>

@@ -1,0 +1,16 @@
+<ion-view title="About Public">
+  <ion-content>
+    <div class="card">
+      <div class="item item-text-wrap">
+        <p>We're in stealth-mode right now, so we can't say much, except thank you very much for participating in our private beta program.</p>
+        <br>
+        <p>Please send your questions and feedback to <a href="mailto://team@getpublic.co">team@getpublic.co</a> .</p>
+        <br>
+        <div ng-if="vm.adminUserLoggedIn()">
+          <button class="button button-stable" ng-click="vm.reSeedDatabase()">Reseed Database</button>
+        </div>
+      </div>
+    </div>
+
+  </ion-content>
+</ion-view>

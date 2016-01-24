@@ -1,0 +1,10 @@
+{
+  "name": "Public",
+  "private": "true",
+  "devDependencies": {
+    "ionic": "driftyco/ionic-bower#1.2.4"
+  },
+  "dependencies": {
+    "international-phone-number": "~0.0.16"
+  }
+}

@@ -1,0 +1,25 @@
+angular.module('Publicapp.help', [])
+
+  .config(['$urlRouterProvider', '$stateProvider',
+    function($urlRouterProvider, $stateProvider){
+
+      $stateProvider
+
+      .state('app.help', {
+        url: "/help",
+        views: {
+          'menuContent': {
+            templateUrl: "client/modules/help/help.html",
+            controller: "HelpCtrl"
+          }
+        },
+        authenticate: false
+      })
+
+      ;
+  }])
+
+  .controller('HelpCtrl', function($scope, $meteor) {
+
+  })
+;

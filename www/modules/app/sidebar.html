@@ -1,0 +1,15 @@
+<div class="sidebar sidebar-left" ng-controller="AuthCtrl as vm">
+  <div class="scrollable">
+    <div class="scrollable-content">
+      <div class="list-group" ui-turn-off='uiSidebarLeft'>
+        <a class="list-group-item" ui-sref="app.help">Help &amp; Feedback <i class="fa fa-question pull-right"></i></a>
+
+        <a class="list-group-item" ui-sref="app.about">About Public <i class="fa fa-info pull-right"></i></a>
+
+        <a ng-if="vm.signedIn()" class="list-group-item" ng-click="vm.signOut()">Sign Out <i class="fa fa-sign-out pull-right"></i></a>
+
+        <a ng-if="!vm.signedIn()" class="list-group-item" ui-sref="app.signIn">Sign In <i class="fa fa-sign-in pull-right"></i></a>
+      </div>
+    </div>
+  </div>
+</div>

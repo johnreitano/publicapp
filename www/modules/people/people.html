@@ -1,0 +1,238 @@
+<div ui-content-for="navbarCenter">
+  <span style="font-size: 14px;">
+    <i class="fa fa-users fa-navbar"></i> People
+  </span>
+</div>
+
+<div ui-content-for="modals">
+
+  <div class="modal" ui-if="addUserModal" ui-state="addUserModal">
+    <div class="modal-backdrop in"></div>
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form role="form" name="mainForm">
+            <fieldset>
+              <legend>Create Public Page for New User</legend>
+
+              <div ng-if="vm.newUser.profile.name">Please confirm that the information below is correct, or make changes as necessary.</div>
+
+              <div ng-if="!vm.newUser.profile.name">Please enter the information requested below.</div>
+
+              <div class="form-group">
+                <label>Name</label>
+                <input type="text"
+                       class="form-control"
+                       ng-model="vm.newUser.profile.name" ng-required="true"
+                       placeholder="Enter name">
+              </div>
+
+              <div class="form-group">
+                <label>Username</label>
+                <input type="text"
+                       name="username"
+                       class="form-control"
+                       ng-model="vm.newUser.username" ng-required="true"
+                       ng-minlength="4"
+                       placeholder="Name">
+              </div>
+
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email"
+                       class="form-control"
+                       ng-model="vm.newUser.emails[0]" ng-required="true"
+                       placeholder="Name">
+              </div>
+
+              <div class="form-group">
+                <label>Mobile</label>
+                <input type="tel"
+                       class="form-control"
+                       ng-model="vm.newUser.profile.phone" ng-required="true"
+                       international-phone-number only-countries="us, ca, mx"
+                       placeholder="Phone">
+              </div>
+
+              <div class="form-group">
+                <label>Message</label>
+                <input type="text"
+                       class="form-control"
+                       placeholder="Send a shout-out to {{ vm.newUser.profile.name || 'your contact' }} on Public!" ng-model="vm.firstMessageToNewUser" ng-required="true"
+                       >
+              </div>
+
+            </fieldset>
+
+            <p style="color:red">{{ errorMessage }}</p>
+
+            <a class="btn btn-primary" ng-click="vm.addUser()">Add Member</a>
+            <a class="btn btn-default" ui-turn-off="addUserModal">Cancel</a>
+
+            <hr>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="scrollable" ui-state="activeTab" default="1">
+  <div class="scrollable-header section section-wide text-center">
+    <button class="btn btn-primary pull-right" ng-click="vm.openAddUserModal()">Add User</button>
+    <ul class="nav nav-tabs">
+      <li ui-class="{'active': activeTab == 1}">
+        <a ui-set="{'activeTab': 1}">Contacts</a>
+      </li>
+      <li ui-class="{'active': activeTab == 2}">
+        <a ui-set="{'activeTab': 2}">Listening To</a>
+      </li>
+      <li ui-class="{'active': activeTab == 3}" ng-show="vm.showSearchResultsTab">
+        <a ui-set="{'activeTab': 3}" id="search-results">Search Results</a>
+      </li>
+    </ul>
+
+  </div>
+
+  <div class="list-group-item list-group-item-feed">
+    <div class="text-center">
+      <div ui-if="activeTab == 1">{{ vm.contacts.length > 0 ? "Select one of the contacts below:" : "You have no contacts" }}</div>
+      <div ui-if="activeTab == 2">You are listening to {{vm.listenees.length}} people:</div>
+      <div ui-if="activeTab == 3">Selected a user from the list below or add a new one:</div>
+    </div>
+  </div>
+
+  <div class="scrollable-content" id="scrollable-content">
+
+    <div ui-if="activeTab == 1">
+      <div class="list-group" ng-repeat="contact in vm.contacts | orderBy: '-createdAt'">
+
+        <div class="list-group-item" ng-click="vm.showProfileOrOpenAddUserModal(contact)">
+
+          <div class="pull-left">
+            <img ng-src="{{ contact.user ? contact.user.profile.face : '' }}" width="50" class="user-avatar" alt="">
+          </div>
+
+          <div>
+            <p class="post-text">
+              <strong>{{ contact.displayName }}</strong>
+              <div ng-if="contact.user">
+                In Public As: <strong>{{ contact.user.profile.name }}</strong> {{ contact.user.username }}
+              </div>
+            </p>
+            <p class="post-text" ng-if="contact.user">
+              <em>{{ vm.taglineOrMostRecentPost(contact.user) }}</em>
+            </p>
+          </div>
+
+          <div ng-if="contact.user">
+            <button
+              type="button"
+              class="btn btn-danger listen-btn"
+              ng-click="vm.toggleListening(contact.user, $event);">
+              {{ vm.listeningTo(contact.user) ? "Unlisten" : "Listen" }}
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div ui-if="activeTab == 2">
+      <div class="list-group" ng-repeat="user in vm.listenees | orderBy: '-createdAt'">
+
+        <div class="list-group-item" ng-click="vm.showProfile(user)">
+
+          <div class="pull-left">
+            <img ng-src="{{ user.profile.face }}" width="50" class="user-avatar" alt="">
+          </div>
+
+          <div>
+            <p class="post-text">
+              <strong>{{ user.profile.name }}</strong> {{ user.username }}
+            </p>
+            <p class="post-text">
+              <em>{{ vm.taglineOrMostRecentPost(user) }}</em>
+            </p>
+          </div>
+
+          <div>
+            <button
+              type="button"
+              class="btn btn-danger listen-btn"
+              ng-click="vm.toggleListening(user, $event);">
+              {{ vm.listeningTo(user) ? "Unlisten" : "Listen" }}
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div ui-if="activeTab == 3">
+
+      <div class="list-group" ng-repeat="user in vm.usersFromSearch | orderBy: '-createdAt'">
+
+        <div class="list-group-item" ng-click="vm.showProfile(user)">
+
+          <div class="pull-left">
+            <img ng-src="{{ user.profile.face }}" width="50" class="user-avatar" alt="">
+          </div>
+
+          <div>
+            <p class="post-text">
+              <strong>{{ user.profile.name }}</strong> {{ user.username }}
+            </p>
+            <p class="post-text">
+              <em>{{ vm.taglineOrMostRecentPost(user) }}</em>
+            </p>
+          </div>
+
+          <div>
+            <button
+              type="button"
+              class="btn btn-danger listen-btn"
+              ng-click="vm.toggleListening(user, $event);">
+              {{ vm.listeningTo(user) ? "Unlisten" : "Listen" }}
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+
+      <div>
+        <span ng-if="vm.usersFromSearch.length">
+          None of those users is the one you're looking for?
+        </span>
+        <span ng-if="!vm.usersFromSearch.length">
+          No matching users found.
+        </span>
+        <button class="btn btn-primary" ng-click="vm.createUser()">Add User To Public</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="btn-group justified people-nav-icons">
+    <a ui-sref="app.profile" class="btn btn-navbar"><i class="fa fa-user fa-navbar"></i> Your Page</a>
+    <a ui-sref="app.people" class="btn btn-navbar"><i class="fa fa-users fa-navbar"></i> People</a>
+    <a ui-sref="app.settings" class="btn btn-navbar"><i class="fa fa-cog fa-navbar"></i> Settings</a>
+  </div>
+
+  <div class="scrollable-footer section section-wide">
+    <form name="SearchForm">
+      <fieldset>
+        <div class="form-group">
+          <input id="search-text" ng-model="vm.searchText" class="form-control pull-left" placeholder="Enter user name or username" required>
+          <button class="btn btn-primary pull-right" ng-disabled="SearchForm.$invalid" ng-click="vm.search();">Search Public</button>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+
+</div>

@@ -1,0 +1,33 @@
+<ion-modal-view>
+  <ion-header-bar>
+    <h1 class="title">Confirm Info</h1>
+  </ion-header-bar>
+  <ion-content>
+    <div ng-if="contacts.newUser.profile.name">Your the first person to say something to {{ contacts.newUser.profile.name }} in Public! Please confirm that the information below is correct, or make changes as necessary.</div>
+    <div ng-if="!contacts.newUser.profile.name">To add a user to Public, please enter the information requested below.
+    </div>
+    <div class="list">
+      <label class="item item-input">
+        <span class="input-label">Name</span>
+        <input type="text" placeholder="Name" ng-model="vm.user.profile.name" ng-required="true">
+      </label>
+      <label class="item item-input">
+        <span class="input-label">Email</span>
+        <input type="text" placeholder="john@doe.com" ng-model="vm.user.emails[0].address">
+      </label>
+      <label class="item item-input">
+        <span class="input-label">Mobile Number</span>
+        <input type="tel" international-phone-number only-countries="us, ca, mx" ng-model="vm.user.profile.phone">
+      </label>
+      <label class="item item-input">
+        <span class="input-label">Initial Comment</span>
+        <textarea placeholder="Say something about this person." ng-model="vm.user.profile.firstPost" ng-required="true"></textarea>
+      </label>
+    </div>
+
+    <button ng-click="vm.confirm()">Confirm</button>
+    <button ng-click="vm.cancel()">Cancel</button>
+
+  </ion-content>
+</ion-modal-view>
+
