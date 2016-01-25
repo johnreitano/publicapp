@@ -65,14 +65,17 @@ angular.module('Publicapp', [
 
 .constant('GCM_SENDER_ID', '574597432927')
 
-.run(function($rootScope, $state, $location, Contacts, $ionicPlatform, $ionicConfig){
+.run(function($rootScope, $state, $location, Contacts, $ionicPlatform, $ionicConfig, Fireb){
 
   $rootScope.$on('$stateChangeStart', function(){
      $rootScope.$broadcast('$routeChangeSuccess');
   });
 
   $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-    if  (toState.authenticate && !Meteor.userId()){
+    if  (toState.name == "app.seed") {
+      Fireb.reSeedDatabase();
+      $location.path('/sign-in');
+    } else if  (toState.authenticate && !Fireb.signedIn()) {
       $location.path('/sign-in');
     }
   });
@@ -118,17 +121,6 @@ angular.module('Publicapp', [
 
 .controller('AppCtrl', function($scope) {
   ctrl = this;
-
-  alert('xxx');
-
-  ctrl.user = function() {
-    return Meteor.user();
-  };
-
-  ctrl.userId = function() {
-    return Meteor.userId();
-  };
-
 })
 
 ;

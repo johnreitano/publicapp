@@ -19,7 +19,9 @@ angular.module('Publicapp.help', [])
       ;
   }])
 
-  .controller('HelpCtrl', function($scope, $meteor) {
+  .controller('HelpCtrl', function($scope, Fireb) {
+
+    var x = 7;
 
   })
 ;

@@ -1,9 +1,9 @@
 <ion-view>
   <ion-nav-title>
     <div class="user-div">
-      <img class="user-avatar" ng-src="{{ vm.user().profile.face }}">
-      <span class="user-profile-name">{{ vm.user().profile.name }}</span>
-      <p class="user-username">{{ vm.user().username }}</p>
+      <img class="user-avatar" ng-src="{{ vm.user.face }}">
+      <span class="user-profile-name">{{ vm.user.name }}</span>
+      <p class="user-username">{{ vm.user.username }}</p>
     </div>
   </ion-nav-title>
   <ion-pane>
@@ -15,13 +15,13 @@
 
             <ion-list ng-repeat="post in vm.posts | orderBy: '-createdAt'">
               <div class="item item-avatar" ng-click="vm.showPost(post)">
-                <img src="{{ vm.author(post).profile.face }}">
+                <img ng-src="{{ vm.author(post).face }}">
                 <div>
                   <h2 ng-if="post.authorUserId == post.subjectUserId">
-                    <strong>{{ vm.author(post).profile.name }}</strong> said <span class="post-createdAt">{{ vm.createdAtRelative(post) }}</span>
+                    <strong>{{ vm.author(post).name }}</strong> said <span class="post-createdAt">{{ vm.createdAtRelative(post) }}</span>
                   </h2>
                   <h2 ng-if="post.authorUserId != post.subjectUserId">
-                    <strong>{{ vm.author(post).profile.name }}</strong> said to <strong>{{ vm.subject(post).profile.name || vm.subject(post).username }}</strong> <span class="post-createdAt">{{ vm.createdAtRelative(post) }}</span>
+                    <strong>{{ vm.author(post).name }}</strong> said to <strong>{{ vm.subject(post).name || vm.subject(post).username }}</strong> <span class="post-createdAt">{{ vm.createdAtRelative(post) }}</span>
                   </h2>
                   <p>
                     <em>{{ post.text }}</em>
@@ -39,8 +39,8 @@
           <ion-content>
             <ion-list ng-repeat="post in vm.posts | orderBy: '-createdAt'">
               <div class="item item-avatar" ng-click="vm.showPost(post)">
-                <img src="{{ vm.author(post).profile.face }}">
-                <h2><strong>{{ vm.author(post).profile.name }}</strong> said <span class="post-createdAt">{{ vm.createdAtRelative(post) }}</span></h2>
+                <img ng-src="{{ vm.author(post).face }}">
+                <h2><strong>{{ vm.author(post).name }}</strong> said <span class="post-createdAt">{{ vm.createdAtRelative(post) }}</span></h2>
                 <p><em>{{ post.text }}</em></p>
               </div>
 
@@ -55,8 +55,8 @@
             <ion-list ng-repeat="listener in vm.listeners | orderBy: '-createdAt'">
 
               <div class="item item-avatar item-button-right" ng-click="vm.showProfile(listener)">
-                <img src="{{ listener.profile.face }}">
-                <h2><strong>{{ listener.profile.name }}</strong></h2>
+                <img ng-src="{{ listener.face }}">
+                <h2><strong>{{ listener.name }}</strong></h2>
                 <h2>{{ listener.username }}</h2>
                 <p><em>{{ vm.taglineOrMostRecentPost(listener) }}</em></p>
 

@@ -17,7 +17,7 @@
           <input type="text"
                  name="username"
                  ng-model="vm.username"
-                 ng-minlength="4"
+                 ng-minlength="2"
                  class="form-control"
                  placeholder="Your username"
                  ng-required="true">
@@ -53,9 +53,9 @@
 
       <hr>
 
-      <button type="submit" 
-              class='button button-block button-positive' 
-              ng-disabled="signUpForm.$invalid" 
+      <button type="submit"
+              class='button button-block button-positive'
+              ng-disabled="signUpForm.$invalid"
               style="width:90%;margin:1em auto;">Sign up</button>
 
       <p class="text-center">Already have an account? <a href="#/sign-in">Sign in</a></p>

@@ -1,13 +1,17 @@
 angular.module('Publicapp.sharedMethods', [])
 
-.service('SharedMethods', function($timeout, $state){
+.service('SharedMethods', function($timeout, $state, Fireb){
 
-  var loggedInUserId = function() {
-    return Meteor.userId();
+  var signedInUserId = function() {
+    return Fireb.signedInUserId;
   };
 
-  var loggedInUser = function() {
-    return Meteor.user();
+  var signedInUser = function() {
+    return Fireb.signedInUser;
+  };
+
+  var signedIn = function() {
+    return Fireb.signedIn();
   };
 
   var noPostsAboutUser = function(user) {
@@ -23,7 +27,7 @@ angular.module('Publicapp.sharedMethods', [])
 
     var insertPost = function(subjectUserId) {
       Posts.insert({
-        authorUserId: loggedInUserId(),
+        authorUserId: signedInUserId(),
         subjectUserId: subjectUserId,
         text: ctrl.newPostText,
         createdAt: new Date()
@@ -31,7 +35,7 @@ angular.module('Publicapp.sharedMethods', [])
       ctrl.newPostText = '';
     };
 
-    if (ctrl.userId == loggedInUserId() && mentionedUsernames) {
+    if (ctrl.userId == signedInUserId() && mentionedUsernames) {
       var firstMentionedUser = Meteor.users.findOne({ username: mentionedUsernames[0]});
       if (firstMentionedUser) {
         insertPost(firstMentionedUser._id);
@@ -85,7 +89,7 @@ angular.module('Publicapp.sharedMethods', [])
   };
 
   function listeningTo(listenee) {
-    return loggedInUser() && loggedInUser().profile.listeneeUserIds.indexOf(listenee._id) != -1;
+    return signedInUser() && signedInUser().listeneeUserIds.indexOf(listenee._id) != -1;
   };
 
   function showProfile(user, event) {
@@ -98,14 +102,14 @@ angular.module('Publicapp.sharedMethods', [])
   };
 
   function toggleListening(listenee, event) {
-    var listeneeUserIds = loggedInUser().profile.listeneeUserIds;
+    var listeneeUserIds = signedInUser().listeneeUserIds;
     if (listeningTo(listenee)) {
       listeneeUserIds = _.without(listeneeUserIds, listenee._id);
     } else {
       listeneeUserIds.unshift(listenee._id);
     }
     Meteor.users.update( Meteor.userId(), {$set: { "profile.listeneeUserIds": listeneeUserIds }} );
-    loggedInUser().profile.listeneeUserIds = listeneeUserIds;
+    signedInUser().listeneeUserIds = listeneeUserIds;
     if (event) {
       event.stopPropagation(); // prevent ng-click of enclosing item from being processed
     }
@@ -118,14 +122,15 @@ angular.module('Publicapp.sharedMethods', [])
 
     scope.$watch('vm.name', function() {
       if (ctrl[formName] && ctrl[formName].username && ctrl[formName].username.$pristine && ctrl.name && ctrl.name.length > 0) {
-        ctrl.username = "@" + ctrl.name.replace(/\ /g,"").toLowerCase();
+        ctrl.username = Fireb.generateUsername(ctrl.name);
       }
     }, true);
   };
 
   return {
-    loggedInUserId: loggedInUserId,
-    loggedInUser: loggedInUser,
+    signedInUserId: signedInUserId,
+    signedInUser: signedInUser,
+    signedIn: signedIn,
     createPost: createPost,
     author: author,
     subject: subject,

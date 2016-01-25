@@ -35,13 +35,12 @@ angular.module('Publicapp.people', [])
     ctrl.showSearchResultsTab = false;
 
     ctrl.search = function() {
-      var normalizedSearchText = s.trim(ctrl.searchText).replace(/ +/g," ").replace(/@/,'');
+      var normalizedSearchText = s.trim(ctrl.searchText).replace(/ +/g,' ').replace(/@/,'');
       if (/ /.test(normalizedSearchText)) {
         // search by name
         ctrl.usersFromSearch = Meteor.users.find({"profile.name": normalizedSearchText}).fetch();
       } else {
         // search by username
-        normalizedSearchText = "@" + normalizedSearchText;
         ctrl.usersFromSearch = Meteor.users.find({username: normalizedSearchText}).fetch();
       }
       ctrl.showSearchResultsTab = true;
