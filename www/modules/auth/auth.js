@@ -40,7 +40,7 @@ angular.module('Publicapp.auth', [])
 ])
 
 .service('Fireb', function() {
-  var ref = new Firebase("https//publicapp.firebaseio.com");
+  var ref = new Firebase("https//publicapp3.firebaseio.com");
   var signedInUserId = null;
   var signedInUser = null;
 
@@ -96,20 +96,20 @@ angular.module('Publicapp.auth', [])
       password : user.password
     }, function(error, userData) {
       if (error) {
-        console.log("Error creating user:", error);
+        console.log(error);
         if (callback) {
           callback(error);
         }
         return;
       }
       console.log("Successfully created user account with uid:", userData.uid);
-      ref.child("users").child(userData.uid).set({
-        phone: user.phone,
-        name: user.name,
-        username: user.username,
-        face: user.face || generateFaceUrl(user.name, user.username),
-        admin: user.admin ? true : false
-      }, function(error) {
+      user.face = user.face || generateFaceUrl(user.name, user.username);
+      user.admin = user.admin ? true : false;
+      user.addedAt = user.addedAt || (new Date());
+      user.addedAt = user.addedAt.getTime();
+      user.foo = "123"
+
+      ref.child("users").child(userData.uid).set(user, function(error) {
         if (error) {
           console.log('error saving profile data', error);
         } else {
@@ -122,76 +122,147 @@ angular.module('Publicapp.auth', [])
     });
   };
 
+  function recentDate() {
+    var n = ( new Date()) - (Math.random() * 5 * 24 * 60 * 60 * 1000 );
+    return new Date(n);
+  }
+
   function reSeedDatabase() {
-    console.log( "abuot to re-seed database" );
-    ref.child("users").remove();
-    ref.child("messages").remove();
+    console.log("about to re-seed database");
 
-    var SEED_USER_COUNT = 25
-    var SEED_POST_COUNT = 150
+    ref.child("users").once("value", function(snapshot) {
 
-    var testUsers = [
-      [ "jreitano@gmail.com", "John Reitano", true ],
-      [ "sarmadhbokhari@gmail.com", "Sarmad Bokhari", true ],
-      [ "jasminereitano7@gmail.com", "Jasmine Reitano" ],
-      [ "jreitano+nicolo@gmail.com", "Nicolo Reitano" ],
-      [ "jreitano+giovanni@gmail.com", "Giovanni Reitano" ],
-      [ "jreitano+alessandra@gmail.com", "Alessandra Reitano" ],
-      [ "crisdavid0925@gmail.com", "Cristian Ramirez" ],
-      [ "jack@black.com", "Jack Black" ]
-    ];
+      ref.child("users").remove();
+      ref.child("messages").remove();
+      console.log("removed everything!");
 
-    _.each(testUsers, function(testUser) {
-      createUser({
-        email: testUser[0],
-        password: "123",
-        phone: "4445556666",
-        name: testUser[1],
-        username: generateUsername(testUser[1]),
-        admin: testUser[2]
-      });
-    });
+      var SEED_USER_COUNT = 25
+      var SEED_POST_COUNT = 150
 
-    _.each(_.range(SEED_USER_COUNT), function() {
-      name = faker.directive('firstName')() + ' ' + faker.directive('lastName')();
-      createUser({
-        email: faker.directive('email')(),
-        password: "123",
-        phone: "+1" + faker.directive('phone')().replace(/\D/g,'').replace(/^(\d{10}).*/,'$1'),
-        name: name,
-        username: generateUsername(name)
-      });
-    });
-
-    var usersRef = ref.child("users");
-
-    function recentDate() {
-      var n = ( new Date()) - (Math.random() * 5 * 24 * 60 * 60 * 1000 );
-      return new Date(n);
-    }
-
-    usersRef.once("value", function(snapshot) {
-      var users = snapshot.val();
-      _.each(users, function(user, uid) {
-        var randomeUserIds = _.sample(_.keys(users),5);
-        usersRef.child(uid).set({listeneeUserIds: _.without(randomeUserIds,uid)});
-      });
-
-      var messagesRef = ref.child("messages");
-      _.each(_.range(SEED_POST_COUNT), function() {
-
-        messagesRef.push({
-          authorUserId: _.sample(users,1)[0]._id,
-          subjectUserId: _.sample(users,1)[0]._id,
-          text: faker.directive('lorem')('%w',40),
-          photo: "http://lorempixel.com/100/100/",
-          createdAt: recentDate()
+      var usersArray = [];
+      _.each(_.range(SEED_USER_COUNT), function() {
+        usersArray.push({
+          email: faker.directive('email')(),
+          name: faker.directive('firstName')() + ' ' + faker.directive('lastName')(),
+          phone: "+1" + faker.directive('phone')().replace(/\D/g,'').replace(/^(\d{10}).*/,'$1')
         });
       });
 
-      console.log("database successfully re-seeded");
-    });
+      usersArray = usersArray.concat([
+        { email: "jreitano@gmail.com", name: "John Reitano", phone: "+16196746211", admin: true },
+        { email: "sarmadhbokhari@gmail.com", name: "Sarmad Bokhari", phone: "+16196746211", admin: true },
+        { email: "jasminereitano7@gmail.com", name: "Jasmine Reitano", phone: "+16196746211" },
+        { email: "jreitano+nicolo@gmail.com", name: "Nicolo Reitano", phone: "+16196746211" },
+        { email: "jreitano+giovanni@gmail.com", name: "Giovanni Reitano", phone: "+16196746211" },
+        { email: "jreitano+alessandra@gmail.com", name: "Alessandra Reitano", phone: "+16196746211" },
+        { email: "gabrielreitano06@gmail.com", name: "Gabriel Reitano", phone: "+16196746211"  },
+        { email: "crisdavid0925@gmail.com", name: "Cristian Ramirez", phone: "+16196746211",  },
+        { email: "jack@black.com", name: "Jack Black", phone: "+16196746211"  }
+      ]);
+      var userCountdown = usersArray.length;
+      _.each(usersArray, function(user) {
+        _.extend(user, {
+          password: "123",
+          username: generateUsername(user.name),
+          addedAt: recentDate()
+        });
 
+        ref.removeUser({email: user.email, password: "123"}, function(error) {
+          if (error) {
+            if (!/The specified user does not exist/.test(error)) {
+              console.log("unable to remove user", error);
+              return;
+            }
+          }
+
+          createUser(user, function(error) {
+            if (error) {
+              userCountdown = -1;
+            }
+
+            --userCountdown;
+
+            console.log("user countdown is now", userCountdown);
+
+            if (userCountdown != 0) {
+              return;
+            }
+
+            console.log("all users created!")
+
+            ref.child("users").once("value", function(snapshot) {
+              var users = snapshot.val() || {};
+              _.each(users, function(user, uid) {
+
+                // set up listeners and listenees
+                var otherUserIds = _.without(_.sample(_.keys(users),5),uid);
+
+                _.each(otherUserIds,function(otherUserId) {
+
+                  var listenersRef = ref.child("users").child(uid).child("listeners");
+                  listenersRef.child(otherUserId).set({addedAt: user.addedAt});
+
+                  var listeneesRef = ref.child("users").child(otherUserId).child("listenees");
+                  listeneesRef.child(uid).set({addedAt: user.addedAt});
+
+                });
+
+                var x = 7;
+
+                // TODO: author some messages
+                //      2 for with this user as the subject
+                //      chooose 5 random users, make two messages on each of their profiles
+                //      adjust profileMessages, feedMessages appropriately (use callbacks)
+
+                // var messagesRef = ref.child("messages");
+                // _.each(_.range(SEED_POST_COUNT), function() {
+                //
+                //   messagesRef.push({
+                //     authorUserId: _.sample(users,1)[0]._id,
+                //     subjectUserId: _.sample(users,1)[0]._id,
+                //     text: faker.directive('lorem')('%w',40),
+                //     photo: "http://lorempixel.com/100/100/",
+                //     addedAt: recentDate()
+                //   });
+                // });
+                //
+                // users = {
+                //   91: {
+                //     username: "joeb",
+                //     profileMessages: {
+                //       5: {
+                //         addedAt: "xxx"
+                //       }
+                //     },
+                //     feedMessages: {
+                //       5: {
+                //         addedAt: "xxx"
+                //       }
+                //     },
+                //     listenees: {
+                //       7: {
+                //         addedAt: "xxx"
+         //       }
+                //     },
+                //     listeners: {
+                //       9: {
+                //         addedAt: "xxx"
+         //       },
+                //       10: {
+                //         addedAt: "xxx"
+         //       }
+                //     }
+                //   }
+                // };
+
+              });
+
+              console.log("database successfully re-seeded");
+            });
+          });
+        });
+      });
+    });
   };
 
   return {
@@ -252,8 +323,7 @@ angular.module('Publicapp.auth', [])
       password: ctrl.password,
       phone: ctrl.phone,
       name: ctrl.name,
-      username: ctrl.username,
-      username: ctrl.username,
+      username: ctrl.username
     }, function(error) {
       if (error) {
         ctrl.errorMessage = error.message;
