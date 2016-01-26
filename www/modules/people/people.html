@@ -112,18 +112,18 @@
         <div class="list-group-item" ng-click="vm.showProfileOrOpenAddUserModal(contact)">
 
           <div class="pull-left">
-            <img ng-src="{{ contact.user ? contact.user.profile.face : '' }}" width="50" class="user-avatar" alt="">
+            <img ng-src="{{ contact.user ? contact.user.face : '' }}" width="50" class="user-avatar" alt="">
           </div>
 
           <div>
             <p class="post-text">
               <strong>{{ contact.displayName }}</strong>
               <div ng-if="contact.user">
-                In Public As: <strong>{{ contact.user.profile.name }}</strong> {{ contact.user.username }}
+                In Public As: <strong>{{ contact.user.name }}</strong> {{ contact.user.username }}
               </div>
             </p>
             <p class="post-text" ng-if="contact.user">
-              <em>{{ vm.taglineOrMostRecentPost(contact.user) }}</em>
+              <em>{{ vm.tagLineOrMostRecentPost(contact.user) }}</em>
             </p>
           </div>
 
@@ -146,15 +146,15 @@
         <div class="list-group-item" ng-click="vm.showProfile(user)">
 
           <div class="pull-left">
-            <img ng-src="{{ user.profile.face }}" width="50" class="user-avatar" alt="">
+            <img ng-src="{{ user.face }}" width="50" class="user-avatar" alt="">
           </div>
 
           <div>
             <p class="post-text">
-              <strong>{{ user.profile.name }}</strong> {{ user.username }}
+              <strong>{{ user.name }}</strong> {{ user.username }}
             </p>
             <p class="post-text">
-              <em>{{ vm.taglineOrMostRecentPost(user) }}</em>
+              <em>{{ vm.tagLineOrMostRecentPost(user) }}</em>
             </p>
           </div>
 
@@ -178,15 +178,15 @@
         <div class="list-group-item" ng-click="vm.showProfile(user)">
 
           <div class="pull-left">
-            <img ng-src="{{ user.profile.face }}" width="50" class="user-avatar" alt="">
+            <img ng-src="{{ user.face }}" width="50" class="user-avatar" alt="">
           </div>
 
           <div>
             <p class="post-text">
-              <strong>{{ user.profile.name }}</strong> {{ user.username }}
+              <strong>{{ user.name }}</strong> {{ user.username }}
             </p>
             <p class="post-text">
-              <em>{{ vm.taglineOrMostRecentPost(user) }}</em>
+              <em>{{ vm.tagLineOrMostRecentPost(user) }}</em>
             </p>
           </div>
 

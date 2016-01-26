@@ -14,10 +14,6 @@ angular.module('Publicapp.sharedMethods', [])
     return Fireb.signedIn();
   };
 
-  var noPostsAboutUser = function(user) {
-    return !Posts.findOne({subjectUserId: user._id})
-  };
-
 	function createPost() {
     var ctrl = this;
 
@@ -75,21 +71,21 @@ angular.module('Publicapp.sharedMethods', [])
     return moment(post.createdAt).fromNow();
   };
 
-  function taglineOrMostRecentPost( user ) {
-    if (s.isBlank(user.profile.tagLine)) {
-      var  mostRecentPost = Posts.findOne({authorUserId: user._id}, {sort: {createdAt : -1}});
-      if (mostRecentPost) {
+  function tagLineOrMostRecentPost( user ) {
+    if (s.isBlank(user.tagLine)) {
+      postRef = Fireb.ref.child("posts").child("feedMessageStubs").orderByChild("addedAt").limitToLast(1);
+      postRef.once("child_added").then(function(snapshot) { // handle error case
+        console.log(snapshot.key());
+        var mostRecentPost = snapshot.val();
         return 'Latest post: ' + mostRecentPost.text;
-      } else {
-        return "This user's page is a blank slate.";
-      }
+      });
     } else {
-      return user.profile.tagLine;
+      return user.tagLine;
     }
   };
 
-  function listeningTo(listenee) {
-    return signedInUser() && signedInUser().listeneeUserIds.indexOf(listenee._id) != -1;
+  function listeningTo(listeneeStub) {
+    return signedInUser() && signedInUser().listeneeStubs.indexOf(listeneeStub.$id) != -1;
   };
 
   function showProfile(user, event) {
@@ -135,7 +131,7 @@ angular.module('Publicapp.sharedMethods', [])
     author: author,
     subject: subject,
     createdAtRelative: createdAtRelative,
-    taglineOrMostRecentPost: taglineOrMostRecentPost,
+    tagLineOrMostRecentPost: tagLineOrMostRecentPost,
     listeningTo: listeningTo,
     showProfile: showProfile,
     toggleListening: toggleListening,

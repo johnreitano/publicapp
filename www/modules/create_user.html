@@ -9,7 +9,7 @@
     <div class="list">
       <label class="item item-input">
         <span class="input-label">Name</span>
-        <input type="text" placeholder="Name" ng-model="vm.user.profile.name" ng-required="true">
+        <input type="text" placeholder="Name" ng-model="vm.user.name" ng-required="true">
       </label>
       <label class="item item-input">
         <span class="input-label">Email</span>
@@ -17,11 +17,11 @@
       </label>
       <label class="item item-input">
         <span class="input-label">Mobile Number</span>
-        <input type="tel" international-phone-number only-countries="us, ca, mx" ng-model="vm.user.profile.phone">
+        <input type="tel" international-phone-number only-countries="us, ca, mx" ng-model="vm.user.phone">
       </label>
       <label class="item item-input">
         <span class="input-label">Initial Comment</span>
-        <textarea placeholder="Say something about this person." ng-model="vm.user.profile.firstPost" ng-required="true"></textarea>
+        <textarea placeholder="Say something about this person." ng-model="vm.user.firstPost" ng-required="true"></textarea>
       </label>
     </div>
 

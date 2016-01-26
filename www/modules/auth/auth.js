@@ -200,15 +200,15 @@ angular.module('Publicapp.auth', [])
                   return;
                 }
 
-                // set up foreign key references with form /users/5/profileMessages/addedAt/1453776597238
+                // set up foreign key references with form /users/5/profileMessageStubs/addedAt/1453776597238
                 var authorUserRef = ref.child("users").child(message.authorUserId);
-                authorUserRef.child("profileMessages").child(messageId).set({createdAt: message.createdAt});
-                authorUserRef.child("feedMessages").child(messageId).set({createdAt: message.createdAt});
+                authorUserRef.child("profileMessageStubs").child(messageId).set({createdAt: message.createdAt});
+                authorUserRef.child("feedMessageStubs").child(messageId).set({createdAt: message.createdAt});
 
-                // set up foreign key references with form /users/5/feedMessages/addedAt/1453776597238
+                // set up foreign key references with form /users/5/feedMessageStubs/addedAt/1453776597238
                 var subjectUserRef = ref.child("users").child(message.subjectUserId);
-                subjectUserRef.child("profileMessages").child(messageId).set({createdAt: message.createdAt});
-                subjectUserRef.child("feedMessages").child(messageId).set({createdAt: message.createdAt});
+                subjectUserRef.child("profileMessageStubs").child(messageId).set({createdAt: message.createdAt});
+                subjectUserRef.child("feedMessageStubs").child(messageId).set({createdAt: message.createdAt});
 
               });
             };
@@ -236,12 +236,12 @@ angular.module('Publicapp.auth', [])
                   var addedAt = Math.max(user.createdAt, otherUser.createdAt);
 
                   // create items such as:
-                  //    /users/5/listeners/10/addedAt/1453776597238
-                  //    /users/5/listenees/10/addedAt/1453776597238
-                  var listenersRef = ref.child("users").child(uid).child("listeners");
-                  listenersRef.child(otherUserId).set({addedAt: addedAt});
-                  var listeneesRef = ref.child("users").child(otherUserId).child("listenees");
-                  listeneesRef.child(uid).set({addedAt: addedAt});
+                  //    /users/5/listenerStubs/10/addedAt/1453776597238
+                  //    /users/5/listeneeStubs/10/addedAt/1453776597238
+                  var listenerStubsRef = ref.child("users").child(uid).child("listenerStubs");
+                  listenerStubsRef.child(otherUserId).set({addedAt: addedAt});
+                  var listeneeStubsRef = ref.child("users").child(otherUserId).child("listeneeStubs");
+                  listeneeStubsRef.child(uid).set({addedAt: addedAt});
 
                   // create 3 messages by user on this other user's profile
                   for (var i; i < 3; i++) {

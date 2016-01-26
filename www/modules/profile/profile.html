@@ -52,21 +52,21 @@
       <ion-tab id="listeners-tab" title="Listeners" ng-if="true">
         <ion-nav-view name="listeners">
           <ion-content>
-            <ion-list ng-repeat="listener in vm.user.listeners | orderBy: '-addedAt'">
+            <ion-list ng-repeat="listenerStub in vm.listenerStubs | orderBy: '-addedAt'">
 
               <div class="item item-avatar item-button-right" ng-click="vm.showProfile(listener)">
-                <img ng-src="{{ listener.face }}">
-                <h2><strong>{{ listener.name }}</strong></h2>
-                <h2>{{ listener.username }}</h2>
-                <p><em>{{ vm.taglineOrMostRecentPost(listener) }}</em></p>
+                <img ng-src="{{ vm.listener(listenerStub).face }}">
+                <h2>{{ vm.listener(listenerStub).name }}</h2>
+                <h2>{{ vm.listener(listenerStub).username }}</h2>
+                <p><em>{{ vm.tagLineOrMostRecentPost(listener) }}</em></p>
 
                 <button class="button button-positive"
-                    ng-click="vm.toggleListening(listener, $event)"
+                    ng-click="vm.toggleListening(listenerStub, $event)"
                     ng-show="!vm.listeningTo(listener)">Listen</button>
 
                 <button class="button button-energized"
-                    ng-click="vm.toggleListening(listener, $event)"
-                    ng-show="vm.listeningTo(listener)">Unlisten</button>
+                    ng-click="vm.toggleListening(listenerStub, $event)"
+                    ng-show="vm.listeningTo(listenerStub)">Unlisten</button>
 
               </div>
 

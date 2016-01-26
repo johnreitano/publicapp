@@ -24,9 +24,9 @@ angular.module('Publicapp.settings', [])
     var user = Meteor.user();
 
     if (user) {
-      $scope.name = user.profile.name;
+      $scope.name = user.name;
       $scope.email = user.emails[0].address;
-      $scope.phone = user.profile.phone;
+      $scope.phone = user.phone;
     }
     $scope.currentPassword = "";
     $scope.newPassword = "";

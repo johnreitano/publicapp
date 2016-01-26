@@ -100,7 +100,7 @@ angular.module('Publicapp.people', [])
       var findMatchingUserBasedOnContact = function(contact) {
         var user = { emails: [], profile: {} };
 
-        user.profile.name = standardizedName(contact.displayName);
+        user.name = standardizedName(contact.displayName);
 
         _.each(contact.emails, function(email,index,list) {
           email.value = standardizedEmailAddress(email.value);
@@ -127,10 +127,10 @@ angular.module('Publicapp.people', [])
           return phoneNumber.type == 'mobile' && phoneNumber.value;
         });
         if (phoneNumber) {
-          user.profile.phone = phoneNumber.value;
+          user.phone = phoneNumber.value;
         }
 
-        if (user.profile.name && (user.emails.length > 0 || user.profile.phone)) {
+        if (user.name && (user.emails.length > 0 || user.phone)) {
           return user;
         } else {
           return null;
