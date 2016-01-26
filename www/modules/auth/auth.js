@@ -105,9 +105,8 @@ angular.module('Publicapp.auth', [])
       console.log("Successfully created user account with uid:", userData.uid);
       user.face = user.face || generateFaceUrl(user.name, user.username);
       user.admin = user.admin ? true : false;
-      user.addedAt = user.addedAt || (new Date());
-      user.addedAt = user.addedAt.getTime();
-      user.foo = "123"
+      user.createdAt = user.createdAt || (new Date());
+      user.createdAt = user.createdAt.getTime();
 
       ref.child("users").child(userData.uid).set(user, function(error) {
         if (error) {
@@ -159,20 +158,19 @@ angular.module('Publicapp.auth', [])
         { email: "crisdavid0925@gmail.com", name: "Cristian Ramirez", phone: "+16196746211",  },
         { email: "jack@black.com", name: "Jack Black", phone: "+16196746211"  }
       ]);
+
       var userCountdown = usersArray.length;
       _.each(usersArray, function(user) {
         _.extend(user, {
           password: "123",
           username: generateUsername(user.name),
-          addedAt: recentDate()
+          createdAt: recentDate()
         });
 
         ref.removeUser({email: user.email, password: "123"}, function(error) {
-          if (error) {
-            if (!/The specified user does not exist/.test(error)) {
-              console.log("unable to remove user", error);
-              return;
-            }
+          if (error && !/The specified user does not exist/.test(error)) {
+            console.log("unable to remove user", error);
+            return;
           }
 
           createUser(user, function(error) {
@@ -190,71 +188,71 @@ angular.module('Publicapp.auth', [])
 
             console.log("all users created!")
 
-            ref.child("users").once("value", function(snapshot) {
-              var users = snapshot.val() || {};
+            var usersRef = ref.child("users");
+            var messagesRef = ref.child("messages");
+
+            function createMessage(message) {
+              var messageRef = ref.child("messages").push();
+              var messageId = id.key();
+              messageRef.set(message, function(error) {
+                if (error) {
+                  console.log("could not set message");
+                  return;
+                }
+
+                // set up foreign key references with form /users/5/profileMessages/addedAt/1453776597238
+                var authorUserRef = ref.child("users").child(message.authorUserId);
+                authorUserRef.child("profileMessages").child(messageId).set({createdAt: message.createdAt});
+                authorUserRef.child("feedMessages").child(messageId).set({createdAt: message.createdAt});
+
+                // set up foreign key references with form /users/5/feedMessages/addedAt/1453776597238
+                var subjectUserRef = ref.child("users").child(message.subjectUserId);
+                subjectUserRef.child("profileMessages").child(messageId).set({createdAt: message.createdAt});
+                subjectUserRef.child("feedMessages").child(messageId).set({createdAt: message.createdAt});
+
+              });
+            };
+
+            usersRef.once("value", function(snapshot) {
+              var users = snapshot.val();
               _.each(users, function(user, uid) {
 
-                // set up listeners and listenees
+                // create 3 messages by user on his own profile
+                for (var i; i < 3; i++) {
+                  createMessage({
+                    authorUserId: uid,
+                    subjectUserId: uid,
+                    text: faker.directive('lorem')('%w',40),
+                    createdAt: recentDate()
+                  });
+                }
+
+                // set up items linked to other users
                 var otherUserIds = _.without(_.sample(_.keys(users),5),uid);
 
                 _.each(otherUserIds,function(otherUserId) {
 
+                  var otherUser = users[otherUserId];
+                  var addedAt = Math.max(user.createdAt, otherUser.createdAt);
+
+                  // create items such as:
+                  //    /users/5/listeners/10/addedAt/1453776597238
+                  //    /users/5/listenees/10/addedAt/1453776597238
                   var listenersRef = ref.child("users").child(uid).child("listeners");
-                  listenersRef.child(otherUserId).set({addedAt: user.addedAt});
-
+                  listenersRef.child(otherUserId).set({addedAt: addedAt});
                   var listeneesRef = ref.child("users").child(otherUserId).child("listenees");
-                  listeneesRef.child(uid).set({addedAt: user.addedAt});
+                  listeneesRef.child(uid).set({addedAt: addedAt});
 
+                  // create 3 messages by user on this other user's profile
+                  for (var i; i < 3; i++) {
+                    createMessage({
+                      authorUserId: uid,
+                      subjectUserId: otherUserId,
+                      text: faker.directive('lorem')('%w',40),
+                      createdAt: recentDate()
+                    });
+                  }
                 });
-
-                var x = 7;
-
-                // TODO: author some messages
-                //      2 for with this user as the subject
-                //      chooose 5 random users, make two messages on each of their profiles
-                //      adjust profileMessages, feedMessages appropriately (use callbacks)
-
-                // var messagesRef = ref.child("messages");
-                // _.each(_.range(SEED_POST_COUNT), function() {
-                //
-                //   messagesRef.push({
-                //     authorUserId: _.sample(users,1)[0]._id,
-                //     subjectUserId: _.sample(users,1)[0]._id,
-                //     text: faker.directive('lorem')('%w',40),
-                //     photo: "http://lorempixel.com/100/100/",
-                //     addedAt: recentDate()
-                //   });
-                // });
-                //
-                // users = {
-                //   91: {
-                //     username: "joeb",
-                //     profileMessages: {
-                //       5: {
-                //         addedAt: "xxx"
-                //       }
-                //     },
-                //     feedMessages: {
-                //       5: {
-                //         addedAt: "xxx"
-                //       }
-                //     },
-                //     listenees: {
-                //       7: {
-                //         addedAt: "xxx"
-         //       }
-                //     },
-                //     listeners: {
-                //       9: {
-                //         addedAt: "xxx"
-         //       },
-                //       10: {
-                //         addedAt: "xxx"
-         //       }
-                //     }
-                //   }
-                // };
-
               });
 
               console.log("database successfully re-seeded");

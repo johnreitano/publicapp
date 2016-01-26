@@ -52,7 +52,7 @@
       <ion-tab id="listeners-tab" title="Listeners" ng-if="true">
         <ion-nav-view name="listeners">
           <ion-content>
-            <ion-list ng-repeat="listener in vm.listeners | orderBy: '-createdAt'">
+            <ion-list ng-repeat="listener in vm.user.listeners | orderBy: '-addedAt'">
 
               <div class="item item-avatar item-button-right" ng-click="vm.showProfile(listener)">
                 <img ng-src="{{ listener.face }}">
