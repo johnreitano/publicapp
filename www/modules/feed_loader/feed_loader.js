@@ -1,6 +1,6 @@
 angular.module('Publicapp.feedLoader', [])
 
-.factory('FeedLoader', function() {
+.factory('FeedLoader', function () {
 
   var load = function(fireBaseRef, signedInUserId) {
     if (!signedInUserId) {
@@ -27,7 +27,7 @@ angular.module('Publicapp.feedLoader', [])
 
   return {
     load: load
-  };
+  }
 
 })
 

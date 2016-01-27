@@ -18,6 +18,7 @@ angular.module('Publicapp', [
   'Publicapp.about',
   'Publicapp.auth',
   'Publicapp.contacts',
+  'Publicapp.fireb',
   'Publicapp.help',
   'Publicapp.feedLoader',
   'Publicapp.people',
@@ -29,7 +30,7 @@ angular.module('Publicapp', [
 
 .constant('GCM_SENDER_ID', '574597432927')
 
-.run(function($rootScope, $state, $location, Contacts, FeedLoader, $ionicPlatform, $ionicConfig, Fireb){
+.run(function($rootScope, $state, $location, Contacts, FeedLoader, $ionicPlatform, $ionicConfig, Fireb) {
 
   $rootScope.$on('$stateChangeStart', function(){
      $rootScope.$broadcast('$routeChangeSuccess');
@@ -39,8 +40,10 @@ angular.module('Publicapp', [
     if  (toState.name == "app.seed") {
       Fireb.reSeedDatabase();
       $location.path('/sign-in');
-    } else if  (toState.authenticate && !Fireb.signedIn()) {
+    } else if (toState.authenticate && !Fireb.signedIn()) {
       $location.path('/sign-in');
+    } else if (toState.name == "app.profile" && s.isBlank(toParams.id)) {
+      $location.path('/profile/' + Fireb.signedInUserId());
     }
   });
 
@@ -65,12 +68,9 @@ angular.module('Publicapp', [
 
 })
 
-.config(['$urlRouterProvider', '$stateProvider', 'ipnConfig',
-  function($urlRouterProvider, $stateProvider, ipnConfig){
-
+.config(function($urlRouterProvider, $stateProvider, ipnConfig) {
     ipnConfig.defaultCountry = 'us';
     ipnConfig.preferredCountries = ['us', 'ca', 'mx'];
-
 
     $stateProvider
 
@@ -81,9 +81,8 @@ angular.module('Publicapp', [
       controller: 'AppCtrl as app',
     });
 
-    $urlRouterProvider.otherwise('/help');
-
-}])
+    $urlRouterProvider.otherwise('/profile/');
+  })
 
 .controller('AppCtrl', function($scope) {
   ctrl = this;
