@@ -197,15 +197,12 @@ angular.module('Publicapp.auth', [])
               var messageRef = ref.child("messages").push(message);
               var messageId = messageRef.key();
 
-              // set up foreign key references with form /users/5/profileMessageStubs/addedAt/1453776597238
+              // set up profileMessageStubs for the uathor and subject of the message
+              //  with the form /users/5/profileMessageStubs/addedAt/1453776597238
               var authorUserRef = ref.child("users").child(message.authorUserId);
               authorUserRef.child("profileMessageStubs").child(messageId).set({createdAt: message.createdAt});
-              authorUserRef.child("feedMessageStubs").child(messageId).set({createdAt: message.createdAt});
-
-              // set up foreign key references with form /users/5/feedMessageStubs/addedAt/1453776597238
-              var subjectUserRef = ref.child("users").child(message.subjectUserId);
               subjectUserRef.child("profileMessageStubs").child(messageId).set({createdAt: message.createdAt});
-              subjectUserRef.child("feedMessageStubs").child(messageId).set({createdAt: message.createdAt});
+
             };
 
             ref.child("users").once("value", function(snapshot) {

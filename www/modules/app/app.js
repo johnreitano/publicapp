@@ -19,6 +19,7 @@ angular.module('Publicapp', [
   'Publicapp.auth',
   'Publicapp.contacts',
   'Publicapp.help',
+  'Publicapp.messageLoader',
   'Publicapp.people',
   'Publicapp.post',
   'Publicapp.profile',
@@ -28,7 +29,7 @@ angular.module('Publicapp', [
 
 .constant('GCM_SENDER_ID', '574597432927')
 
-.run(function($rootScope, $state, $location, Contacts, $ionicPlatform, $ionicConfig, Fireb){
+.run(function($rootScope, $state, $location, Contacts, MessageLoader, $ionicPlatform, $ionicConfig, Fireb){
 
   $rootScope.$on('$stateChangeStart', function(){
      $rootScope.$broadcast('$routeChangeSuccess');
@@ -44,6 +45,8 @@ angular.module('Publicapp', [
   });
 
   Contacts.load(); // TODO: check whether this preloading of the contacts will trigger a warning in iOS
+  MessageLoader.load();
+
   $ionicPlatform.ready(function() {
     if(window.cordova && window.cordova.plugins.Keyboard) {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
