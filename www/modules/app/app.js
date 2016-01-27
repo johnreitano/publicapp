@@ -19,7 +19,7 @@ angular.module('Publicapp', [
   'Publicapp.auth',
   'Publicapp.contacts',
   'Publicapp.help',
-  'Publicapp.messageLoader',
+  'Publicapp.feedLoader',
   'Publicapp.people',
   'Publicapp.post',
   'Publicapp.profile',
@@ -29,7 +29,7 @@ angular.module('Publicapp', [
 
 .constant('GCM_SENDER_ID', '574597432927')
 
-.run(function($rootScope, $state, $location, Contacts, MessageLoader, $ionicPlatform, $ionicConfig, Fireb){
+.run(function($rootScope, $state, $location, Contacts, FeedLoader, $ionicPlatform, $ionicConfig, Fireb){
 
   $rootScope.$on('$stateChangeStart', function(){
      $rootScope.$broadcast('$routeChangeSuccess');
@@ -45,7 +45,7 @@ angular.module('Publicapp', [
   });
 
   Contacts.load(); // TODO: check whether this preloading of the contacts will trigger a warning in iOS
-  MessageLoader.load();
+  FeedLoader.load(Fireb.ref, Fireb.signedInUserId());
 
   $ionicPlatform.ready(function() {
     if(window.cordova && window.cordova.plugins.Keyboard) {

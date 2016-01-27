@@ -39,7 +39,7 @@ angular.module('Publicapp.auth', [])
   }
 ])
 
-.service('Fireb', function() {
+.service('Fireb', function(FeedLoader) {
   var ref = new Firebase("https//publicapp3.firebaseio.com");
   var _signedInUserId = null;
   var _signedInUser = null;
@@ -62,6 +62,7 @@ angular.module('Publicapp.auth', [])
       _signedInUserId = authData.uid;
       ref.child("users").child(_signedInUserId).on("value", function(snapshot) {
         _signedInUser = snapshot.val();
+        FeedLoader.load(ref, _signedInUserId);
       });
     } else {
       console.log("Client unauthenticated.")
@@ -100,13 +101,13 @@ angular.module('Publicapp.auth', [])
       email    : user.email,
       password : user.password
     }, function(error, userData) {
-      // if (error) {
-      //   console.log(error);
-      //   if (callback) {
-      //     callback(error);
-      //   }
-      //   return;
-      // }
+      if (error) {
+        console.log(error);
+        if (callback) {
+          callback(error);
+        }
+        return;
+      }
       console.log("Successfully created user account with uid:", userData.uid);
       user.face = user.face || generateFaceUrl(user.name, user.username);
       user.admin = user.admin ? true : false;
@@ -128,6 +129,17 @@ angular.module('Publicapp.auth', [])
   function recentDate() {
     return (new Date()).getTime() - (Math.random() * 5 * 24 * 60 * 60 * 1000 );
   }
+
+  function createMessage(message) {
+    var messageRef = ref.child("messages").push(message);
+    var messageId = messageRef.key();
+
+    // set up profileMessageStubs for the uathor and subject of the message
+    var authorUserRef = ref.child("users").child(message.authorUserId);
+    authorUserRef.child("profileMessageStubs").child(messageId).set({createdAt: message.createdAt});
+    var subjectUserRef = ref.child("users").child(message.subjectUserId);
+    subjectUserRef.child("profileMessageStubs").child(messageId).set({createdAt: message.createdAt});
+  };
 
   function reSeedDatabase() {
     console.log("about to re-seed database");
@@ -192,18 +204,6 @@ angular.module('Publicapp.auth', [])
             console.log("all users created!")
 
             var messagesRef = ref.child("messages");
-
-            function createMessage(message) {
-              var messageRef = ref.child("messages").push(message);
-              var messageId = messageRef.key();
-
-              // set up profileMessageStubs for the uathor and subject of the message
-              //  with the form /users/5/profileMessageStubs/addedAt/1453776597238
-              var authorUserRef = ref.child("users").child(message.authorUserId);
-              authorUserRef.child("profileMessageStubs").child(messageId).set({createdAt: message.createdAt});
-              subjectUserRef.child("profileMessageStubs").child(messageId).set({createdAt: message.createdAt});
-
-            };
 
             ref.child("users").once("value", function(snapshot) {
               var users = snapshot.val();

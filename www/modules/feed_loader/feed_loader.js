@@ -1,17 +1,21 @@
-angular.module('Publicapp.messageLoader', [])
+angular.module('Publicapp.feedLoader', [])
 
-.factory('MessageLoader', function(Fireb) {
+.factory('FeedLoader', function() {
 
-  var load = function(callback) {
+  var load = function(fireBaseRef, signedInUserId) {
+    if (!signedInUserId) {
+      console.log("could not load feed because user not signed in");
+      return;
+    }
 
-    var signedInUserRef = Fireb.ref.child("users").child(Fireb.signedInUserId());
+    var signedInUserRef = fireBaseRef.child("users").child(signedInUserId);
     var feedDestination = signedInUserRef.child("feedMessageStubs");
 
     signedInUserRef.child("listeneeStubs").on("value", function(snapshot) {
-      var sourceUserIds = _.union(_.keys(snapshot.val()), [Fireb.signedInUserId()]);
+      var sourceUserIds = _.union(_.keys(snapshot.val()), [signedInUserId]);
 
       _.each(sourceUserIds, function(sourceUserId) {
-        var sourceUser = Fireb.ref.child("users").child(sourceUserId);
+        var sourceUser = fireBaseRef.child("users").child(sourceUserId);
         sourceUser.child("profileMessageStubs").orderByChild("createdAt").limitToLast(50).on("child_added", function(snapshot) {
           var message = snapshot.val();
           var messageId = snapshot.key();
