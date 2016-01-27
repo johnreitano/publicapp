@@ -122,9 +122,6 @@
                 In Public As: <strong>{{ contact.user.name }}</strong> {{ contact.user.username }}
               </div>
             </p>
-            <p class="post-text" ng-if="contact.user">
-              <em>{{ vm.tagLineOrMostRecentPost(contact.user) }}</em>
-            </p>
           </div>
 
           <div ng-if="contact.user">
@@ -152,9 +149,6 @@
           <div>
             <p class="post-text">
               <strong>{{ user.name }}</strong> {{ user.username }}
-            </p>
-            <p class="post-text">
-              <em>{{ vm.tagLineOrMostRecentPost(user) }}</em>
             </p>
           </div>
 
@@ -184,9 +178,6 @@
           <div>
             <p class="post-text">
               <strong>{{ user.name }}</strong> {{ user.username }}
-            </p>
-            <p class="post-text">
-              <em>{{ vm.tagLineOrMostRecentPost(user) }}</em>
             </p>
           </div>
 

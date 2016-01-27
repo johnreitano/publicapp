@@ -41,6 +41,7 @@ angular.module('Publicapp.people', [])
         ctrl.usersFromSearch = Meteor.users.find({"profile.name": normalizedSearchText}).fetch();
       } else {
         // search by username
+        normalizedSearchText = "@" + normalizedSearchText.toLowerCase();
         ctrl.usersFromSearch = Meteor.users.find({username: normalizedSearchText}).fetch();
       }
       ctrl.showSearchResultsTab = true;

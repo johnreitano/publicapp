@@ -3,11 +3,11 @@ angular.module('Publicapp.sharedMethods', [])
 .service('SharedMethods', function($timeout, $state, Fireb){
 
   var signedInUserId = function() {
-    return Fireb.signedInUserId;
+    return Fireb.signedInUserId();
   };
 
   var signedInUser = function() {
-    return Fireb.signedInUser;
+    return Fireb.signedInUser();
   };
 
   var signedIn = function() {
@@ -71,23 +71,6 @@ angular.module('Publicapp.sharedMethods', [])
     return moment(post.createdAt).fromNow();
   };
 
-  function tagLineOrMostRecentPost( user ) {
-    if (s.isBlank(user.tagLine)) {
-      postRef = Fireb.ref.child("posts").child("feedMessageStubs").orderByChild("addedAt").limitToLast(1);
-      postRef.once("child_added").then(function(snapshot) { // handle error case
-        console.log(snapshot.key());
-        var mostRecentPost = snapshot.val();
-        return 'Latest post: ' + mostRecentPost.text;
-      });
-    } else {
-      return user.tagLine;
-    }
-  };
-
-  function listeningTo(listeneeStub) {
-    return signedInUser() && signedInUser().listeneeStubs.indexOf(listeneeStub.$id) != -1;
-  };
-
   function showProfile(user, event) {
     if (user && user._id) {
       $state.go( "app.profile", { id: user._id } );
@@ -97,15 +80,27 @@ angular.module('Publicapp.sharedMethods', [])
     }
   };
 
-  function toggleListening(listenee, event) {
-    var listeneeUserIds = signedInUser().listeneeUserIds;
-    if (listeningTo(listenee)) {
-      listeneeUserIds = _.without(listeneeUserIds, listenee._id);
+  function listeningTo(userStub) {
+    if (signedInUser()) {
+      var keys = _.keys(signedInUser().listeneeStubs);
+      return keys.indexOf(userStub.$id) != -1
     } else {
-      listeneeUserIds.unshift(listenee._id);
+      return false;
     }
-    Meteor.users.update( Meteor.userId(), {$set: { "profile.listeneeUserIds": listeneeUserIds }} );
-    signedInUser().listeneeUserIds = listeneeUserIds;
+  };
+
+  function toggleListening(targetUser, event) {
+    var signedInUserListeneeRef = Fireb.ref.child("users").child(signedInUserId()).child("listeneeStubs").child(targetUser.$id);
+    var targetUserListenerRef = Fireb.ref.child("users").child(targetUser.$id).child("listeneeStubs").child(signedInUserId());
+
+    if (listeningTo(targetUser)) {
+      signedInUserListeneeRef.remove(); // remove listenee from signedInUser
+      targetUserListenerRef.remove(); // remove listener from targetUser
+    } else {
+      // add
+      signedInUserListeneeRef.set({addedAt: (new Date()).getTime()}); // add listenee to signedInUser
+      targetUserListenerRef.set({addedAt: (new Date()).getTime()}); // add listener to targetUSer
+    }
     if (event) {
       event.stopPropagation(); // prevent ng-click of enclosing item from being processed
     }
@@ -131,7 +126,6 @@ angular.module('Publicapp.sharedMethods', [])
     author: author,
     subject: subject,
     createdAtRelative: createdAtRelative,
-    tagLineOrMostRecentPost: tagLineOrMostRecentPost,
     listeningTo: listeningTo,
     showProfile: showProfile,
     toggleListening: toggleListening,

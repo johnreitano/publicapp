@@ -41,33 +41,38 @@ angular.module('Publicapp.auth', [])
 
 .service('Fireb', function() {
   var ref = new Firebase("https//publicapp3.firebaseio.com");
-  var signedInUserId = null;
-  var signedInUser = null;
+  var _signedInUserId = null;
+  var _signedInUser = null;
 
   function signedIn() {
-    return !!signedInUserId;
+    return !!_signedInUserId;
+  };
+
+  function signedInUserId() {
+    return _signedInUserId;
+  };
+
+  function signedInUser() {
+    return _signedInUser;
   };
 
   ref.onAuth(function(authData) {
     if (authData) {
       console.log("Authenticated with uid:", authData.uid);
-      signedInUserId = authData.uid;
-      ref.child("users").child(signedInUserId).on("value", function(snapshot) {
-        signedInUser = snapshot.val();
+      _signedInUserId = authData.uid;
+      ref.child("users").child(_signedInUserId).on("value", function(snapshot) {
+        _signedInUser = snapshot.val();
       });
     } else {
       console.log("Client unauthenticated.")
-      signedInUserId = null;
-      signedInUserUser = null;
+      _signedInUserId = null;
+      _signedInUserUser = null;
+      // TODO: detach on() hook above
     }
   });
 
-  function getSignedInUser() {
-    return signedInUser;
-  };
-
   function generateUsername( name ) {
-    return ( name || "" ).replace(/\ /,"").toLowerCase(); // TODO: remove nonalpha characters
+    return "@" + ( name || "" ).replace(/[\ \@]/g,"").toLowerCase(); // TODO: remove nonalpha characters
   };
 
   function generateFaceUrl(name, username) {

@@ -34,21 +34,17 @@ angular.module('Publicapp.profile', [])
 
   ctrl.user = $firebaseObject(userRef);
 
-
-  var mapping = {};
+  var listenerCache = {};
   var listenerStubsRef = userRef.child("listenerStubs");
   ctrl.listenerStubs = $firebaseArray(listenerStubsRef);
   listenerStubsRef.on("child_added", function(listenerStubSnapshot) {
     var listenerUserId = listenerStubSnapshot.key();
-    Fireb.ref.child("users").child(listenerUserId).once("value", function(listenerSnapshot) {
-      mapping[ listenerSnapshot.key() ] = listenerSnapshot.val();
-    });
+    listenerCache[listenerUserId] = $firebaseObject(Fireb.ref.child("users").child(listenerUserId));
   });
 
   ctrl.listener = function(listenerStub) {
-    return mapping[ listenerStub.$id ];
+    return listenerCache[listenerStub.$id ];
   };
-
 
   ctrl.viewingOwnPage = function() {
     return !ctrl.userId || !ctrl.signedInUserId() || ctrl.userId == ctrl.signedInUserId();
