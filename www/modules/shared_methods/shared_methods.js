@@ -59,16 +59,8 @@ angular.module('Publicapp.sharedMethods', [])
     })
 	};
 
-  function author(post) {
-    return Meteor.users.findOne(post.authorUserId);
-  };
-
-  function subject(post) {
-    return Meteor.users.findOne(post.subjectUserId);
-  };
-
-  function createdAtRelative(post) {
-    return moment(post.createdAt).fromNow();
+  function createdAtRelative(message) {
+    return moment(message.createdAt).fromNow();
   };
 
   function showProfile(user, event) {
@@ -123,8 +115,6 @@ angular.module('Publicapp.sharedMethods', [])
     signedInUser: signedInUser,
     signedIn: signedIn,
     createPost: createPost,
-    author: author,
-    subject: subject,
     createdAtRelative: createdAtRelative,
     listeningTo: listeningTo,
     showProfile: showProfile,

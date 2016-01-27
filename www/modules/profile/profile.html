@@ -12,23 +12,22 @@
       <ion-tab id="feed-tab" title="Newsfeed" ng-if="vm.viewingOwnPage()">
         <ion-nav-view name="feed">
           <ion-content>
-
-            <ion-list ng-repeat="post in vm.posts | orderBy: '-createdAt'">
-              <div class="item item-avatar" ng-click="vm.showPost(post)">
-                <img ng-src="{{ vm.author(post).face }}">
+            <ion-list ng-repeat="message in vm.feedMessages | orderBy: '-createdAt'">
+              <div class="item item-avatar" ng-click="vm.showMessage(message)">
+                <img ng-src="{{ vm.author(message).face }}">
                 <div>
-                  <h2 ng-if="post.authorUserId == post.subjectUserId">
-                    <strong>{{ vm.author(post).name }}</strong> said <span class="post-createdAt">{{ vm.createdAtRelative(post) }}</span>
-                  </h2>
-                  <h2 ng-if="post.authorUserId != post.subjectUserId">
-                    <strong>{{ vm.author(post).name }}</strong> said to <strong>{{ vm.subject(post).name || vm.subject(post).username }}</strong> <span class="post-createdAt">{{ vm.createdAtRelative(post) }}</span>
+                  <h2>
+                    <strong>{{ vm.author(message).name }}</strong> said
+                    <span ng-if="message.authorUserId != messge.subjectUserId">
+                      to <strong>{{ vm.subject(message).name || vm.subject(message).username }}</strong>
+                    </span>
+                    <span class="post-createdAt">{{ vm.createdAtRelative(message) }}</span>
                   </h2>
                   <p>
-                    <em>{{ post.text }}</em>
+                    <em>{{ message.text }}</em>
                   </p>
                 </div>
               </div>
-
             </ion-list>
           </ion-content>
         </ion-nav-view>
@@ -37,13 +36,22 @@
       <ion-tab id="messages-tab" title="{{ vm.viewingOwnPage() ? 'Your Messages' : 'Messages' }}" ng-if="true">
         <ion-nav-view name="messages">
           <ion-content>
-            <ion-list ng-repeat="post in vm.posts | orderBy: '-createdAt'">
-              <div class="item item-avatar" ng-click="vm.showPost(post)">
-                <img ng-src="{{ vm.author(post).face }}">
-                <h2><strong>{{ vm.author(post).name }}</strong> said <span class="post-createdAt">{{ vm.createdAtRelative(post) }}</span></h2>
-                <p><em>{{ post.text }}</em></p>
+            <ion-list ng-repeat="message in vm.profileMessages | orderBy: '-createdAt'">
+              <div class="item item-avatar" ng-click="vm.showMessage(message)">
+                <img ng-src="{{ vm.author(message).face }}">
+                <div>
+                  <h2>
+                    <strong>{{ vm.author(message).name }}</strong> said
+                    <span ng-if="message.authorUserId != messge.subjectUserId">
+                      to <strong>{{ vm.subject(message).name || vm.subject(message).username }}</strong>
+                    </span>
+                    <span class="post-createdAt">{{ vm.createdAtRelative(message) }}</span>
+                  </h2>
+                  <p>
+                    <em>{{ message.text }}</em>
+                  </p>
+                </div>
               </div>
-
             </ion-list>
           </ion-content>
         </ion-nav-view>
@@ -53,8 +61,7 @@
         <ion-nav-view name="listeners">
           <ion-content>
             <ion-list ng-repeat="listenerStub in vm.listenerStubs | orderBy: '-addedAt'">
-
-              <div class="item item-avatar item-button-right" ng-click="vm.showProfile(listener)">
+                <div class="item item-avatar item-button-right" ng-click="vm.showProfile(listener)">
                 <img ng-src="{{ vm.listener(listenerStub).face }}">
                 <h2>{{ vm.listener(listenerStub).name }}</h2>
                 <h2>{{ vm.listener(listenerStub).username }}</h2>

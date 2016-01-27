@@ -100,18 +100,17 @@ angular.module('Publicapp.auth', [])
       email    : user.email,
       password : user.password
     }, function(error, userData) {
-      if (error) {
-        console.log(error);
-        if (callback) {
-          callback(error);
-        }
-        return;
-      }
+      // if (error) {
+      //   console.log(error);
+      //   if (callback) {
+      //     callback(error);
+      //   }
+      //   return;
+      // }
       console.log("Successfully created user account with uid:", userData.uid);
       user.face = user.face || generateFaceUrl(user.name, user.username);
       user.admin = user.admin ? true : false;
-      user.createdAt = user.createdAt || (new Date());
-      user.createdAt = user.createdAt.getTime();
+      user.createdAt = user.createdAt || (new Date()).getTime();
 
       ref.child("users").child(userData.uid).set(user, function(error) {
         if (error) {
@@ -127,8 +126,7 @@ angular.module('Publicapp.auth', [])
   };
 
   function recentDate() {
-    var n = ( new Date()) - (Math.random() * 5 * 24 * 60 * 60 * 1000 );
-    return new Date(n);
+    return (new Date()).getTime() - (Math.random() * 5 * 24 * 60 * 60 * 1000 );
   }
 
   function reSeedDatabase() {
@@ -140,8 +138,8 @@ angular.module('Publicapp.auth', [])
       ref.child("messages").remove();
       console.log("removed everything!");
 
-      var SEED_USER_COUNT = 25
-      var SEED_POST_COUNT = 150
+      var SEED_USER_COUNT = 3
+      var SEED_POST_COUNT = 3
 
       var usersArray = [];
       _.each(_.range(SEED_USER_COUNT), function() {
@@ -175,7 +173,7 @@ angular.module('Publicapp.auth', [])
         ref.removeUser({email: user.email, password: "123"}, function(error) {
           if (error && !/The specified user does not exist/.test(error)) {
             console.log("unable to remove user", error);
-            return;
+            // return;
           }
 
           createUser(user, function(error) {
@@ -193,37 +191,29 @@ angular.module('Publicapp.auth', [])
 
             console.log("all users created!")
 
-            var usersRef = ref.child("users");
             var messagesRef = ref.child("messages");
 
             function createMessage(message) {
-              var messageRef = ref.child("messages").push();
-              var messageId = id.key();
-              messageRef.set(message, function(error) {
-                if (error) {
-                  console.log("could not set message");
-                  return;
-                }
+              var messageRef = ref.child("messages").push(message);
+              var messageId = messageRef.key();
 
-                // set up foreign key references with form /users/5/profileMessageStubs/addedAt/1453776597238
-                var authorUserRef = ref.child("users").child(message.authorUserId);
-                authorUserRef.child("profileMessageStubs").child(messageId).set({createdAt: message.createdAt});
-                authorUserRef.child("feedMessageStubs").child(messageId).set({createdAt: message.createdAt});
+              // set up foreign key references with form /users/5/profileMessageStubs/addedAt/1453776597238
+              var authorUserRef = ref.child("users").child(message.authorUserId);
+              authorUserRef.child("profileMessageStubs").child(messageId).set({createdAt: message.createdAt});
+              authorUserRef.child("feedMessageStubs").child(messageId).set({createdAt: message.createdAt});
 
-                // set up foreign key references with form /users/5/feedMessageStubs/addedAt/1453776597238
-                var subjectUserRef = ref.child("users").child(message.subjectUserId);
-                subjectUserRef.child("profileMessageStubs").child(messageId).set({createdAt: message.createdAt});
-                subjectUserRef.child("feedMessageStubs").child(messageId).set({createdAt: message.createdAt});
-
-              });
+              // set up foreign key references with form /users/5/feedMessageStubs/addedAt/1453776597238
+              var subjectUserRef = ref.child("users").child(message.subjectUserId);
+              subjectUserRef.child("profileMessageStubs").child(messageId).set({createdAt: message.createdAt});
+              subjectUserRef.child("feedMessageStubs").child(messageId).set({createdAt: message.createdAt});
             };
 
-            usersRef.once("value", function(snapshot) {
+            ref.child("users").once("value", function(snapshot) {
               var users = snapshot.val();
               _.each(users, function(user, uid) {
 
                 // create 3 messages by user on his own profile
-                for (var i; i < 3; i++) {
+                for (var i = 0; i < 3; i++) {
                   createMessage({
                     authorUserId: uid,
                     subjectUserId: uid,
@@ -233,26 +223,28 @@ angular.module('Publicapp.auth', [])
                 }
 
                 // set up items linked to other users
-                var otherUserIds = _.without(_.sample(_.keys(users),5),uid);
+                var listenees = _.without(_.sample(_.keys(users),6),uid);
+                _.each(listenees,function(listeneeUserId) {
 
-                _.each(otherUserIds,function(otherUserId) {
-
-                  var otherUser = users[otherUserId];
-                  var addedAt = Math.max(user.createdAt, otherUser.createdAt);
-
-                  // create items such as:
+                  // set up listener and listenee info, such as:
                   //    /users/5/listenerStubs/10/addedAt/1453776597238
                   //    /users/5/listeneeStubs/10/addedAt/1453776597238
-                  var listenerStubsRef = ref.child("users").child(uid).child("listenerStubs");
-                  listenerStubsRef.child(otherUserId).set({addedAt: addedAt});
-                  var listeneeStubsRef = ref.child("users").child(otherUserId).child("listeneeStubs");
-                  listeneeStubsRef.child(uid).set({addedAt: addedAt});
+                  var listenee = users[listeneeUserId];
+                  var addedAt = Math.max(user.createdAt, listenee.createdAt);
+                  var listeneeStubsRef = ref.child("users").child(uid).child("listeneeStubs");
+                  listeneeStubsRef.child(listeneeUserId).set({addedAt: addedAt});
+                  var listenerStubsRef = ref.child("users").child(listeneeUserId).child("listenerStubs");
+                  listenerStubsRef.child(uid).set({addedAt: addedAt});
+                });
 
-                  // create 3 messages by user on this other user's profile
-                  for (var i; i < 3; i++) {
+                var subjects = listenees.slice(0,3).concat([uid])
+                _.each(subjects,function(subjectUserId) {
+
+                  // create 2 messages on the subjects profile
+                  for (var i = 0; i < 2; i++) {
                     createMessage({
                       authorUserId: uid,
-                      subjectUserId: otherUserId,
+                      subjectUserId: subjectUserId,
                       text: faker.directive('lorem')('%w',40),
                       createdAt: recentDate()
                     });

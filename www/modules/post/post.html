@@ -5,8 +5,8 @@
 
       <div class="item item-avatar">
         <img ng-src="{{ vm.author(vm.post).profile.face }}">
-        <h2>{{ vm.author(vm.post).profile.name }}</h2>
-        <p>{{ vm.createdAtRelative(vm.post) }}</p>
+        <h2>{{ vm.author(vm.message).profile.name }}</h2>
+        <p>{{ vm.createdAtRelative(vm.message) }}</p>
       </div>
 
       <div class="item item-body">

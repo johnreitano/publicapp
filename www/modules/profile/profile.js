@@ -20,9 +20,6 @@ angular.module('Publicapp.profile', [])
 .controller('ProfileCtrl', function($scope, $location, SharedMethods, $stateParams, Fireb, $firebaseObject, $firebaseArray) {
   var ctrl = this;
 
-  ctrl.profile = null;
-
-
   angular.extend(ctrl, SharedMethods);
 
   ctrl.userId = $stateParams.id;
@@ -34,26 +31,66 @@ angular.module('Publicapp.profile', [])
 
   ctrl.user = $firebaseObject(userRef);
 
-  var listenerCache = {};
+  var userFirebaseObjects = {};
   var listenerStubsRef = userRef.child("listenerStubs");
   ctrl.listenerStubs = $firebaseArray(listenerStubsRef);
-  listenerStubsRef.on("child_added", function(listenerStubSnapshot) {
-    var listenerUserId = listenerStubSnapshot.key();
-    listenerCache[listenerUserId] = $firebaseObject(Fireb.ref.child("users").child(listenerUserId));
+  listenerStubsRef.on("child_added", function(snapshot) {
+    var userId = snapshot.key();
+    userFirebaseObjects[userId] = $firebaseObject(Fireb.ref.child("users").child(userId));
   });
 
   ctrl.listener = function(listenerStub) {
-    return listenerCache[listenerStub.$id ];
+    return userFirebaseObjects[listenerStub.$id ];
+  };
+
+  ctrl.profileMessages = [];
+  userRef.child("profileMessageStubs").on("child_added", function(snapshot) {
+    var messageId = snapshot.key();
+    Fireb.ref.child("messages").child(messageId).once("value", function(messageSnapshot) {
+      var message = messageSnapshot.val();
+      ctrl.profileMessages.push(message); // TODO: fix the order of messages
+
+      if (!userFirebaseObjects[message.authorUserId]) {
+        userFirebaseObjects[message.authorUserId] = $firebaseObject(Fireb.ref.child("users").child(message.authorUserId));
+      }
+      if (!userFirebaseObjects[message.subjectUserId]) {
+        userFirebaseObjects[message.subjectUserId] = $firebaseObject(Fireb.ref.child("users").child(message.subjectUserId));
+      }
+    });
+  });
+
+  ctrl.feedMessages = [];
+  userRef.child("feedMessageStubs").on("child_added", function(snapshot) {
+    var messageId = snapshot.key();
+    Fireb.ref.child("messages").child(messageId).once("value", function(messageSnapshot) {
+      var message = messageSnapshot.val();
+      ctrl.feedMessages.push(message); // TODO: fix the order of messages
+
+      if (!userFirebaseObjects[message.authorUserId]) {
+        userFirebaseObjects[message.authorUserId] = $firebaseObject(Fireb.ref.child("users").child(message.authorUserId));
+      }
+      if (!userFirebaseObjects[message.subjectUserId]) {
+        userFirebaseObjects[message.subjectUserId] = $firebaseObject(Fireb.ref.child("users").child(message.subjectUserId));
+      }
+    });
+  });
+
+  ctrl.author = function(message) {
+    return userFirebaseObjects[message.authorUserId];
+  };
+
+  ctrl.subject = function(message) {
+    return userFirebaseObjects[message.subjectUserId];
   };
 
   ctrl.viewingOwnPage = function() {
     return !ctrl.userId || !ctrl.signedInUserId() || ctrl.userId == ctrl.signedInUserId();
   };
 
-  ctrl.showPost = function(post) {
+  ctrl.showMessage = function(post) {
     // var postUrl = "/profile/" + post.authorUserId + "/messages/post/" + post._id;
-    var postUrl = "/profile/" + post.authorUserId + "/feed/post/" + post._id;
-    $location.path(postUrl);
+    var messageUrl = "/profile/" + post.authorUserId + "/feed/message/" + message._id;
+    $location.path(messageUrl);
   }
 
 })
