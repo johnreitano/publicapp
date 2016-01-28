@@ -10,7 +10,7 @@ angular.module('Publicapp.settings', [])
         views: {
           'menuContent': {
             templateUrl: "modules/settings/settings.html",
-            controller: "SettingsCtrl"
+            controller: "SettingsCtrl as vm"
           }
         },
         authenticate: true
@@ -19,15 +19,19 @@ angular.module('Publicapp.settings', [])
       ;
   }])
 
-  .controller('SettingsCtrl', function($scope, $meteor) {
+  .controller('SettingsCtrl', function($scope, Fireb) {
+    var ctrl = this;
 
-    var user = Meteor.user();
+    var userId = Fireb.signedInUserId();
+
+    var user = Fireb.ref.child('users').child(userId);
 
     if (user) {
-      $scope.name = user.name;
-      $scope.email = user.emails[0].address;
-      $scope.phone = user.phone;
+      ctrl.name = user.name;
+      ctrl.email = user.email;
+      ctrl.phone = user.phone;
     }
+
     $scope.currentPassword = "";
     $scope.newPassword = "";
     $scope.newPasswordConfirmation = "";
