@@ -98,7 +98,7 @@ angular.module('Publicapp.profile', [])
 
   ctrl.showMessage = function(post) {
     // var postUrl = "/profile/" + post.authorUserId + "/messages/post/" + post._id;
-    var messageUrl = "/profile/" + post.authorUserId + "/feed/message/" + message._id;
+    var messageUrl = "/profile/" + post.authorUserId + "/feed/message/" + post._id;
     $location.path(messageUrl);
   };
 
