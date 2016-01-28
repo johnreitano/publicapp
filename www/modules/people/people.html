@@ -1,221 +1,105 @@
-<div ui-content-for="navbarCenter">
-  <span style="font-size: 14px;">
-    <i class="fa fa-users fa-navbar"></i> People
-  </span>
-</div>
+<ion-view>
+  <ion-nav-title>
+    People
+  </ion-nav-title>
+  <ion-nav-buttons side="right">
+    <button class="button button-icon button-clear ion-home" ui-sref="app.profile">
+    </button>
+  </ion-nav-buttons>
+  <ion-pane>
+    <ion-tabs class="tabs-top bar-positive">
 
-<div ui-content-for="modals">
+      <ion-tab id="contacts-tab" title="Contacts {{ vm.isCurrentState('app.people.contacts') ? '*' : '' }}" ng-if="vm.usingDevice()" ui-sref="app.people.contacts">
+        <ion-nav-view name="feed">
+          <ion-content>
+            <div>{{ vm.contacts.length > 0 ? "Select one of the contacts below:" : "You have no contacts" }}</div>
 
-  <div class="modal" ui-if="addUserModal" ui-state="addUserModal">
-    <div class="modal-backdrop in"></div>
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-body">
-          <form role="form" name="mainForm">
-            <fieldset>
-              <legend>Create Public Page for New User</legend>
 
-              <div ng-if="vm.newUser.profile.name">Please confirm that the information below is correct, or make changes as necessary.</div>
+            <ion-list ng-repeat="contact in vm.contacts | orderBy: '-addedAt'">
+              <div class="item item-avatar item-button-right" ng-click="vm.showProfile(listener)">
+                <img ng-src="{{ contact.user ? contact.user.face : '' }}">
+                <h2>{{ contact.displayName }}</h2>
+                <div ng-if="contact.user">
+                  <div>In Public As:</div>
+                  <h2>{{ contact.user.name }}</h2>
+                  <h2>{{ contact.user.username }}</h2>
 
-              <div ng-if="!vm.newUser.profile.name">Please enter the information requested below.</div>
+                  <button class="button button-positive"
+                      ng-click="vm.toggleListening(contact.user, $event)"
+                      ng-show="!vm.listeningTo(contact.user)">Listen</button>
 
-              <div class="form-group">
-                <label>Name</label>
-                <input type="text"
-                       class="form-control"
-                       ng-model="vm.newUser.profile.name" ng-required="true"
-                       placeholder="Enter name">
+                  <button class="button button-energized"
+                      ng-click="vm.toggleListening(contact.user, $event)"
+                      ng-show="vm.listeningTo(contact.user)">Unlisten</button>
+
+                </div>
+              </div>
+            </ion-list>
+          </ion-content>
+        </ion-nave>
+      </ion-tab>
+
+      <ion-tab id="listenees-tab" title="Listenees {{ vm.isCurrentState('app.people.listenees') ? '*' : '' }}" ng-if="true" ui-sref="app.people.listenees">
+        <ion-nav-view name="listenees">
+          <ion-content>
+            <ion-list ng-repeat="listeneeStub in vm.listeneeStubs | orderBy: '-addedAt'">
+                <div class="item item-avatar item-button-right" ng-click="vm.showProfile(listenee)">
+                <img ng-src="{{ vm.listenee(listeneeStub).face }}">
+                <h2>{{ vm.listenee(listeneeStub).name }}</h2>
+                <h2>{{ vm.listenee(listeneeStub).username }}</h2>
+
+                <button class="button button-positive"
+                    ng-click="vm.toggleListening(listeneeStub, $event)"
+                    ng-show="!vm.listeningTo(listeneeStub)">Listen</button>
+
+                <button class="button button-energized"
+                    ng-click="vm.toggleListening(listeneeStub, $event)"
+                    ng-show="vm.listeningTo(listeneeStub)">Unlisten</button>
+              </div>
+            </ion-list>
+          </ion-content>
+        </ion-nav-view>
+      </ion-tab>
+
+      <ion-tab id="search-results-tab" title="Search Results {{ vm.isCurrentState('app.people.searchResults') ? '*' : '' }}" ng-if="vm.showSearchResultsTab" ui-sref="app.people.searchResults">
+        <ion-nav-view name="search-results">
+          <ion-content>
+            <ion-list ng-repeat="user in vm.searchResults | orderBy: '-addedAt'">
+                <div class="item item-avatar item-button-right" ng-click="vm.showProfile(user)">
+                <img ng-src="{{ user.face }}">
+                <h2>{{ user.name }}</h2>
+                <h2>{{ user.username }}</h2>
+
+                <button class="button button-positive"
+                    ng-click="vm.toggleListening(user, $event)"
+                    ng-show="!vm.listeningTo(user)">Listen</button>
+
+                <button class="button button-energized"
+                    ng-click="vm.toggleListening(user, $event)"
+                    ng-show="vm.listeningTo(user)">Unlisten</button>
+
               </div>
 
-              <div class="form-group">
-                <label>Username</label>
-                <input type="text"
-                       name="username"
-                       class="form-control"
-                       ng-model="vm.newUser.username" ng-required="true"
-                       ng-minlength="4"
-                       placeholder="Name">
-              </div>
+            </ion-list>
 
-              <div class="form-group">
-                <label>Email</label>
-                <input type="email"
-                       class="form-control"
-                       ng-model="vm.newUser.emails[0]" ng-required="true"
-                       placeholder="Name">
-              </div>
+            <div>
+              <span ng-if="vm.searchResults.length">
+                None of those users is the one you're looking for?
+              </span>
+              <span ng-if="!vm.searchResults.length">
+                No matching users found.
+              </span>
+              <button class="btn btn-primary" ng-click="vm.createUser()">Add User To Public</button>
+            </div>
 
-              <div class="form-group">
-                <label>Mobile</label>
-                <input type="tel"
-                       class="form-control"
-                       ng-model="vm.newUser.profile.phone" ng-required="true"
-                       international-phone-number only-countries="us, ca, mx"
-                       placeholder="Phone">
-              </div>
+          </ion-content>
+        </ion-nav-view>
+      </ion-tab>
 
-              <div class="form-group">
-                <label>Message</label>
-                <input type="text"
-                       class="form-control"
-                       placeholder="Send a shout-out to {{ vm.newUser.profile.name || 'your contact' }} on Public!" ng-model="vm.firstMessageToNewUser" ng-required="true"
-                       >
-              </div>
+    </ion-tabs>
+  </ion-pane>
 
-            </fieldset>
-
-            <p style="color:red">{{ errorMessage }}</p>
-
-            <a class="btn btn-primary" ng-click="vm.addUser()">Add Member</a>
-            <a class="btn btn-default" ui-turn-off="addUserModal">Cancel</a>
-
-            <hr>
-
-          </form>
-
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="scrollable" ui-state="activeTab" default="1">
-  <div class="scrollable-header section section-wide text-center">
-    <button class="btn btn-primary pull-right" ng-click="vm.openAddUserModal()">Add User</button>
-    <ul class="nav nav-tabs">
-      <li ui-class="{'active': activeTab == 1}">
-        <a ui-set="{'activeTab': 1}">Contacts</a>
-      </li>
-      <li ui-class="{'active': activeTab == 2}">
-        <a ui-set="{'activeTab': 2}">Listening To</a>
-      </li>
-      <li ui-class="{'active': activeTab == 3}" ng-show="vm.showSearchResultsTab">
-        <a ui-set="{'activeTab': 3}" id="search-results">Search Results</a>
-      </li>
-    </ul>
-
-  </div>
-
-  <div class="list-group-item list-group-item-feed">
-    <div class="text-center">
-      <div ui-if="activeTab == 1">{{ vm.contacts.length > 0 ? "Select one of the contacts below:" : "You have no contacts" }}</div>
-      <div ui-if="activeTab == 2">You are listening to {{vm.listenees.length}} people:</div>
-      <div ui-if="activeTab == 3">Selected a user from the list below or add a new one:</div>
-    </div>
-  </div>
-
-  <div class="scrollable-content" id="scrollable-content">
-
-    <div ui-if="activeTab == 1">
-      <div class="list-group" ng-repeat="contact in vm.contacts | orderBy: '-createdAt'">
-
-        <div class="list-group-item" ng-click="vm.showProfileOrOpenAddUserModal(contact)">
-
-          <div class="pull-left">
-            <img ng-src="{{ contact.user ? contact.user.face : '' }}" width="50" class="user-avatar" alt="">
-          </div>
-
-          <div>
-            <p class="post-text">
-              <strong>{{ contact.displayName }}</strong>
-              <div ng-if="contact.user">
-                In Public As: <strong>{{ contact.user.name }}</strong> {{ contact.user.username }}
-              </div>
-            </p>
-          </div>
-
-          <div ng-if="contact.user">
-            <button
-              type="button"
-              class="btn btn-danger listen-btn"
-              ng-click="vm.toggleListening(contact.user, $event);">
-              {{ vm.listeningTo(contact.user) ? "Unlisten" : "Listen" }}
-            </button>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <div ui-if="activeTab == 2">
-      <div class="list-group" ng-repeat="user in vm.listenees | orderBy: '-createdAt'">
-
-        <div class="list-group-item" ng-click="vm.showProfile(user)">
-
-          <div class="pull-left">
-            <img ng-src="{{ user.face }}" width="50" class="user-avatar" alt="">
-          </div>
-
-          <div>
-            <p class="post-text">
-              <strong>{{ user.name }}</strong> {{ user.username }}
-            </p>
-          </div>
-
-          <div>
-            <button
-              type="button"
-              class="btn btn-danger listen-btn"
-              ng-click="vm.toggleListening(user, $event);">
-              {{ vm.listeningTo(user) ? "Unlisten" : "Listen" }}
-            </button>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <div ui-if="activeTab == 3">
-
-      <div class="list-group" ng-repeat="user in vm.usersFromSearch | orderBy: '-createdAt'">
-
-        <div class="list-group-item" ng-click="vm.showProfile(user)">
-
-          <div class="pull-left">
-            <img ng-src="{{ user.face }}" width="50" class="user-avatar" alt="">
-          </div>
-
-          <div>
-            <p class="post-text">
-              <strong>{{ user.name }}</strong> {{ user.username }}
-            </p>
-          </div>
-
-          <div>
-            <button
-              type="button"
-              class="btn btn-danger listen-btn"
-              ng-click="vm.toggleListening(user, $event);">
-              {{ vm.listeningTo(user) ? "Unlisten" : "Listen" }}
-            </button>
-          </div>
-
-        </div>
-      </div>
-
-
-      <div>
-        <span ng-if="vm.usersFromSearch.length">
-          None of those users is the one you're looking for?
-        </span>
-        <span ng-if="!vm.usersFromSearch.length">
-          No matching users found.
-        </span>
-        <button class="btn btn-primary" ng-click="vm.createUser()">Add User To Public</button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <div class="btn-group justified people-nav-icons">
-    <a ui-sref="app.profile" class="btn btn-navbar"><i class="fa fa-user fa-navbar"></i> Your Page</a>
-    <a ui-sref="app.people" class="btn btn-navbar"><i class="fa fa-users fa-navbar"></i> People</a>
-    <a ui-sref="app.settings" class="btn btn-navbar"><i class="fa fa-cog fa-navbar"></i> Settings</a>
-  </div>
-
-  <div class="scrollable-footer section section-wide">
+  <ion-footer-bar class="item-input-inset bar-positive">
     <form name="SearchForm">
       <fieldset>
         <div class="form-group">
@@ -224,6 +108,6 @@
         </div>
       </fieldset>
     </form>
-  </div>
+  </ion-footer-bar>
 
-</div>
+</ion-view>

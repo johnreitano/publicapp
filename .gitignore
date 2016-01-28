@@ -8,4 +8,5 @@ node_modules/
 *.sw*
 platforms/
 plugins/
-www/lib
+www/lib/
+www/css/

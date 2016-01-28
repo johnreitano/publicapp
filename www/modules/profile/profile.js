@@ -14,23 +14,41 @@ angular.module('Publicapp.profile', [])
         }
       },
       authenticate: true
-    });
+    })
+
+    .state('app.profile.feed', {
+      url: "/feed",
+      authenticate: true
+    })
+
+    .state('app.profile.messages', {
+      url: "/messages",
+      authenticate: true
+    })
+
+    .state('app.profile.listeners', {
+      url: "/listeners",
+      authenticate: true
+    })
 }])
 
-.controller('ProfileCtrl', function($scope, $location, SharedMethods, $stateParams, Fireb, $firebaseObject, $firebaseArray) {
+.controller('ProfileCtrl', function($scope, $location, SharedMethods, $stateParams, Fireb, $firebaseObject, $firebaseArray, $state) {
   var ctrl = this;
+
+  ctrl.userId = $stateParams.id;
+  if (s.isBlank(ctrl.userId)) {
+    return; // TODO: find out why we sometimes enter this controller without an id
+  }
 
   angular.extend(ctrl, SharedMethods);
 
-  ctrl.userId = $stateParams.id;
-
-  // retrueve user data for specfied id
   $scope.ctrl = ctrl; // TODO: remove this?
 
+  // retrueve user data for specfied id
   var userRef = Fireb.ref.child('users').child(ctrl.userId);
-
   ctrl.user = $firebaseObject(userRef);
 
+  // retrieve listener data
   var userFirebaseObjects = {};
   var listenerStubsRef = userRef.child("listenerStubs");
   ctrl.listenerStubs = $firebaseArray(listenerStubsRef);

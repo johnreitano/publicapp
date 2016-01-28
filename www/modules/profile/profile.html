@@ -4,14 +4,18 @@
       <img class="user-avatar" ng-src="{{ vm.user.face }}">
       <div class="user-info">
         <span class="user-profile-name">{{ vm.user.name }}</span>
-        <p class="user-username">{{ vm.user.username }}</p>  
+        <p class="user-username">{{ vm.user.username }}</p>
       </div>
     </div>
   </ion-nav-title>
+  <ion-nav-buttons side="right">
+    <button class="button button-icon button-clear ion-person-stalker" ui-sref="app.people">
+    </button>
+  </ion-nav-buttons>
   <ion-pane>
-    <ion-tabs class="tabs-top bar-positive">
+    <ion-tabs class="tabs-top bar-positive profile-tabs">
 
-      <ion-tab id="feed-tab" title="Newsfeed" ng-if="vm.viewingOwnProfile()">
+      <ion-tab id="feed-tab" title="Newsfeed {{ vm.isCurrentState('app.profile.feed') ? '*' : '' }}" ng-if="vm.viewingOwnProfile()" ui-sref="app.profile.feed">
         <ion-nav-view name="feed">
           <ion-content>
             <ion-list ng-repeat="message in vm.feedMessages | orderBy: '-createdAt'">
@@ -35,7 +39,7 @@
         </ion-nav-view>
       </ion-tab>
 
-      <ion-tab id="messages-tab" title="{{ vm.viewingOwnProfile() ? 'Your Messages' : 'Messages' }}" ng-if="true">
+      <ion-tab id="messages-tab" title="{{ vm.viewingOwnProfile() ? 'Your Messages' : 'Messages' }} {{ vm.isCurrentState('app.profile.messages') ? '*' : '' }}" ng-if="true" ui-sref="app.profile.messages">
         <ion-nav-view name="messages">
           <ion-content>
             <ion-list ng-repeat="message in vm.profileMessages | orderBy: '-createdAt'">
@@ -59,7 +63,7 @@
         </ion-nav-view>
       </ion-tab>
 
-      <ion-tab id="listeners-tab" title="Listeners" ng-if="true">
+      <ion-tab id="listeners-tab" title="Listeners  {{ vm.isCurrentState('app.profile.listeners') ? '*' : '' }}" ng-if="true" ui-sref="app.profile.listeners">
         <ion-nav-view name="listeners">
           <ion-content>
             <ion-list ng-repeat="listenerStub in vm.listenerStubs | orderBy: '-addedAt'">
@@ -85,7 +89,7 @@
 
     </ion-tabs>
   </ion-pane>
-  
+
   <ion-footer-bar align-title="left" class="post-footer bar-light">
     <textarea class="title" type="text" ng-model="vm.newMessage" placeholder="What do you want to say {{ vm.viewingOwnProfile() ? '' : 'to ' + vm.user.name + ' ' }}in Public?"></textarea>
     </

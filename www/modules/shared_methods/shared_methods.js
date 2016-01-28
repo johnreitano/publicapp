@@ -110,6 +110,10 @@ angular.module('Publicapp.sharedMethods', [])
     }, true);
   };
 
+  function isCurrentState(stateName) {
+    return $state.current.name == stateName;
+  };
+
   return {
     signedInUserId: signedInUserId,
     signedInUser: signedInUser,
@@ -119,7 +123,8 @@ angular.module('Publicapp.sharedMethods', [])
     listeningTo: listeningTo,
     showProfile: showProfile,
     toggleListening: toggleListening,
-    generateUsernameOnTheFly: generateUsernameOnTheFly
+    generateUsernameOnTheFly: generateUsernameOnTheFly,
+    isCurrentState: isCurrentState
   };
 })
 

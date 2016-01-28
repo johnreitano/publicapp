@@ -37,13 +37,34 @@ angular.module('Publicapp', [
   });
 
   $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-    if  (toState.name == "app.seed") {
+    if (toState.authenticate && !Fireb.signedIn()) {
+      event.preventDefault();
+      $state.go('app.signIn');
+    } else if  (toState.name == "app.seed") {
       Fireb.reSeedDatabase();
-      $location.path('/sign-in');
-    } else if (toState.authenticate && !Fireb.signedIn()) {
-      $location.path('/sign-in');
-    } else if (toState.name == "app.profile" && s.isBlank(toParams.id)) {
-      $location.path('/profile/' + Fireb.signedInUserId());
+      // $location.path('/sign-in');
+      event.preventDefault();
+      $state.go('app.signIn');
+    } else if (toState.name == "app.profile") {
+      if (s.isBlank(toParams.id)) {
+        toParams.id = Fireb.signedInUserId()
+      }
+      event.preventDefault();
+      if (toParams.id == Fireb.signedInUserId()) {
+        $state.go("app.profile.feed", toParams);
+      } else {
+        event.preventDefault();
+        $state.go("app.profile.messages", toParams);
+      }
+    } else if (toState.name == "app.people") {
+      event.preventDefault();
+      if (window.isCordova) {
+          // $location.path("/people/contacts");
+        $state.go('app.people.contacts');
+      } else {
+        // $location.path("/people/listenees");
+        $state.go('app.people.listenees');
+      }
     }
   });
 

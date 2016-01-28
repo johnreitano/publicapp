@@ -16,50 +16,70 @@ angular.module('Publicapp.people', [])
         authenticate: true
       })
 
+      .state('app.people.contacts', {
+        url: "contacts",
+        authenticate: true
+      })
+
+      .state('app.people.listenees', {
+        url: "listenees",
+        authenticate: true
+      })
+
+      .state('app.people.searchResults', {
+        url: "search-results",
+        authenticate: true
+      })
+
       ;
   }])
 
-  .controller('PeopleCtrl', function($scope, SharedMethods, $reactive, Contacts, $timeout, $state, $rootScope, SharedState) {
+  .controller('PeopleCtrl', function($scope, SharedMethods, Contacts, $timeout, $state, Fireb, $firebaseArray, $firebaseObject) {
     var ctrl = this;
 
     angular.extend(ctrl, SharedMethods);
 
-    $reactive(this).attach($scope);
+    var userRef = Fireb.ref.child("users").child(Fireb.signedInUserId());
 
-    SharedState.initialize($rootScope, 'addUserModal');
+    var userFirebaseObjects = {};
+    var listeneeStubsRef = userRef.child("listeneeStubs");
+    ctrl.listeneeStubs = $firebaseArray(listeneeStubsRef);
+    listeneeStubsRef.on("child_added", function(snapshot) {
+      var userId = snapshot.key();
+      userFirebaseObjects[userId] = $firebaseObject(Fireb.ref.child("users").child(userId));
+    });
 
-    ctrl.userId = Meteor.userId();
+    ctrl.listenee = function(listeneeStub) {
+      return userFirebaseObjects[listeneeStub.$id ];
+    };
 
-    ctrl.user = Meteor.user();
 
     ctrl.showSearchResultsTab = false;
 
     ctrl.search = function() {
       var normalizedSearchText = s.trim(ctrl.searchText).replace(/ +/g,' ').replace(/@/,'');
+      var usersRef = Fireb.ref.child("users");
       if (/ /.test(normalizedSearchText)) {
         // search by name
-        ctrl.usersFromSearch = Meteor.users.find({"profile.name": normalizedSearchText}).fetch();
+        var name = normalizedSearchText;
+        query = usersRef.orderByChild("name").startAt(name).endAt(name);
+        ctrl.searchResults = $firebaseArray(query);
       } else {
         // search by username
-        normalizedSearchText = "@" + normalizedSearchText.toLowerCase();
-        ctrl.usersFromSearch = Meteor.users.find({username: normalizedSearchText}).fetch();
+        var username = "@" + normalizedSearchText;
+        query = usersRef.orderByChild("username").startAt(username).endAt(username);
+        ctrl.searchResults = $firebaseArray(query);
       }
       ctrl.showSearchResultsTab = true;
-      $timeout(function() {
-        angular.element('#search-results').triggerHandler('click');
-      }, 100);
+      $state.go( "app.people.searchResults" );
 
     };
 
     ctrl.addUser = function() {
-      $rootScope.Ui.turnOff('addUserModal')
-      var newUserId = Meteor.call("createPublicUser", ctrl.newUser);
-      Posts.insert({
-        authorUserId: Meteor.userId(),
-        subjectUserId: newUserId,
-        text: ctrl.firstMessageToNewUser,
-        createdAt: new Date()
-      });
+      // close modal
+      // insert user
+      // get new user id
+      // var newUserId = ...;
       $state.go( "app.profile", { id: newUserId } );
     };
 
@@ -155,35 +175,6 @@ angular.module('Publicapp.people', [])
       $scope.Ui.turnOn('addUserModal')
     };
 
-    ctrl.helpers({
-      listeners: () => {
-        if (Meteor.userId()) {
-          return Meteor.users.find(
-            { "profile.listeneeUserIds": { $in: [ Meteor.userId() ] } },
-            { sort: {createdAt : -1} }
-          );
-        } else {
-          return [];
-        }
-      },
-      listenees: () => {
-        if (Meteor.user()) {
-          return Meteor.users.find({_id: {$in: Meteor.user().profile.listeneeUserIds}});
-        } else {
-          return [];
-        }
-      }
-    });
-
-    Contacts.get(function(contacts) {
-      ctrl.contacts = contacts;
-      console.log("contacts now accessible from controller");
-      if(!$scope.$$phase) {
-        $scope.$apply();
-      }
-    });
-
-    ctrl.generateUsernameOnTheFly($scope, 'mainForm');
 
   })
 ;
