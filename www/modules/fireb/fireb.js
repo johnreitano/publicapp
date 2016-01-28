@@ -93,14 +93,19 @@ angular.module('Publicapp.fireb', [])
   }
 
   function createMessage(message) {
-    var messageRef = ref.child("messages").push(message);
+    var messageRef = ref.child("messages").push(_.defaults(message, {
+      authorUserId: signedInUserId(),
+      createdAt: (new Date()).getTime()
+    }));
     var messageId = messageRef.key();
 
-    // set up profileMessageStubs for the uathor and subject of the message
+    // add message info to profileMessageStubs for the uathor and subject of the message
     var authorUserRef = ref.child("users").child(message.authorUserId);
     authorUserRef.child("profileMessageStubs").child(messageId).set({createdAt: message.createdAt});
-    var subjectUserRef = ref.child("users").child(message.subjectUserId);
-    subjectUserRef.child("profileMessageStubs").child(messageId).set({createdAt: message.createdAt});
+    if (message.authorUserId != message.subjectUserId) {
+      var subjectUserRef = ref.child("users").child(message.subjectUserId);
+      subjectUserRef.child("profileMessageStubs").child(messageId).set({createdAt: message.createdAt});
+    }
   };
 
   function reSeedDatabase() {
@@ -224,6 +229,7 @@ angular.module('Publicapp.fireb', [])
     signedIn: signedIn,
     signedInUserId: signedInUserId,
     signedInUser: signedInUser,
+    createMessage: createMessage,
     createUser: createUser,
     generateUsername: generateUsername,
     reSeedDatabase: reSeedDatabase

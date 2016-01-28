@@ -83,9 +83,17 @@ angular.module('Publicapp.profile', [])
     return userFirebaseObjects[message.subjectUserId];
   };
 
-  ctrl.viewingOwnPage = function() {
+  ctrl.viewingOwnProfile = function() {
     return !ctrl.userId || !ctrl.signedInUserId() || ctrl.userId == ctrl.signedInUserId();
   };
+
+  ctrl.sendMessage = function() {
+    Fireb.createMessage({
+      subjectUserId: ctrl.userId,
+      text: ctrl.newMessage
+    });
+  };
+
 
   ctrl.showMessage = function(post) {
     // var postUrl = "/profile/" + post.authorUserId + "/messages/post/" + post._id;

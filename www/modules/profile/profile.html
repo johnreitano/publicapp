@@ -9,7 +9,7 @@
   <ion-pane>
     <ion-tabs class="tabs-top bar-positive">
 
-      <ion-tab id="feed-tab" title="Newsfeed" ng-if="vm.viewingOwnPage()">
+      <ion-tab id="feed-tab" title="Newsfeed" ng-if="vm.viewingOwnProfile()">
         <ion-nav-view name="feed">
           <ion-content>
             <ion-list ng-repeat="message in vm.feedMessages | orderBy: '-createdAt'">
@@ -33,7 +33,7 @@
         </ion-nav-view>
       </ion-tab>
 
-      <ion-tab id="messages-tab" title="{{ vm.viewingOwnPage() ? 'Your Messages' : 'Messages' }}" ng-if="true">
+      <ion-tab id="messages-tab" title="{{ vm.viewingOwnProfile() ? 'Your Messages' : 'Messages' }}" ng-if="true">
         <ion-nav-view name="messages">
           <ion-content>
             <ion-list ng-repeat="message in vm.profileMessages | orderBy: '-createdAt'">
@@ -83,11 +83,29 @@
 
     </ion-tabs>
   </ion-pane>
-  <ion-footer-bar align-title="left" class="bar-light">
-    <h1 class="title">Put message box here</h1>
-    <div class="buttons" ng-click="doSomething()">
-      <button class="button button-positive">Right Button</button>
-    </div>
+
+
+  <ion-footer-bar class="item-input-inset bar-positive">
+    <form name="newMessageForm">
+    <label class="item-input-wrapper">
+      <textarea class="pull-left" type="text" ng-model="vm.newMessage" placeholder="What do you want to say {{ vm.viewingOwnProfile() ? '' : 'to ' + vm.user.name + ' ' }}in Public?"></textarea>
+    </label>
+    <button class="button button-positive pull-right" ng-disabled="newPostForm.$invalid" ng-click="vm.sendMessage()">Send</button>
+    </form>
   </ion-footer-bar>
+
+  <!-- <ion-footer-bar align-title="left" class="bar-assertive">
+
+    <form name="newPostForm">
+      <fieldset>
+        <div class="form-group">
+          <textarea id="new-post-text" ng-model="vm.newPostText" class="form-control pull-left" placeholder="What do you want to say {{ vm.notViewingOwnPage() ? 'to ' + vm.user.profile.name + ' ' : '' }}in Public?" required>
+
+          </textarea>
+          <button class="button button-positive pull-right" ng-disabled="newPostForm.$invalid" ng-click="vm.createPost()">Send</button>
+        </div>
+      </fieldset>
+    </form>
+  </ion-footer-bar> -->
 
 </ion-view>
