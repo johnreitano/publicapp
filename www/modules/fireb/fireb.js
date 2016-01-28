@@ -93,6 +93,7 @@ angular.module('Publicapp.fireb', [])
   }
 
   function createMessage(message) {
+    debugger;
     var messageRef = ref.child("messages").push(_.defaults(message, {
       authorUserId: signedInUserId(),
       createdAt: (new Date()).getTime()

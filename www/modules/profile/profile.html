@@ -83,16 +83,24 @@
 
     </ion-tabs>
   </ion-pane>
-
-
-  <ion-footer-bar class="item-input-inset bar-positive">
+  
+  <ion-footer-bar align-title="left" class="post-footer bar-light">
+    <textarea class="title" type="text" ng-model="vm.newMessage" placeholder="What do you want to say {{ vm.viewingOwnProfile() ? '' : 'to ' + vm.user.name + ' ' }}in Public?"></textarea>
+    </
+    <div class="buttons">
+      <button class="button button-positive"
+              ng-click="sendMessage()">Post</button>
+    </div>
+  </ion-footer-bar>
+  
+  <!-- <ion-footer-bar class="item-input-inset bar-positive">
     <form name="newMessageForm">
     <label class="item-input-wrapper">
       <textarea class="pull-left" type="text" ng-model="vm.newMessage" placeholder="What do you want to say {{ vm.viewingOwnProfile() ? '' : 'to ' + vm.user.name + ' ' }}in Public?"></textarea>
     </label>
     <button class="button button-positive pull-right" ng-disabled="newPostForm.$invalid" ng-click="vm.sendMessage()">Send</button>
     </form>
-  </ion-footer-bar>
+  </ion-footer-bar> -->
 
   <!-- <ion-footer-bar align-title="left" class="bar-assertive">
 

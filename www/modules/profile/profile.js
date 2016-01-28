@@ -88,17 +88,24 @@ angular.module('Publicapp.profile', [])
   };
 
   ctrl.sendMessage = function() {
+    console.log('SEND MESSAGE WORKS');
+    debugger;
     Fireb.createMessage({
       subjectUserId: ctrl.userId,
       text: ctrl.newMessage
     });
   };
 
-
   ctrl.showMessage = function(post) {
     // var postUrl = "/profile/" + post.authorUserId + "/messages/post/" + post._id;
     var messageUrl = "/profile/" + post.authorUserId + "/feed/message/" + message._id;
     $location.path(messageUrl);
+  };
+
+  ctrl.postMessage = function(message) {
+    console.log('POST MESSAGE WORKS');
+    debugger;
+    Fireb.createMessage(message);
   }
 
 })

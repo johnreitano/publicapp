@@ -9783,3 +9783,9 @@ img {
     padding-left: 1em;
     font-size: 0.75em;
     margin-top: -7px; }
+
+.post-footer {
+  height: 4em; }
+
+textarea {
+  resize: none; }
