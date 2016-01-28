@@ -87,13 +87,13 @@ angular.module('Publicapp.profile', [])
     return !ctrl.userId || !ctrl.signedInUserId() || ctrl.userId == ctrl.signedInUserId();
   };
 
-  ctrl.sendMessage = function() {
-    console.log('SEND MESSAGE WORKS');
-    debugger;
+  ctrl.postMessage = function() {
     Fireb.createMessage({
       subjectUserId: ctrl.userId,
       text: ctrl.newMessage
     });
+    console.log(ctrl.newMessage, "Message succesfully posted");
+    ctrl.newMessage = '';
   };
 
   ctrl.showMessage = function(post) {
@@ -101,12 +101,6 @@ angular.module('Publicapp.profile', [])
     var messageUrl = "/profile/" + post.authorUserId + "/feed/message/" + message._id;
     $location.path(messageUrl);
   };
-
-  ctrl.postMessage = function(message) {
-    console.log('POST MESSAGE WORKS');
-    debugger;
-    Fireb.createMessage(message);
-  }
 
 })
 
