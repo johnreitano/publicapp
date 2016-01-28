@@ -2,8 +2,10 @@
   <ion-nav-title>
     <div class="user-div">
       <img class="user-avatar" ng-src="{{ vm.user.face }}">
-      <span class="user-profile-name">{{ vm.user.name }}</span>
-      <p class="user-username">{{ vm.user.username }}</p>
+      <div class="user-info">
+        <span class="user-profile-name">{{ vm.user.name }}</span>
+        <p class="user-username">{{ vm.user.username }}</p>  
+      </div>
     </div>
   </ion-nav-title>
   <ion-pane>
