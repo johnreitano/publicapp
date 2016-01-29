@@ -18,8 +18,8 @@
       <ion-tab id="feed-tab" title="Newsfeed {{ vm.isCurrentState('app.profile.feed') ? '*' : '' }}" ng-if="vm.viewingOwnProfile()" ui-sref="app.profile.feed">
         <ion-nav-view name="feed">
           <ion-content>
-            <ion-list ng-repeat="message in vm.feedMessages | orderBy: '-createdAt'">
-              <div class="item item-avatar" ng-click="vm.showMessage(message)">
+            <ion-list ng-repeat="(messageId,message) in vm.feedMessages | orderBy: '-createdAt'">
+              <div class="item item-avatar" ng-click="vm.showMessageViaFeed(message, messageId, $event)">
                 <img ng-src="{{ vm.author(message).face }}">
                 <div>
                   <h2>
@@ -27,7 +27,7 @@
                     <span ng-if="message.authorUserId != messge.subjectUserId">
                       to <strong>{{ vm.subject(message).name || vm.subject(message).username }}</strong>
                     </span>
-                    <span class="post-createdAt">{{ vm.createdAtRelative(message) }}</span>
+                    <span class="message-created-at">{{ vm.createdAtRelative(message) }}</span>
                   </h2>
                   <p>
                     <em>{{ message.text }}</em>
@@ -42,8 +42,8 @@
       <ion-tab id="messages-tab" title="{{ vm.viewingOwnProfile() ? 'Your Messages' : 'Messages' }} {{ vm.isCurrentState('app.profile.messages') ? '*' : '' }}" ng-if="true" ui-sref="app.profile.messages">
         <ion-nav-view name="messages">
           <ion-content>
-            <ion-list ng-repeat="message in vm.profileMessages | orderBy: '-createdAt'">
-              <div class="item item-avatar" ng-click="vm.showMessage(message)">
+            <ion-list ng-repeat="(messageId,message) in vm.profileMessages | orderBy: '-createdAt'">
+              <div class="item item-avatar" ng-click="vm.showMessageViaProfile(message, messageId, $event)">
                 <img ng-src="{{ vm.author(message).face }}">
                 <div>
                   <h2>
@@ -51,7 +51,7 @@
                     <span ng-if="message.authorUserId != messge.subjectUserId">
                       to <strong>{{ vm.subject(message).name || vm.subject(message).username }}</strong>
                     </span>
-                    <span class="post-createdAt">{{ vm.createdAtRelative(message) }}</span>
+                    <span class="message-created-at">{{ vm.createdAtRelative(message) }}</span>
                   </h2>
                   <p>
                     <em>{{ message.text }}</em>
@@ -90,12 +90,12 @@
     </ion-tabs>
   </ion-pane>
 
-  <ion-footer-bar align-title="left" class="post-footer bar-light">
+  <ion-footer-bar align-title="left" class="message-footer bar-light">
     <textarea class="title" type="text" ng-model="vm.newMessage" placeholder="What do you want to say {{ vm.viewingOwnProfile() ? '' : 'to ' + vm.user.name + ' ' }}in Public?"></textarea>
     </
     <div class="buttons">
       <button class="button button-positive"
-              ng-click="vm.postMessage()">Post</button>
+              ng-click="vm.sendMessage()">Send</button>
     </div>
   </ion-footer-bar>
 

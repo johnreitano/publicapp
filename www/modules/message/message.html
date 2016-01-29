@@ -1,17 +1,20 @@
-<ion-view view-title="Post">
+<ion-view view-title="Message">
   <ion-content>
 
     <div class="list card">
 
       <div class="item item-avatar">
-        <img ng-src="{{ vm.author(vm.post).profile.face }}">
-        <h2>{{ vm.author(vm.message).profile.name }}</h2>
-        <p>{{ vm.createdAtRelative(vm.message) }}</p>
+        <img ng-src="{{ vm.author.face }}">
+        <strong>{{ vm.author.name }}</strong> said
+        <span ng-if="message.authorUserId != messge.subjectUserId">
+          to <strong>{{ vm.subject.name || vm.subject.username }}</strong>
+        </span>
+        <span class="message-created-at">{{ vm.createdAtRel }}</span>
       </div>
 
       <div class="item item-body">
         <p>
-          {{ vm.post.text }}
+          {{ vm.message.text }}
         </p>
         <p>
           <a href="#" class="subdued"><i class="icon ion-thumbsup"></i> 1 Like</a>

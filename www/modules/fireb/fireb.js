@@ -118,7 +118,7 @@ angular.module('Publicapp.fireb', [])
       console.log("removed everything!");
 
       var SEED_USER_COUNT = 3
-      var SEED_POST_COUNT = 3
+      var SEED_MESSAGE_COUNT = 3
 
       var usersArray = [];
       _.each(_.range(SEED_USER_COUNT), function() {
@@ -176,8 +176,8 @@ angular.module('Publicapp.fireb', [])
               var users = snapshot.val();
               _.each(users, function(user, uid) {
 
-                // create 3 messages by user on his own profile
-                for (var i = 0; i < 3; i++) {
+                // create messages by user on his own profile
+                for (var i = 0; i < SEED_MESSAGE_COUNT; i++) {
                   createMessage({
                     authorUserId: uid,
                     subjectUserId: uid,
@@ -204,8 +204,8 @@ angular.module('Publicapp.fireb', [])
                 var subjects = listenees.slice(0,3).concat([uid])
                 _.each(subjects,function(subjectUserId) {
 
-                  // create 2 messages on the subjects profile
-                  for (var i = 0; i < 2; i++) {
+                  // create messages on the subjects profile
+                  for (var i = 0; i < SEED_MESSAGE_COUNT; i++) {
                     createMessage({
                       authorUserId: uid,
                       subjectUserId: subjectUserId,

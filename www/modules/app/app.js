@@ -22,7 +22,7 @@ angular.module('Publicapp', [
   'Publicapp.help',
   'Publicapp.feedLoader',
   'Publicapp.people',
-  'Publicapp.post',
+  'Publicapp.message',
   'Publicapp.profile',
   'Publicapp.settings',
   'Publicapp.sharedMethods'

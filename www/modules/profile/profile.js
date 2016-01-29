@@ -61,12 +61,12 @@ angular.module('Publicapp.profile', [])
     return userFirebaseObjects[listenerStub.$id ];
   };
 
-  ctrl.profileMessages = [];
+  ctrl.profileMessages = {};
   userRef.child("profileMessageStubs").on("child_added", function(snapshot) {
     var messageId = snapshot.key();
     Fireb.ref.child("messages").child(messageId).once("value", function(messageSnapshot) {
       var message = messageSnapshot.val();
-      ctrl.profileMessages.push(message); // TODO: fix the order of messages
+      ctrl.profileMessages[messageId] = message; // TODO: fix the order of messages
 
       if (!userFirebaseObjects[message.authorUserId]) {
         userFirebaseObjects[message.authorUserId] = $firebaseObject(Fireb.ref.child("users").child(message.authorUserId));
@@ -77,12 +77,12 @@ angular.module('Publicapp.profile', [])
     });
   });
 
-  ctrl.feedMessages = [];
+  ctrl.feedMessages = {};
   userRef.child("feedMessageStubs").on("child_added", function(snapshot) {
     var messageId = snapshot.key();
     Fireb.ref.child("messages").child(messageId).once("value", function(messageSnapshot) {
       var message = messageSnapshot.val();
-      ctrl.feedMessages.push(message); // TODO: fix the order of messages
+      ctrl.feedMessages[messageId] = message; // TODO: fix the order of messages
 
       if (!userFirebaseObjects[message.authorUserId]) {
         userFirebaseObjects[message.authorUserId] = $firebaseObject(Fireb.ref.child("users").child(message.authorUserId));
@@ -105,7 +105,7 @@ angular.module('Publicapp.profile', [])
     return !ctrl.userId || !ctrl.signedInUserId() || ctrl.userId == ctrl.signedInUserId();
   };
 
-  ctrl.postMessage = function() {
+  ctrl.sendMessage = function() {
     Fireb.createMessage({
       subjectUserId: ctrl.userId,
       text: ctrl.newMessage
@@ -114,10 +114,14 @@ angular.module('Publicapp.profile', [])
     ctrl.newMessage = '';
   };
 
-  ctrl.showMessage = function(post) {
-    // var postUrl = "/profile/" + post.authorUserId + "/messages/post/" + post._id;
-    var messageUrl = "/profile/" + post.authorUserId + "/feed/message/" + post._id;
-    $location.path(messageUrl);
+  ctrl.showMessageViaFeed = function(message, messageId, event) {
+    event.preventDefault();
+    $state.go("app.messageViaFeed", {profileId: ctrl.userId, id: messageId});
+  };
+
+  ctrl.showMessageViaProfile = function(message, messageId, event) {
+    event.preventDefault();
+    $state.go("app.messageViaProfile", {profileId: ctrl.userId, id: messageId});
   };
 
 })
