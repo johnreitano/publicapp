@@ -64,8 +64,8 @@ angular.module('Publicapp.sharedMethods', [])
   };
 
   function showProfile(user, event) {
-    if (user && user._id) {
-      $state.go( "app.profile", { id: user._id } );
+    if (user) {
+      $state.go( "app.profile", { id: user.$id } );
     }
     if (event) {
       event.stopPropagation(); // prevent ng-click of enclosing item from being processed

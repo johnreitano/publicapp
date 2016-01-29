@@ -67,7 +67,7 @@
         <ion-nav-view name="listeners">
           <ion-content>
             <ion-list ng-repeat="listenerStub in vm.listenerStubs | orderBy: '-addedAt'">
-                <div class="item item-avatar item-button-right" ng-click="vm.showProfile(listener)">
+                <div class="item item-avatar item-button-right" ng-click="vm.showProfile(listenerStub)">
                 <img ng-src="{{ vm.listener(listenerStub).face }}">
                 <h2>{{ vm.listener(listenerStub).name }}</h2>
                 <h2>{{ vm.listener(listenerStub).username }}</h2>

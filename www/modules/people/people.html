@@ -16,7 +16,7 @@
 
 
             <ion-list ng-repeat="contact in vm.contacts | orderBy: '-addedAt'">
-              <div class="item item-avatar item-button-right" ng-click="vm.showProfile(listener)">
+              <div class="item item-avatar item-button-right" ng-click="vm.showProfileOrOpenAddUserModal(contact)">
                 <img ng-src="{{ contact.user ? contact.user.face : '' }}">
                 <h2>{{ contact.displayName }}</h2>
                 <div ng-if="contact.user">
@@ -43,7 +43,7 @@
         <ion-nav-view name="listenees">
           <ion-content>
             <ion-list ng-repeat="listeneeStub in vm.listeneeStubs | orderBy: '-addedAt'">
-                <div class="item item-avatar item-button-right" ng-click="vm.showProfile(listenee)">
+                <div class="item item-avatar item-button-right" ng-click="vm.showProfile(listeneeStub)">
                 <img ng-src="{{ vm.listenee(listeneeStub).face }}">
                 <h2>{{ vm.listenee(listeneeStub).name }}</h2>
                 <h2>{{ vm.listenee(listeneeStub).username }}</h2>
