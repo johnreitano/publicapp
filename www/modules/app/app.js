@@ -59,10 +59,8 @@ angular.module('Publicapp', [
     } else if (toState.name == "app.people") {
       event.preventDefault();
       if (window.isCordova) {
-          // $location.path("/people/contacts");
         $state.go('app.people.contacts');
       } else {
-        // $location.path("/people/listenees");
         $state.go('app.people.listenees');
       }
     }

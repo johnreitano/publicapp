@@ -1,9 +1,6 @@
 <ion-side-menus enable-menu-with-back-views="false">
   <ion-side-menu-content>
     <ion-nav-bar class="bar-positive">
-      <ion-nav-back-button>
-      </ion-nav-back-button>
-
       <ion-nav-buttons side="left">
         <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
         </button>
@@ -18,7 +15,7 @@
     </ion-header-bar> -->
     <ion-content>
       <ion-list>
-        <ion-item menu-close href="#/profile/{{vm.signedInUserId()}}">
+        <ion-item menu-close ui-sref="app.profile.feed({id: vm.signedInUserId()})">
           <i class="ion-home"></i>
           Home
         </ion-item>

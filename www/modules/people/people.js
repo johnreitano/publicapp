@@ -17,17 +17,17 @@ angular.module('Publicapp.people', [])
       })
 
       .state('app.people.contacts', {
-        url: "contacts",
+        url: "/contacts",
         authenticate: true
       })
 
       .state('app.people.listenees', {
-        url: "listenees",
+        url: "/listenees",
         authenticate: true
       })
 
       .state('app.people.searchResults', {
-        url: "search-results",
+        url: "/search-results",
         authenticate: true
       })
 
