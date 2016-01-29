@@ -77,7 +77,6 @@ angular.module('Publicapp.sharedMethods', [])
     signedInUserId: signedInUserId,
     signedInUser: signedInUser,
     signedIn: signedIn,
-    createPost: createPost,
     createdAtRelative: createdAtRelative,
     listeningTo: listeningTo,
     showProfile: showProfile,

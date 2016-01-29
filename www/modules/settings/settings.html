@@ -1,4 +1,10 @@
 <ion-view title="Settings">
+  <ion-nav-title>
+    Settings
+  </ion-nav-title>
+  <ion-nav-buttons side="right">
+    <button class="button button-icon button-clear ion-home" ui-sref="app.profile.feed({id:vm.signedInUserId()})"></button>
+  </ion-nav-buttons>
   <ion-content>
     <form name="form" ng-submit='vm.updateSettings(form)' novalidate>
 
