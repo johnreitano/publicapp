@@ -10,3 +10,4 @@ platforms/
 plugins/
 www/lib/
 www/css/
+firebase-debug.log
