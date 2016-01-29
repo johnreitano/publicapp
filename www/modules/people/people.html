@@ -82,10 +82,10 @@
 
             </ion-list>
 
-            <div class="text-center">
-              <p ng-if="vm.searchResults.length">None of those users is the one you're looking for?</p>
+            <div class="text-center" style="margin-top:1em">
+              <p ng-if="vm.searchResults.length">None of these users is the one you're looking for?</p>
               <p ng-if="!vm.searchResults.length">No matching users found.</p>
-              <button class="button button-positive" ng-click="vm.createUser()">Add User To Public</button>
+              <button class="button button-positive" ng-click="openModal()">Add User To Public</button>
             </div>
 
           </ion-content>
@@ -105,3 +105,31 @@
   </ion-footer-bar>
 
 </ion-view>
+
+<script id="add-user-modal.html" type="text/ng-template">
+  <div class="modal">
+    <ion-header-bar>
+      <h1 class="title">Add New User to Public</h1>
+    </ion-header-bar>
+    <ion-content>
+      <div class="list">
+      <form name="addUser">
+        <label class="item item-input">
+          <span class="input-label">Name</span>
+          <input type="text" ng-model="contact.name">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Email</span>
+          <input type="email" ng-model="contact.email">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Mobile</span>
+          <input type="tel" ng-model="contact.mobile">
+        </label>
+      </div>
+
+      <button class="button button-full button-positive" ng-click="closeModal()">Add User</button>
+      </form>
+    </ion-content>
+  </div>
+</script>

@@ -34,7 +34,7 @@ angular.module('Publicapp.people', [])
       ;
   }])
 
-  .controller('PeopleCtrl', function($scope, SharedMethods, Contacts, $timeout, $state, Fireb, $firebaseArray, $firebaseObject) {
+  .controller('PeopleCtrl', function($scope, SharedMethods, Contacts, $timeout, $state, Fireb, $firebaseArray, $firebaseObject, $ionicModal) {
     var ctrl = this;
 
     angular.extend(ctrl, SharedMethods);
@@ -174,6 +174,27 @@ angular.module('Publicapp.people', [])
       ctrl.newUser = { profile: {} };
       $scope.Ui.turnOn('addUserModal')
     };
+
+    // IONIC MODAL
+
+    $ionicModal.fromTemplateUrl('add-user-modal.html', {
+      scope: $scope,
+      animation: 'slide-in-up'
+    }).then(function(modal) {
+      $scope.modal = modal
+    })  
+
+    $scope.openModal = function() {
+      $scope.modal.show()
+    }
+
+    $scope.closeModal = function() {
+      $scope.modal.hide();
+    };
+
+    $scope.$on('$destroy', function() {
+      $scope.modal.remove();
+    });
 
 
   })
