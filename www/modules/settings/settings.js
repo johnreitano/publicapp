@@ -1,68 +1,158 @@
 angular.module('Publicapp.settings', [])
 
-  .config(['$urlRouterProvider', '$stateProvider',
-    function($urlRouterProvider, $stateProvider){
+.config(['$urlRouterProvider', '$stateProvider',
+  function($urlRouterProvider, $stateProvider){
 
-      $stateProvider
+    $stateProvider
 
-      .state('app.settings', {
-        url: "/settings",
-        views: {
-          'menuContent': {
-            templateUrl: "modules/settings/settings.html",
-            controller: "SettingsCtrl as vm"
-          }
-        },
-        authenticate: true
-      })
+    .state('app.settings', {
+      url: "/settings",
+      views: {
+        'menuContent': {
+          templateUrl: "modules/settings/settings.html",
+          controller: "SettingsCtrl as vm"
+        }
+      },
+      authenticate: true
+    })
 
-      ;
-  }])
+    ;
+}])
 
-  .controller('SettingsCtrl', function($scope, Fireb) {
-    var ctrl = this;
+.directive("compareTo", function() {
+  return {
+    require: "ngModel",
+    scope: {
+      otherModelValue: "=compareTo"
+    },
+    link: function(scope, element, attributes, ngModel) {
+      ngModel.$validators.compareTo = function(modelValue) {
+        return modelValue == scope.otherModelValue;
+      };
 
-    var userId = Fireb.signedInUserId();
-
-    var user = Fireb.ref.child('users').child(userId);
-
-    if (user) {
-      ctrl.name = user.name;
-      ctrl.email = user.email;
-      ctrl.phone = user.phone;
+      scope.$watch("otherModelValue", function() {
+        ngModel.$validate();
+      });
     }
+  };
+})
 
-    $scope.currentPassword = "";
-    $scope.newPassword = "";
-    $scope.newPasswordConfirmation = "";
-    $scope.errorMessage = "";
 
-    $scope.updateSettings = function() {
-      if (!s.isBlank($scope.currentPassword) && !s.isBlank($scope.newPassword) && $scope.newPassword == $scope.confirmPassword) {
-        Accounts.changePassword($scope.currentPassword, $scope.newPassword, function(error) {
+.controller('SettingsCtrl', function($scope, Fireb, SharedMethods) {
+  var ctrl = this;
+
+  angular.extend(ctrl, SharedMethods);
+
+  ctrl.user = {};
+  resetFields();
+  var userRef = Fireb.ref.child("users").child(ctrl.signedInUserId());
+  userRef.once("value", function(snapshot) {
+    var retrievedUser = snapshot.val();
+    ctrl.user.name = retrievedUser.name;
+    ctrl.user.phone = retrievedUser.phone;
+    ctrl.user.username = retrievedUser.username;
+    ctrl.user.email = Fireb.ref.getAuth().password.email;
+  });
+
+  function addError(newError) {
+    if (!s.isBlank(ctrl.errorMessage)) {
+      ctrl.errorMessage = ctrl.errorMessage + "; "
+    }
+    ctrl.errorMessage = ctrl.errorMessage + newError;
+  };
+
+  function changePassword(callback) {
+    if (!s.isBlank(ctrl.user.currentPassword) && !s.isBlank(ctrl.user.newPassword)) {
+      var options = {
+        email: Fireb.ref.getAuth().password.email,
+        oldPassword: ctrl.user.currentPassword,
+        newPassword: ctrl.user.newPassword
+      };
+      Fireb.ref.changePassword(options, function(error) {
+        if (error) {
+          addError("Error changing password: " + error.reason);
+        }
+        callback(error);
+      });
+    } else {
+      callback();
+    }
+  };
+
+  function changeEmail(dirty, callback) {
+    if (dirty) {
+      Fireb.ref.changeEmail({
+        oldEmail: Fireb.ref.getAuth().password.email,
+        newEmail: ctrl.user.email,
+        password: ctrl.user.currentPassword
+      }, function(error) {
+        if (error) {
+          switch (error.code) {
+            case "INVALID_PASSWORD":
+              addError("The password you entered is not correct.");
+              break;
+            case "INVALID_USER":
+              addError("No user with that email.");
+              break;
+            default:
+              addError("Error changing email: ", error.reason);
+              break;
+          }
+        } else {
+          console.log("User email changed successfully!");
+        }
+        callback(error);
+      })
+    } else {
+      callback();
+    }
+  };
+
+  function changeCoreFields(coreFieldsDirty, callback) {
+    if (coreFieldsDirty) {
+      userRef.update({
+        name: ctrl.user.name,
+        phone: ctrl.user.phone,
+        username: ctrl.user.username,
+      }, function(error) {
+        if (error) {
+          addError("Error saving data: " + error.reason);
+        }
+        callback(error);
+      });
+    } else {
+      callback();
+    }
+  };
+
+  function resetFields() {
+    ctrl.user.currentPassword = "";
+    ctrl.user.newPassword = "";
+    ctrl.user.newPasswordConfirmation = "";
+    ctrl.errorMessage = "";
+  };
+
+  ctrl.updateSettings = function(form) {
+    changeEmail(form.email.$dirty, function(error) {
+      if (error) {
+        resetFields();
+      } else {
+        changePassword(function(error) {
           if (error) {
-            $scope.errorMessage = "Password error: " + error.reason;
-            return;
+            resetFields();
+          } else {
+            changeCoreFields(
+              form.name.$dirty || form.username.$dirty || form.phone.$dirty, function(error) {
+                if (!error) {
+                  console.log("successfully saved all settings");
+                }
+                resetFields();
+            })
           }
         });
-        $scope.newPassword = "";
-        $scope.newPasswordConfirmation = "";
-        $scope.errorMessage = "";
       }
-
-      var newEmails = Meteor.user().emails;
-      newEmails[0].address= $scope.email;
-      var newProfile = Meteor.user().profile;
-      newProfile.name = $scope.name;
-      newProfile.phone = $scope.phone;
-      Meteor.users.update( Meteor.userId(), {
-        $set: {
-          emails: newEmails,
-          profile: newProfile
-        }
-      });
-    };
-
-
-  })
+    });
+  };
+})
 ;
+

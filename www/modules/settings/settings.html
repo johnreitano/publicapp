@@ -1,21 +1,29 @@
 <ion-view title="Settings">
   <ion-content>
-    <form role="form" ng-submit='updateSettings()'>
+    <form name="form" ng-submit='vm.updateSettings(form)' novalidate>
 
       <div class="list">
         <label class="item item-input item-floating-label">
           <span class="input-label">Name</span>
           <input type="text"
                  name="name"
-                 ng-model="vm.name"
+                 ng-model="vm.user.name"
                  placeholder="Name"
+                 ng-required="true">
+        </label>
+        <label class="item item-input item-floating-label">
+          <span class="input-label">Username</span>
+          <input type="text"
+                 name="username"
+                 ng-model="vm.user.username"
+                 placeholder="Username"
                  ng-required="true">
         </label>
         <label class="item item-input item-floating-label">
           <span class="input-label">Mobile</span>
           <input type="tel"
-                 name="mobile"
-                 ng-model="vm.phone"
+                 name="phone"
+                 ng-model="vm.user.phone"
                  placeholder="Mobile"
                  ng-required="true">
         </label>
@@ -23,43 +31,39 @@
           <span class="input-label">Email</span>
           <input type="email"
                  name="email"
-                 ng-model="vm.email"
+                 ng-model="vm.user.email"
                  placeholder="Email"
                  required>
         </label>
         <label class="item item-input item-floating-label">
           <span class="input-label">Current Password</span>
            <input type="password"
-                  name="password"
-                  ng-model="vm.password"
-                  placeholder="Current Password"
+                  name="currentPassword"
+                  ng-model="vm.user.currentPassword"
+                  placeholder="Please enter current password"
                   required>
         </label>
         <label class="item item-input item-floating-label">
           <span class="input-label">New Password</span>
            <input type="password"
-                  name="vm.newPassword"
-                  ng-model="newPassword"
-                  placeholder="New Password"
-                  required>
+                  name="newPassword"
+                  ng-model="vm.user.newPassword"
+                  placeholder="New Password (optional)">
         </label>
         <label class="item item-input item-floating-label">
-          <span class="input-label">Confirm Password</span>
+          <span class="input-label">Confirm New Password</span>
            <input type="password"
-                  name="vm.newPasswordConfirmation"
-                  ng-model="confirmPassword"
-                  placeholder="Confirm Password"
-                  required>
+                  name="newPasswordConfirmation"
+                  ng-model="vm.user.newPasswordConfirmation"
+                  placeholder="Confirm New Password"
+                  compare-to="vm.user.newPassword">
         </label>
       </div>
 
       <hr>
 
-      <p style="color:red;">{{ errorMessage }}</p>
-
-      <button class="button button-block button-positive" 
-              ng-click="updateSettings()"
-              style="width:90%;margin:1em auto;">Update</button>
+      <button class="button button-block button-positive"
+              style="width:90%;margin:1em auto;" ng-disabled="form.$invalid">Update</button>
 
     </form>
   </ion-content>
