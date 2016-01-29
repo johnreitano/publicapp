@@ -73,7 +73,7 @@ angular.module('Publicapp.fireb', [])
       console.log("Successfully created user account with uid:", userData.uid);
       user.face = user.face || generateFaceUrl(user.name, user.username);
       user.admin = user.admin ? true : false;
-      user.createdAt = user.createdAt || (new Date()).getTime();
+      user.createdAt = user.createdAt || Date.now();
 
       ref.child("users").child(userData.uid).set(user, function(error) {
         if (error) {
@@ -89,19 +89,21 @@ angular.module('Publicapp.fireb', [])
   };
 
   function recentDate() {
-    return (new Date()).getTime() - (Math.random() * 5 * 24 * 60 * 60 * 1000 );
+    return Date.now() - (Math.random() * 5 * 24 * 60 * 60 * 1000 );
   }
 
   function createMessage(message) {
     var messageRef = ref.child("messages").push(_.defaults(message, {
       authorUserId: signedInUserId(),
-      createdAt: (new Date()).getTime()
+      createdAt: Date.now()
     }));
     var messageId = messageRef.key();
 
     // add message info to profileMessageStubs for the uathor and subject of the message
     var authorUserRef = ref.child("users").child(message.authorUserId);
+    // authorUserRef.child("profileMessageStubs").child(messageId).setWithPriority({createdAt: message.createdAt}, 0 - message.createdAt);
     authorUserRef.child("profileMessageStubs").child(messageId).set({createdAt: message.createdAt});
+
     if (message.authorUserId != message.subjectUserId) {
       var subjectUserRef = ref.child("users").child(message.subjectUserId);
       subjectUserRef.child("profileMessageStubs").child(messageId).set({createdAt: message.createdAt});

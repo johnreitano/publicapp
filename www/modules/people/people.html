@@ -3,8 +3,7 @@
     People
   </ion-nav-title>
   <ion-nav-buttons side="right">
-    <button class="button button-icon button-clear ion-home" ui-sref="app.profile">
-    </button>
+    <button class="button button-icon button-clear ion-home" ui-sref="app.profile.feed({id:vm.signedInUserId()})"></button>
   </ion-nav-buttons>
   <ion-pane>
     <ion-tabs class="tabs-top bar-positive">
@@ -39,7 +38,7 @@
         </ion-nave>
       </ion-tab>
 
-      <ion-tab id="listenees-tab" title="Listenees" ng-if="true" ui-sref="app.people.listenees">
+      <ion-tab id="listenees-tab" title="Listening To" ng-if="true" ui-sref="app.people.listenees">
         <ion-nav-view name="listenees">
           <ion-content>
             <ion-list ng-repeat="listeneeStub in vm.listeneeStubs | orderBy: '-addedAt'">

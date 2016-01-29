@@ -61,12 +61,14 @@ angular.module('Publicapp.profile', [])
     return userFirebaseObjects[listenerStub.$id ];
   };
 
-  ctrl.profileMessages = {};
-  userRef.child("profileMessageStubs").on("child_added", function(snapshot) {
+  ctrl.profileMessages = [];
+  userRef.child("profileMessageStubs").orderByChild("createdAt").on("child_added", function(snapshot) {
     var messageId = snapshot.key();
+    ctrl.profileMessages.unshift({$id: messageId});
+
     Fireb.ref.child("messages").child(messageId).once("value", function(messageSnapshot) {
-      var message = messageSnapshot.val();
-      ctrl.profileMessages[messageId] = message; // TODO: fix the order of messages
+      var message = _.find(ctrl.profileMessages, function(message){ return message.$id == messageSnapshot.key() });
+      _.extend(message, messageSnapshot.val());
 
       if (!userFirebaseObjects[message.authorUserId]) {
         userFirebaseObjects[message.authorUserId] = $firebaseObject(Fireb.ref.child("users").child(message.authorUserId));
@@ -77,12 +79,14 @@ angular.module('Publicapp.profile', [])
     });
   });
 
-  ctrl.feedMessages = {};
-  userRef.child("feedMessageStubs").on("child_added", function(snapshot) {
+  ctrl.feedMessages = [];
+  userRef.child("feedMessageStubs").orderByChild("createdAt").on("child_added", function(snapshot) {
     var messageId = snapshot.key();
+    ctrl.feedMessages.unshift({$id: messageId});
+
     Fireb.ref.child("messages").child(messageId).once("value", function(messageSnapshot) {
-      var message = messageSnapshot.val();
-      ctrl.feedMessages[messageId] = message; // TODO: fix the order of messages
+      var message = _.find(ctrl.feedMessages, function(message){ return message.$id == messageSnapshot.key() });
+      _.extend(message, messageSnapshot.val());
 
       if (!userFirebaseObjects[message.authorUserId]) {
         userFirebaseObjects[message.authorUserId] = $firebaseObject(Fireb.ref.child("users").child(message.authorUserId));
@@ -92,6 +96,7 @@ angular.module('Publicapp.profile', [])
       }
     });
   });
+
 
   ctrl.author = function(message) {
     return userFirebaseObjects[message.authorUserId];
@@ -114,14 +119,14 @@ angular.module('Publicapp.profile', [])
     ctrl.newMessage = '';
   };
 
-  ctrl.showMessageViaFeed = function(message, messageId, event) {
+  ctrl.showMessageViaFeed = function(message, event) {
     event.preventDefault();
-    $state.go("app.messageViaFeed", {profileId: ctrl.userId, id: messageId});
+    $state.go("app.messageViaFeed", {profileId: ctrl.userId, id: message.$id});
   };
 
-  ctrl.showMessageViaProfile = function(message, messageId, event) {
+  ctrl.showMessageViaProfile = function(message, event) {
     event.preventDefault();
-    $state.go("app.messageViaProfile", {profileId: ctrl.userId, id: messageId});
+    $state.go("app.messageViaProfile", {profileId: ctrl.userId, id: message.$id});
   };
 
 })

@@ -1,17 +1,17 @@
 <ion-view view-title="Message">
   <ion-nav-bar class="bar-positive">
     <ion-nav-back-button class="button-clear">
-      <i class="ion-arrow-left-c"></i> Back
+      <i class="ion-chevron-left"></i> Back
     </ion-nav-back-button>
   </ion-nav-bar>
   <ion-content>
     <div class="list card">
 
       <div class="item item-avatar">
-        <img ng-src="{{ vm.author.face }}">
-        <strong>{{ vm.author.name }}</strong> said
-        <span ng-if="message.authorUserId != messge.subjectUserId">
-          to <strong>{{ vm.subject.name || vm.subject.username }}</strong>
+        <img ng-src="{{ vm.author.face }}" ui-sref="app.profile({id: vm.message.authorUserId})">
+        <strong ui-sref="app.profile({id: vm.message.authorUserId})">{{ vm.author.name }}</strong> said
+        <span ng-if="vm.message.authorUserId != vm.message.subjectUserId">
+          to <strong ui-sref="app.profile({id: vm.message.subjectUserId})">{{ vm.subject.name || vm.subject.username }}</strong>
         </span>
         <span class="message-created-at">{{ vm.createdAtRel }}</span>
       </div>

@@ -83,15 +83,15 @@ angular.module('Publicapp.sharedMethods', [])
 
   function toggleListening(targetUser, event) {
     var signedInUserListeneeRef = Fireb.ref.child("users").child(signedInUserId()).child("listeneeStubs").child(targetUser.$id);
-    var targetUserListenerRef = Fireb.ref.child("users").child(targetUser.$id).child("listeneeStubs").child(signedInUserId());
+    var targetUserListenerRef = Fireb.ref.child("users").child(targetUser.$id).child("listenerStubs").child(signedInUserId());
 
     if (listeningTo(targetUser)) {
       signedInUserListeneeRef.remove(); // remove listenee from signedInUser
       targetUserListenerRef.remove(); // remove listener from targetUser
     } else {
       // add
-      signedInUserListeneeRef.set({addedAt: (new Date()).getTime()}); // add listenee to signedInUser
-      targetUserListenerRef.set({addedAt: (new Date()).getTime()}); // add listener to targetUSer
+      signedInUserListeneeRef.set({addedAt: Date.now()}); // add listenee to signedInUser
+      targetUserListenerRef.set({addedAt: Date.now()}); // add listener to targetUSer
     }
     if (event) {
       event.stopPropagation(); // prevent ng-click of enclosing item from being processed
@@ -114,6 +114,10 @@ angular.module('Publicapp.sharedMethods', [])
     return $state.current.name == stateName;
   };
 
+  function peopleLink() {
+    return window.isCordova ? 'app.people.contacts' : 'app.people.listenees';
+  };
+
   return {
     signedInUserId: signedInUserId,
     signedInUser: signedInUser,
@@ -124,7 +128,8 @@ angular.module('Publicapp.sharedMethods', [])
     showProfile: showProfile,
     toggleListening: toggleListening,
     generateUsernameOnTheFly: generateUsernameOnTheFly,
-    isCurrentState: isCurrentState
+    isCurrentState: isCurrentState,
+    peopleLink: peopleLink
   };
 })
 

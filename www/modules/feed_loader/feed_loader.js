@@ -16,7 +16,7 @@ angular.module('Publicapp.feedLoader', [])
 
       _.each(sourceUserIds, function(sourceUserId) {
         var sourceUser = fireBaseRef.child("users").child(sourceUserId);
-        sourceUser.child("profileMessageStubs").orderByChild("createdAt").limitToLast(50).on("child_added", function(snapshot) {
+        sourceUser.child("profileMessageStubs").limitToLast(50).on("child_added", function(snapshot) {
           var message = snapshot.val();
           var messageId = snapshot.key();
           feedDestination.child(messageId).set({createdAt: message.createdAt});
