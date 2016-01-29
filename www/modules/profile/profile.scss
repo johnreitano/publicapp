@@ -27,15 +27,17 @@
 
 }
 
-.post-footer {
-	height: 4em;
+.message-footer {
+	height: 3em;
 }
 
-textarea {
+.post-msg-textarea {
 	resize: none;
+	width: 100%
 }
 
 .tab-item-active .tab-title {
-  color: red !important;
+  color: $positive !important;
+  font-weight: 600;
 }
 

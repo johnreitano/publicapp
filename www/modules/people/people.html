@@ -82,14 +82,10 @@
 
             </ion-list>
 
-            <div>
-              <span ng-if="vm.searchResults.length">
-                None of those users is the one you're looking for?
-              </span>
-              <span ng-if="!vm.searchResults.length">
-                No matching users found.
-              </span>
-              <button class="btn btn-primary" ng-click="vm.createUser()">Add User To Public</button>
+            <div class="text-center">
+              <p ng-if="vm.searchResults.length">None of those users is the one you're looking for?</p>
+              <p ng-if="!vm.searchResults.length">No matching users found.</p>
+              <button class="button button-positive" ng-click="vm.createUser()">Add User To Public</button>
             </div>
 
           </ion-content>
@@ -99,15 +95,13 @@
     </ion-tabs>
   </ion-pane>
 
-  <ion-footer-bar class="item-input-inset bar-positive">
-    <form name="SearchForm">
-      <fieldset>
-        <div class="form-group">
-          <input id="search-text" ng-model="vm.searchText" class="form-control pull-left" placeholder="Enter user name or username" required>
-          <button class="btn btn-primary pull-right" ng-disabled="SearchForm.$invalid" ng-click="vm.search();">Search Public</button>
-        </div>
-      </fieldset>
-    </form>
+  <ion-footer-bar align-title="left" class="message-footer bar-positive">
+    <textarea class="search-user-textarea" type="text" ng-model="vm.searchText" placeholder="Search for user in Public"></textarea>
+    <div class="buttons">
+      <button class="button button-light"
+              ng-click="vm.search()"
+              ng-disabled="vm.searchText.length === 0">Search</button>
+    </div>
   </ion-footer-bar>
 
 </ion-view>
