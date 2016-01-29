@@ -14,51 +14,6 @@ angular.module('Publicapp.sharedMethods', [])
     return Fireb.signedIn();
   };
 
-	function createPost() {
-    var ctrl = this;
-
-    mentionedUsernames = ctrl.newPostText.match(/(@\w+)/);
-    // TODO: notify all mentioned users
-    // ...
-
-    var insertPost = function(subjectUserId) {
-      Posts.insert({
-        authorUserId: signedInUserId(),
-        subjectUserId: subjectUserId,
-        text: ctrl.newPostText,
-        createdAt: new Date()
-      });
-      ctrl.newPostText = '';
-    };
-
-    if (ctrl.userId == signedInUserId() && mentionedUsernames) {
-      var firstMentionedUser = Meteor.users.findOne({ username: mentionedUsernames[0]});
-      if (firstMentionedUser) {
-        insertPost(firstMentionedUser._id);
-      } else {
-        Meteor.call("createPublicUser", { username: mentionedUsernames[0] }, function(error, newUserId) {
-          insertPost(newUserId);
-        });
-      }
-    } else {
-      insertPost(ctrl.userId);
-    }
-
-    // scroll to top of posts so you can see new post
-    var element = document.getElementById("scrollable-content");
-    if (element) {
-      angular.element(element).controller('scrollableContent').scrollTo(0);
-    }
-
-    // put focus back into new post textarea
-    $timeout(function() {
-      var element = document.getElementById("new-post-text");
-      if (element) {
-        element.focus();
-      }
-    })
-	};
-
   function createdAtRelative(message) {
     return moment(message.createdAt).fromNow();
   };

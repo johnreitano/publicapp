@@ -93,6 +93,21 @@ angular.module('Publicapp.fireb', [])
   }
 
   function createMessage(message) {
+
+    // var mentionedUsernames = ctrl.newPostText.match(/(@\w+)/g);
+    // // TODO: notify all mentioned users; for now just notifying first one
+    // if (mentionedUsernames) {
+    //   ref = Fireb.ref.child("users").orderByChild("username").startAt(mentionedUsernames[0]).endAt(mentionedUsernames[0]);
+    //   ref.once("value", function(snapshot) {
+    //     var user = snapshot.val();
+    //     if (user) {
+    //       // use this user as subject
+    //     } else {
+    //       // create new user
+    //     }
+    //   });
+    // }
+
     var messageRef = ref.child("messages").push(_.defaults(message, {
       authorUserId: signedInUserId(),
       createdAt: Date.now()

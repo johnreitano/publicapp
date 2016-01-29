@@ -117,6 +117,23 @@ angular.module('Publicapp.profile', [])
     });
     console.log(ctrl.newMessage, "Message succesfully posted");
     ctrl.newMessage = '';
+
+    //
+    // // scroll to top of posts so you can see new post
+    // var element = document.getElementById("scrollable-content");
+    // if (element) {
+    //   angular.element(element).controller('scrollableContent').scrollTo(0);
+    // }
+    //
+    // // put focus back into new post textarea
+    // $timeout(function() {
+    //   var element = document.getElementById("new-post-text");
+    //   if (element) {
+    //     element.focus();
+    //   }
+    // })
+
+
   };
 
   ctrl.showMessageViaFeed = function(message, event) {

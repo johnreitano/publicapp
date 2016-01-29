@@ -1,6 +1,5 @@
 angular.module('Publicapp.auth', [])
 
-
 .config(['$urlRouterProvider', '$stateProvider',
   function($urlRouterProvider, $stateProvider){
 
