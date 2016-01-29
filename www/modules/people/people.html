@@ -9,7 +9,7 @@
   <ion-pane>
     <ion-tabs class="tabs-top bar-positive">
 
-      <ion-tab id="contacts-tab" title="Contacts {{ vm.isCurrentState('app.people.contacts') ? '*' : '' }}" ng-if="vm.usingDevice()" ui-sref="app.people.contacts">
+      <ion-tab id="contacts-tab" title="Contacts" ng-if="vm.usingDevice()" ui-sref="app.people.contacts">
         <ion-nav-view name="feed">
           <ion-content>
             <div>{{ vm.contacts.length > 0 ? "Select one of the contacts below:" : "You have no contacts" }}</div>
@@ -39,7 +39,7 @@
         </ion-nave>
       </ion-tab>
 
-      <ion-tab id="listenees-tab" title="Listenees {{ vm.isCurrentState('app.people.listenees') ? '*' : '' }}" ng-if="true" ui-sref="app.people.listenees">
+      <ion-tab id="listenees-tab" title="Listenees" ng-if="true" ui-sref="app.people.listenees">
         <ion-nav-view name="listenees">
           <ion-content>
             <ion-list ng-repeat="listeneeStub in vm.listeneeStubs | orderBy: '-addedAt'">
@@ -61,7 +61,7 @@
         </ion-nav-view>
       </ion-tab>
 
-      <ion-tab id="search-results-tab" title="Search Results {{ vm.isCurrentState('app.people.searchResults') ? '*' : '' }}" ng-if="vm.showSearchResultsTab" ui-sref="app.people.searchResults">
+      <ion-tab id="search-results-tab" title="Search Results" ng-if="vm.showSearchResultsTab" ui-sref="app.people.searchResults">
         <ion-nav-view name="search-results">
           <ion-content>
             <ion-list ng-repeat="user in vm.searchResults | orderBy: '-addedAt'">
