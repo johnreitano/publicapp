@@ -1,4 +1,4 @@
-<ion-side-menus enable-menu-with-back-views="false">
+<ion-side-menus enable-menu-with-back-views="true">
   <ion-side-menu-content>
     <ion-nav-bar class="bar-positive">
       <ion-nav-buttons side="left">
@@ -35,8 +35,8 @@
           <i class="ion-log-in"></i>
           Sign In
         </ion-item>
-        <ion-item menu-close ng-if="vm.signedIn()">
-          <a href="" ng-click="vm.signOut()">
+        <ion-item menu-close ui-sref="app.signOut" ng-if="vm.signedIn()">
+          <a href="" ng-click="vm.signOut()" menu-toggle="left">
             <i class="ion-log-out"></i>
             Sign Out
           </a>

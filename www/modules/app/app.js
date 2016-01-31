@@ -40,6 +40,11 @@ angular.module('Publicapp', [
     if (toState.authenticate && !Fireb.signedIn()) {
       event.preventDefault();
       $state.go('app.signIn');
+    } else if (toState.name == "app.signOut") {
+      if (Fireb.signedIn()) {
+        Fireb.ref.unauth();
+      }
+      $state.go("app.signIn");
     } else if (toState.name == "app.profile") {
       if (s.isBlank(toParams.id)) {
         toParams.id = Fireb.signedInUserId()

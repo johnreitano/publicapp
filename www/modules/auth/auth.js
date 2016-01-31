@@ -15,6 +15,16 @@ angular.module('Publicapp.auth', [])
       }
     })
 
+    .state('app.signOut', {
+      url: '/sign-out',
+      views: {
+        'menuContent': {
+          templateUrl: "modules/auth/sign_in.html",
+          controller: 'AuthCtrl as vm'
+        }
+      }
+    })
+
     .state('app.seed', {
       url: '/seed',
       views: {
@@ -66,13 +76,6 @@ angular.module('Publicapp.auth', [])
   ctrl.resetPassword = function() {
     // TODO: add this
   }
-
-  ctrl.signOut = function() {
-    if (Fireb.signedIn()) {
-      Fireb.ref.unauth();
-    }
-    $location.path('/sign-in');
-  };
 
   ctrl.signUp = function() {
     if (Fireb.signedIn()) {
