@@ -1,7 +1,7 @@
 <ion-view title="Sign Up">
   <ion-content>
 
-    <form role="form" name="vm.signUpForm" ng-submit='vm.signUp()'>
+    <form role="form" name="vm.form" ng-submit='vm.signUp()'>
       <div class="list">
         <label class="item item-input item-floating-label">
           <span class="input-label">Name</span>
@@ -55,7 +55,7 @@
 
       <button type="submit"
               class='button button-block button-positive'
-              ng-disabled="signUpForm.$invalid"
+              ng-disabled="form.$invalid"
               style="width:90%;margin:1em auto;">Sign up</button>
 
       <p class="text-center">Already have an account? <a href="#/sign-in">Sign in</a></p>

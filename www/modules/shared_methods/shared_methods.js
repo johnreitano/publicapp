@@ -12,6 +12,7 @@ angular.module('Publicapp.sharedMethods', [])
     showProfile: showProfile,
     toggleListening: toggleListening,
     generateUsernameOnTheFly: generateUsernameOnTheFly,
+    generateUsername: generateUsername,
     isCurrentState: isCurrentState,
     peopleLink: peopleLink,
     createUser: createUser,
@@ -189,10 +190,10 @@ angular.module('Publicapp.sharedMethods', [])
     var ctrl = this;
 
     ctrl[formName] = {};
-
     scope.$watch('vm.name', function() {
-      if (ctrl[formName] && ctrl[formName].username && ctrl[formName].username.$pristine && ctrl.name && ctrl.name.length > 0) {
-        ctrl.username = Fireb.generateUsername(ctrl.name);
+      form = ctrl[formName];
+      if (form.username && form.username.$pristine && !s.isBlank(ctrl.name)) {
+        ctrl.username = ctrl.generateUsername(ctrl.name);
       }
     }, true);
   };
