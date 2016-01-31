@@ -40,11 +40,6 @@ angular.module('Publicapp', [
     if (toState.authenticate && !Fireb.signedIn()) {
       event.preventDefault();
       $state.go('app.signIn');
-    } else if  (toState.name == "app.seed") {
-      Fireb.reSeedDatabase();
-      // $location.path('/sign-in');
-      event.preventDefault();
-      $state.go('app.signIn');
     } else if (toState.name == "app.profile") {
       if (s.isBlank(toParams.id)) {
         toParams.id = Fireb.signedInUserId()
@@ -67,7 +62,10 @@ angular.module('Publicapp', [
   });
 
   Contacts.load(); // TODO: check whether this preloading of the contacts will trigger a warning in iOS
-  FeedLoader.load(Fireb.ref, Fireb.signedInUserId());
+
+  if (Fireb.signedIn()) {
+    FeedLoader.load(Fireb.ref, Fireb.signedInUserId());
+  }
 
   $ionicPlatform.ready(function() {
     if(window.cordova && window.cordova.plugins.Keyboard) {

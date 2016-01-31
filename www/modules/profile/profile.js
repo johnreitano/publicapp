@@ -111,11 +111,10 @@ angular.module('Publicapp.profile', [])
   };
 
   ctrl.sendMessage = function() {
-    Fireb.createMessage({
+    ctrl.createMessage({
       subjectUserId: ctrl.userId,
       text: ctrl.newMessage
     });
-    console.log(ctrl.newMessage, "Message succesfully posted");
     ctrl.newMessage = '';
 
     //

@@ -19,20 +19,22 @@ angular.module('Publicapp.about', [])
     ;
 }])
 
-.controller('AboutCtrl', function($scope) {
+.controller('AboutCtrl', function($scope, SharedMethods) {
   var ctrl = this;
+
+  angular.extend(ctrl, SharedMethods);
 
   ctrl.adminUserSignedIn = function() {
     return ctrl.signedIn() && ctrl.signedInUser().admin;
   };
 
-  ctrl.reSeedDatabase = function(window) {
+  ctrl.confirmAndReSeedDatabase = function(window) {
     if (!confirm('Are you sure you want to re-seed?')) {
       console.log('seed canceled')
       return;
     }
 
-    Fireb.reSeedDatabase();
+    ctrl.reSeedDatabase();
   };
 })
 

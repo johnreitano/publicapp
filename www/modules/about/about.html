@@ -6,9 +6,7 @@
         <br>
         <p>Please send your questions and feedback to <a href="mailto://team@getpublic.co">team@getpublic.co</a> .</p>
         <br>
-        <div ng-if="vm.signedIn() && vm.signedInUser().admin;">
-          <button class="button button-stable" ng-click="vm.reSeedDatabase()">Reseed Database</button>
-        </div>
+        <button class="button button-stable" ng-click="vm.confirmAndReSeedDatabase()">Reseed Database</button>
       </div>
     </div>
 
