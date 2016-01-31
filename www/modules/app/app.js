@@ -99,7 +99,7 @@ angular.module('Publicapp', [
       controller: 'AppCtrl as app',
     });
 
-    $urlRouterProvider.otherwise('/profile/');
+    // $urlRouterProvider.otherwise('/profile/');
   })
 
 .controller('AppCtrl', function($scope) {

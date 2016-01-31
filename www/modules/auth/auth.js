@@ -67,14 +67,10 @@ angular.module('Publicapp.auth', [])
         ctrl.errorMessage = error.reason;
       } else {
         console.log("Authenticated successfully with payload:", authData);
-        $state.go('app.profile', {id: authData.uid});
+        $state.go('app.profile.feed', {id: authData.uid});
       }
     });
   };
-
-  ctrl.resetPassword = function() {
-    // TODO: add this
-  }
 
   ctrl.signUp = function() {
     if (Fireb.signedIn()) {
@@ -95,17 +91,6 @@ angular.module('Publicapp.auth', [])
       }
     });
   };
-
-  // ctrl.generateUsernameOnTheFly = function() {
-  //   ctrl['form'] = {};
-  //   $scope.$watch('vm.name', function() {
-  //     form = ctrl['form'];
-  //     if (form.username && form.username.$pristine && !s.isBlank(ctrl.name)) {
-  //       ctrl.username = ctrl.generateUsername(ctrl.name);
-  //     }
-  //   }, true);
-  // };
-  //
 
   ctrl.generateUsernameOnTheFly($scope, 'form');
 

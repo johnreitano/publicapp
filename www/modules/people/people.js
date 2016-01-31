@@ -170,22 +170,16 @@ angular.module('Publicapp.people', [])
       }
     }
 
-    ctrl.openAddUserModal = function() {
-      ctrl.newUser = { profile: {} };
-      $scope.Ui.turnOn('addUserModal')
-    };
-
-    // IONIC MODAL
-
     $ionicModal.fromTemplateUrl('add-user-modal.html', {
       scope: $scope,
       animation: 'slide-in-up'
     }).then(function(modal) {
       $scope.modal = modal
-    })  
+    })
 
     $scope.openModal = function() {
-      $scope.modal.show()
+      $scope.newUser = {};
+      $scope.modal.show();
     }
 
     $scope.closeModal = function() {
@@ -193,13 +187,29 @@ angular.module('Publicapp.people', [])
     };
 
     $scope.addUserToPublic = function() {
-      var user = {};
-      user.name = contact.name;
-      user.email = contact.email || '';
-      user.phone = contact.phone || '';
-
-      SharedMethods.createUser(user);
-      SharedMethods.startListeningTo(user, $event);
+      var user = {
+        name: $scope.newUser.name,
+        email: $scope.newUser.email,
+        phone: $scope.newUser.phone
+      };
+      SharedMethods.createUser(user, function(error) {
+        if (error) {
+          console.log("got an error creating user");
+          return;
+        }
+        SharedMethods.startListeningTo(user);
+        SharedMethods.createMessage({
+          subjectUserId: user.$id,
+          text: $scope.newUser.message
+        }, function(error) {
+          if (error) {
+            console.log("got an error creating message");
+            return;
+          }
+          $scope.modal.hide();
+          $state.go( "app.profile.messages", { id: user.$id } );
+        });
+      });
     };
 
     $scope.$on('$destroy', function() {

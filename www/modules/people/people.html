@@ -24,11 +24,11 @@
                   <h2>{{ contact.user.username }}</h2>
 
                   <button class="button button-positive"
-                      ng-click="vm.toggleListening(contact.user, $event)"
+                      ng-click="vm.toggleListeningTo(contact.user, $event)"
                       ng-show="!vm.isListeningTo(contact.user)">Listen</button>
 
                   <button class="button button-energized"
-                      ng-click="vm.toggleListening(contact.user, $event)"
+                      ng-click="vm.toggleListeningTo(contact.user, $event)"
                       ng-show="vm.isListeningTo(contact.user)">Unlisten</button>
 
                 </div>
@@ -48,11 +48,11 @@
                 <h2>{{ vm.listenee(listeneeStub).username }}</h2>
 
                 <button class="button button-positive"
-                    ng-click="vm.toggleListening(listeneeStub, $event)"
+                    ng-click="vm.toggleListeningTo(listeneeStub, $event)"
                     ng-show="!vm.isListeningTo(listeneeStub)">Listen</button>
 
                 <button class="button button-energized"
-                    ng-click="vm.toggleListening(listeneeStub, $event)"
+                    ng-click="vm.toggleListeningTo(listeneeStub, $event)"
                     ng-show="vm.isListeningTo(listeneeStub)">Unlisten</button>
               </div>
             </ion-list>
@@ -70,11 +70,11 @@
                 <h2>{{ user.username }}</h2>
 
                 <button class="button button-positive"
-                    ng-click="vm.toggleListening(user, $event)"
+                    ng-click="vm.toggleListeningTo(user, $event)"
                     ng-show="!vm.isListeningTo(user)">Listen</button>
 
                 <button class="button button-energized"
-                    ng-click="vm.toggleListening(user, $event)"
+                    ng-click="vm.toggleListeningTo(user, $event)"
                     ng-show="vm.isListeningTo(user)">Unlisten</button>
 
               </div>
@@ -116,23 +116,23 @@
       <form name="addUser">
         <label class="item item-input">
           <span class="input-label">Name</span>
-          <input type="text" ng-model="contact.name">
+          <input type="text" ng-model="newUser.name">
         </label>
         <label class="item item-input">
           <span class="input-label">Email</span>
-          <input type="email" ng-model="contact.email">
+          <input type="email" ng-model="newUser.email">
         </label>
         <label class="item item-input">
           <span class="input-label">Mobile</span>
-          <input type="tel" ng-model="contact.mobile">
+          <input type="tel" ng-model="newUser.phone">
         </label>
         <label class="item item-input">
           <span class="input-label">Message</span>
-          <input type="tel" ng-model="contact.message" placeholder="Say something to {{ contact.name }}">
+          <input type="text" ng-model="newUser.message" placeholder="Say something to {{ newUser.name }}">
         </label>
       </div>
 
-      <button class="button button-full button-positive" ng-click="closeModal()">Add User</button>
+      <button class="button button-full button-positive" ng-click="addUserToPublic()">Add User</button>
       </form>
     </ion-content>
   </div>

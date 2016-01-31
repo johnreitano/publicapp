@@ -73,11 +73,11 @@
                 <h2>{{ vm.listener(listenerStub).username }}</h2>
 
                 <button class="button button-positive"
-                    ng-click="vm.toggleListening(listenerStub, $event)"
+                    ng-click="vm.toggleListeningTo(listenerStub, $event)"
                     ng-show="!vm.isListeningTo(listenerStub)">Listen</button>
 
                 <button class="button button-energized"
-                    ng-click="vm.toggleListening(listenerStub, $event)"
+                    ng-click="vm.toggleListeningTo(listenerStub, $event)"
                     ng-show="vm.isListeningTo(listenerStub)">Unlisten</button>
 
               </div>

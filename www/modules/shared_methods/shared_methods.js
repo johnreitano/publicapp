@@ -9,8 +9,10 @@ angular.module('Publicapp.sharedMethods', [])
     signedIn: signedIn,
     createdAtRelative: createdAtRelative,
     isListeningTo: isListeningTo,
+    toggleListeningTo: toggleListeningTo,
+    startListeningTo: startListeningTo,
+    stopListeningTo: stopListeningTo,
     showProfile: showProfile,
-    toggleListening: toggleListening,
     generateUsernameOnTheFly: generateUsernameOnTheFly,
     generateUsername: generateUsername,
     isCurrentState: isCurrentState,
@@ -169,20 +171,36 @@ angular.module('Publicapp.sharedMethods', [])
     }
   };
 
-  function toggleListening(targetUser, event) {
-    var signedInUserListeneeRef = Fireb.ref.child("users").child(signedInUserId()).child("listeneeStubs").child(targetUser.$id);
-    var targetUserListenerRef = Fireb.ref.child("users").child(targetUser.$id).child("listenerStubs").child(signedInUserId());
-
+  function toggleListeningTo(targetUser, event) {
     if (isListeningTo(targetUser)) {
-      signedInUserListeneeRef.remove(); // remove listenee from signedInUser
-      targetUserListenerRef.remove(); // remove listener from targetUser
+      stopListeningTo(targetUser);
     } else {
-      // add
-      signedInUserListeneeRef.set({addedAt: Date.now()}); // add listenee to signedInUser
-      targetUserListenerRef.set({addedAt: Date.now()}); // add listener to targetUSer
+      startListeningTo(targetUser);
     }
     if (event) {
       event.stopPropagation(); // prevent ng-click of enclosing item from being processed
+    }
+  };
+
+  function startListeningTo(targetUser) {
+    var signedInUserRef = Fireb.ref.child("users").child(signedInUserId());
+    var targetUserRef = Fireb.ref.child("users").child(targetUser.$id);
+    if (!isListeningTo(targetUser)) {
+      // add new listenee to signed-in user
+      signedInUserRef.child("listeneeStubs").child(targetUser.$id).set({addedAt: Date.now()});
+      // add new listener to target user
+      targetUserRef.child("listenerStubs").child(signedInUserId()).set({addedAt: Date.now()});
+    }
+  };
+
+  function stopListeningTo(targetUser) {
+    var signedInUserRef = Fireb.ref.child("users").child(signedInUserId());
+    var targetUserRef = Fireb.ref.child("users").child(targetUser.$id);
+    if (isListeningTo(targetUser)) {
+      // remove listenee from signed-in user
+      signedInUserRef.child("listeneeStubs").child(targetUser.$id).remove();
+      // remove listener from target user
+      targetUserRef.child("listenerStubs").child(signedInUserId()).remove();
     }
   };
 
@@ -206,7 +224,7 @@ angular.module('Publicapp.sharedMethods', [])
     return window.isCordova ? 'app.people.contacts' : 'app.people.listenees';
   };
 
-  function createMessage(message) {
+  function createMessage(message, callback) {
 
     var mentionedUsernames = message.text.match(/(@\w+)/g) || [];
     var mentionedUserIds = [];
@@ -258,9 +276,7 @@ angular.module('Publicapp.sharedMethods', [])
       for (var i = 0; i < newMentionedUsernames.length; i++ ) {
         mentionedUsername = newMentionedUsernames[i];
         var newUser = {
-          username: mentionedUsername,
-          email: mentionedUsername.replace(/\@/,'') + "@users.getpublic.co",
-          password: Math.random().toString().slice(2,12)
+          username: mentionedUsername
         };
         createUser(newUser, function(error) {
           if (error) {
@@ -291,6 +307,7 @@ angular.module('Publicapp.sharedMethods', [])
       createAssociatedMessageStubs(messageId);
 
       console.log("Succesfully created message with id " + messageId);
+      callback();
     };
 
     function createAssociatedMessageStubs(messageId) {
@@ -309,17 +326,18 @@ angular.module('Publicapp.sharedMethods', [])
   };
 
   function createUser(user, callback) {
-    Fireb.ref.createUser({
-      email    : user.email,
-      password : user.password
-    }, function(error, userData) {
+    user.email = s.isBlank(user.email) ? username.replace(/\@/,'') + "@users.getpublic.co" : user.email;
+    user.password = s.isBlank(user.password) ? Math.random().toString().slice(2,12) : user.password;
+    Fireb.ref.createUser(user, function(error, userData) {
       if (error) {
         console.log(error);
         callback(error);
         return;
       }
       console.log("Successfully created user account with uid:", userData.uid);
-      user.face = user.face || generateFaceUrl(user.name, user.username);
+
+      user.username = s.isBlank(user.username) ? generateUsername(user.name) : user.username;
+      user.face = s.isBlank(user.face) ?  generateFaceUrl(user.name, user.username) : user.face;
       user.admin = user.admin ? true : false;
       user.createdAt = user.createdAt || Date.now();
 
