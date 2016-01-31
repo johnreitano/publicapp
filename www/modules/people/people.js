@@ -192,6 +192,16 @@ angular.module('Publicapp.people', [])
       $scope.modal.hide();
     };
 
+    $scope.addUserToPublic = function() {
+      var user = {};
+      user.name = contact.name;
+      user.email = contact.email || '';
+      user.phone = contact.phone || '';
+
+      SharedMethods.createUser(user);
+      SharedMethods.startListeningTo(user, $event);
+    };
+
     $scope.$on('$destroy', function() {
       $scope.modal.remove();
     });
