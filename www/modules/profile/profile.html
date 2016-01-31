@@ -13,7 +13,7 @@
     <button class="button button-icon button-clear ion-home" ui-sref="app.profile.feed({id:vm.signedInUserId()})" ng-show="vm.userId != vm.signedInUserId()"></button>
   </ion-nav-buttons>
   <ion-pane>
-    <ion-tabs class="tabs-top bar-positive profile-tabs">
+    <ion-tabs class="tabs-top profile-tabs">
 
       <ion-tab id="feed-tab" title="Newsfeed" ng-if="vm.viewingOwnProfile()" ui-sref="app.profile.feed">
         <ion-nav-view name="feed">
