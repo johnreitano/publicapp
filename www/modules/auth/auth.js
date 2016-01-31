@@ -56,7 +56,6 @@ angular.module('Publicapp.auth', [])
   ctrl.errorMessage = '';
   ctrl.password = '';
 
-
   ctrl.signIn = function() {
     if (Fireb.signedIn()) {
       Fireb.ref.unauth();
@@ -82,7 +81,7 @@ angular.module('Publicapp.auth', [])
       Fireb.ref.unauth();
     }      email: ctrl.email,
 
-    Fireb.createUser({
+    ctrl.createUser({
       email: ctrl.email,
       password: ctrl.password,
       phone: ctrl.phone,
@@ -97,7 +96,18 @@ angular.module('Publicapp.auth', [])
     });
   };
 
-  ctrl.generateUsernameOnTheFly($scope, 'mainForm');
+  // ctrl.generateUsernameOnTheFly = function() {
+  //   ctrl['form'] = {};
+  //   $scope.$watch('vm.name', function() {
+  //     form = ctrl['form'];
+  //     if (form.username && form.username.$pristine && !s.isBlank(ctrl.name)) {
+  //       ctrl.username = ctrl.generateUsername(ctrl.name);
+  //     }
+  //   }, true);
+  // };
+  //
+
+  ctrl.generateUsernameOnTheFly($scope, 'form');
 
 })
 
