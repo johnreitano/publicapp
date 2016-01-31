@@ -357,7 +357,7 @@ angular.module('Publicapp.sharedMethods', [])
       initials = initials + firstLetters[firstLetters.length-1];
     }
     initials = initials.toUpperCase();
-    return "http://dummyimage.com/100x100/" + colorScheme.background + "/" + colorScheme.foreground + "&text=" + initials;
+    return "https://dummyimage.com/100x100/" + colorScheme.background + "/" + colorScheme.foreground + "&text=" + initials;
   };
 
   function recentDate() {

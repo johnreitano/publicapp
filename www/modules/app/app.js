@@ -63,10 +63,6 @@ angular.module('Publicapp', [
 
   Contacts.load(); // TODO: check whether this preloading of the contacts will trigger a warning in iOS
 
-  if (Fireb.signedIn()) {
-    FeedLoader.load(Fireb.ref, Fireb.signedInUserId());
-  }
-
   $ionicPlatform.ready(function() {
     if(window.cordova && window.cordova.plugins.Keyboard) {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
