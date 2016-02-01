@@ -1,6 +1,6 @@
 angular.module('Publicapp.contacts', [])
 
-  .factory('Contacts', function($timeout) {
+  .factory('Contacts', function($timeout, $cordovaContacts) {
 
     var contacts = null;
 
@@ -10,33 +10,29 @@ angular.module('Publicapp.contacts', [])
     };
 
     var load = function(callback) {
-      if (!window.isCordova) {
+      if (!ionic.Platform.isWebView()) {
         contacts = [];
         return;
       }
 
-      var options = new ContactFindOptions();
-      options.filter = "";
-      options.multiple = true;
-      var fields = ["displayName", "name"];
       console.log('retrieving contacts');
       var startTime = new Date();
-      val = navigator.contacts.find(
-        fields,
-        function onSuccess(rawContacts) {
-          var endTime = new Date();
-          // console.log("retrieved " + rawContacts.length + " raw contacts: ", rawContacts);
-          contacts = _.filter(rawContacts, function(contact) {return !s.isBlank(contact.displayName); });
-          _.each(contacts, function(contact) { contact.user = userAssociatedWithContact(contact); });
-          var elapsedSeconds = ( endTime - startTime ) / 1000;
-          console.log("loaded " + contacts.length + " contacts in " + elapsedSeconds + " seconds");
-        },
-        function onError(contactError) {
-          contacts = [];
-          console.log('error retrieving contacts!', contactError);
-        },
-        options
-      );
+      var options = {
+        filter: "",
+        multiple: true,
+        fields:  [ 'displayName', 'name' ]
+      };
+      $cordovaContacts.find(options).then(function onSuccess(rawContacts) {
+        var endTime = new Date();
+        contacts = _.filter(rawContacts, function(contact) {return !s.isBlank(contact.displayName); });
+        _.each(contacts, function(contact) { contact.user = userAssociatedWithContact(contact); });
+        var elapsedSeconds = ( endTime - startTime ) / 1000;
+        console.log("loaded " + contacts.length + " contacts in " + elapsedSeconds + " seconds");
+      },
+      function onError(contactError) {
+        contacts = [];
+        console.log('error retrieving contacts!', contactError);
+      });
     };
 
     var get = function(contactsDataCallback) {

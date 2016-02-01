@@ -49,10 +49,17 @@ angular.module('Publicapp.people', [])
       userFirebaseObjects[userId] = $firebaseObject(Fireb.ref.child("users").child(userId));
     });
 
+    Contacts.get(function(retrievedContacts) {
+      ctrl.contacts = retrievedContacts;
+    })
+
+    ctrl.usingDevice = function() {
+      return ionic.Platform.isWebView();
+    };
+
     ctrl.listenee = function(listeneeStub) {
       return userFirebaseObjects[listeneeStub.$id ];
     };
-
 
     ctrl.showSearchResultsTab = false;
 

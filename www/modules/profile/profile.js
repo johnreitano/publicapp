@@ -32,7 +32,7 @@ angular.module('Publicapp.profile', [])
     })
 }])
 
-.controller('ProfileCtrl', function($scope, $location, SharedMethods, $stateParams, Fireb, $firebaseObject, $firebaseArray, $state, $timeout) {
+.controller('ProfileCtrl', function($scope, $location, SharedMethods, $stateParams, Fireb, $firebaseObject, $firebaseArray, $state, $cordovaNativeAudio) {
   var ctrl = this;
 
   ctrl.userId = $stateParams.id;
@@ -41,8 +41,6 @@ angular.module('Publicapp.profile', [])
   }
 
   angular.extend(ctrl, SharedMethods);
-
-  $scope.ctrl = ctrl; // TODO: remove this?
 
   // retrueve user data for specfied id
   var userRef = Fireb.ref.child('users').child(ctrl.userId);
@@ -61,8 +59,21 @@ angular.module('Publicapp.profile', [])
     return userFirebaseObjects[listenerStub.$id];
   };
 
+  // set up sounds
+  var buzzSound;
+  console.log("sound1");
+  ionic.Platform.ready(function() {
+    console.log("sound2");
+    if (ionic.Platform.isWebView()) {
+      console.log("sound3");
+      $cordovaNativeAudio.preloadSimple('bass', 'sounds/bass.mp3');
+    } else {
+      console.log("sound4");
+      buzzSound = new buzz.sound('/sounds/bass.mp3');
+    }
+  });
+
   ctrl.profileMessages = [];
-  var incomingMessageSound = new buzz.sound('/sounds/dewdrop_touchdown.ogg');
   userRef.child("profileMessageStubs").orderByChild("createdAt").on("child_added", function(snapshot) {
 
     var messageId = snapshot.key();
@@ -74,8 +85,14 @@ angular.module('Publicapp.profile', [])
 
       // play incoming message sound if appropriate
       if (Date.now() - message.createdAt < 30000 && ctrl.userId == ctrl.signedInUserId() && message.authorUserId != ctrl.signedInUserId()) {
-        console.log("gonna try to beep");
-        incomingMessageSound.play();
+
+        if (ionic.Platform.isWebView()) {
+          console.log("gonna try to beep - cordova");
+          $cordovaNativeAudio.play('bass');
+        } else {
+          console.log("gonna try to beep - web");
+          buzzSound.play();
+        }
       }
 
       if (!userFirebaseObjects[message.authorUserId]) {

@@ -230,7 +230,7 @@ angular.module('Publicapp.sharedMethods', [])
   };
 
   function peopleLink() {
-    return window.isCordova ? 'app.people.contacts' : 'app.people.listenees';
+    return ionic.Platform.isWebView() ? 'app.people.contacts' : 'app.people.listenees';
   };
 
   function createMessage(message, callback) {

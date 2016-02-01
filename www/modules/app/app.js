@@ -7,13 +7,9 @@ angular.module('underscore', [])
 
 angular.module('Publicapp', [
   'ionic',
-  'ui.router', // included by ionic
   'firebase',
-  // 'ngCordova',
-  // 'ngCordova.plugins.datePicker',
-  // 'ngCordova.plugins.push',
+  'ngCordova',
   'underscore',
-  // 'ngResource',
   'internationalPhoneNumber',
   'Publicapp.about',
   'Publicapp.auth',
@@ -30,7 +26,7 @@ angular.module('Publicapp', [
 
 .constant('GCM_SENDER_ID', '574597432927')
 
-.run(function($rootScope, $state, $location, Contacts, FeedLoader, $ionicPlatform, $ionicConfig, Fireb) {
+.run(function($rootScope, $state, $location, Contacts, FeedLoader, $ionicConfig, Fireb) {
 
   $rootScope.$on('$stateChangeStart', function(){
      // $rootScope.$broadcast('$routeChangeSuccess');
@@ -60,7 +56,7 @@ angular.module('Publicapp', [
       }
     } else if (toState.name == "app.people") {
       event.preventDefault();
-      if (window.isCordova) {
+      if (ionic.Platform.isWebView()) {
         $state.go('app.people.contacts');
       } else {
         $state.go('app.people.listenees');
@@ -68,9 +64,10 @@ angular.module('Publicapp', [
     }
   });
 
-  Contacts.load(); // TODO: check whether this preloading of the contacts will trigger a warning in iOS
 
-  $ionicPlatform.ready(function() {
+  ionic.Platform.ready(function() {
+    Contacts.load(); // TODO: check whether this preloading of the contacts will trigger a warning in iOS
+
     if(window.cordova && window.cordova.plugins.Keyboard) {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
       // for form inputs)
