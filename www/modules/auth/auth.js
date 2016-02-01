@@ -67,7 +67,7 @@ angular.module('Publicapp.auth', [])
         ctrl.errorMessage = error.reason;
       } else {
         console.log("Authenticated successfully with payload:", authData);
-        $state.go('app.profile.feed', {id: authData.uid});
+        $state.go('app.profile.feed', {id: authData.uid})
       }
     });
   };
@@ -75,7 +75,7 @@ angular.module('Publicapp.auth', [])
   ctrl.signUp = function() {
     if (Fireb.signedIn()) {
       Fireb.ref.unauth();
-    }      email: ctrl.email,
+    }
 
     ctrl.createUser({
       email: ctrl.email,

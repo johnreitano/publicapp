@@ -33,7 +33,7 @@ angular.module('Publicapp', [
 .run(function($rootScope, $state, $location, Contacts, FeedLoader, $ionicPlatform, $ionicConfig, Fireb) {
 
   $rootScope.$on('$stateChangeStart', function(){
-     $rootScope.$broadcast('$routeChangeSuccess');
+     // $rootScope.$broadcast('$routeChangeSuccess');
   });
 
   $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
@@ -45,6 +45,9 @@ angular.module('Publicapp', [
         Fireb.ref.unauth();
       }
       $state.go("app.signIn");
+    } else if (toState.name == "app.start") {
+      event.preventDefault();
+      $state.go("app.profile.feed", toParams);
     } else if (toState.name == "app.profile") {
       if (s.isBlank(toParams.id)) {
         toParams.id = Fireb.signedInUserId()
@@ -53,7 +56,6 @@ angular.module('Publicapp', [
       if (toParams.id == Fireb.signedInUserId()) {
         $state.go("app.profile.feed", toParams);
       } else {
-        event.preventDefault();
         $state.go("app.profile.messages", toParams);
       }
     } else if (toState.name == "app.people") {
@@ -87,20 +89,32 @@ angular.module('Publicapp', [
 })
 
 .config(function($urlRouterProvider, $stateProvider, ipnConfig) {
-    ipnConfig.defaultCountry = 'us';
-    ipnConfig.preferredCountries = ['us', 'ca', 'mx'];
+  ipnConfig.defaultCountry = 'us';
+  ipnConfig.preferredCountries = ['us', 'ca', 'mx'];
 
-    $stateProvider
+  $stateProvider
 
-    .state('app', {
-      url: "",
-      abstract: true,
-      templateUrl: "modules/app/sidemenu.html",
-      controller: 'AppCtrl as app',
-    });
-
-    // $urlRouterProvider.otherwise('/profile/');
+  .state('app', {
+    url: "",
+    abstract: true,
+    templateUrl: "modules/app/sidemenu.html",
+    controller: 'AppCtrl as app',
   })
+
+  .state('app.start', {
+    url: "/start/:id"
+  })
+
+  ;
+
+  // $urlRouterProvider.otherwise('/start');
+
+  $urlRouterProvider.otherwise(function ($injector, $location) {
+    $injector.invoke(function($state, Fireb) {
+      $state.go('app.start', {id: Fireb.signedInUserId()});
+    });
+  });
+})
 
 .controller('AppCtrl', function($scope) {
   ctrl = this;
