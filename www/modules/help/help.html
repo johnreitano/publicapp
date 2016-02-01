@@ -1,6 +1,13 @@
 <ion-view title="Help & Feedback">
+  <ion-nav-title>
+    Help &amp; Feedback
+  </ion-nav-title>
+  <ion-nav-buttons side="right">
+    <button ng-if="vm.signedIn()" class="button button-icon button-clear ion-home" ui-sref="app.profile.feed({id:vm.signedInUserId()})"></button>
+  </ion-nav-buttons>
+
   <ion-content>
-    
+
     <div class="card">
       <div class="item item-text-wrap">
         <p>Thank you for participating in our private beta program.</p>
