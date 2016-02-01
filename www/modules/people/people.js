@@ -165,8 +165,8 @@ angular.module('Publicapp.people', [])
         }
       };
 
-      ctrl.newUser = findMatchingUserBasedOnContact(contact) || { profile: {} };
-      $scope.Ui.turnOn('addUserModal')
+      $scope.newUser = findMatchingUserBasedOnContact(contact) || { profile: {} };
+      $scope.modal.show();
     };
 
     ctrl.showProfileOrOpenAddUserModal = function(contact) {

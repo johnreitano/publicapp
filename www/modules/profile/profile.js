@@ -59,17 +59,19 @@ angular.module('Publicapp.profile', [])
     return userFirebaseObjects[listenerStub.$id];
   };
 
-  // set up sounds
-  var buzzSound;
-  console.log("sound1");
+  // load sounds
+  var webAudio;
   ionic.Platform.ready(function() {
-    console.log("sound2");
     if (ionic.Platform.isWebView()) {
-      console.log("sound3");
-      $cordovaNativeAudio.preloadSimple('bass', 'sounds/bass.mp3');
+    $cordovaNativeAudio
+      .preloadSimple('incoming', 'sounds/dewdrop_touchdown.ogg')
+      .then(function (msg) {
+        console.log("loaded sound: " + msg);
+      }, function (error) {
+        alert(error);
+      });
     } else {
-      console.log("sound4");
-      buzzSound = new buzz.sound('/sounds/bass.mp3');
+      webAudio = new buzz.sound('/sounds/dewdrop_touchdown.ogg');
     }
   });
 
@@ -87,11 +89,14 @@ angular.module('Publicapp.profile', [])
       if (Date.now() - message.createdAt < 30000 && ctrl.userId == ctrl.signedInUserId() && message.authorUserId != ctrl.signedInUserId()) {
 
         if (ionic.Platform.isWebView()) {
-          console.log("gonna try to beep - cordova");
-          $cordovaNativeAudio.play('bass');
+          $cordovaNativeAudio.play('incoming').then(function (msg) {
+            // console.log("played sound: " + msg);
+          }, function (error) {
+            alert(error);
+          });
         } else {
-          console.log("gonna try to beep - web");
-          buzzSound.play();
+          webAudio.play();
+          // console.log("played sound");
         }
       }
 
