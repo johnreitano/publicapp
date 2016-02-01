@@ -318,7 +318,9 @@ angular.module('Publicapp.sharedMethods', [])
       createAssociatedMessageStubs(messageId);
 
       console.log("Succesfully created message with id " + messageId);
-      callback();
+      if (callback) {
+        callback();
+      }
     };
 
     function createAssociatedMessageStubs(messageId) {

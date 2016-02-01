@@ -123,7 +123,7 @@ angular.module('Publicapp.profile', [])
       subjectUserId: ctrl.userId,
       text: ctrl.newMessage
     });
-    ctrl.newMessage = '';
+    ctrl.message = '';
 
     //
     // // scroll to top of posts so you can see new post
