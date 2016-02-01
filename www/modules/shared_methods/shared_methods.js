@@ -192,6 +192,11 @@ angular.module('Publicapp.sharedMethods', [])
     // first add items in memory, so user gets immediate feedback
     var stubsInMemory = signedInUser().listeneeStubs;
     stubsInMemory[targetUser.$id] = {addeAt: Date.now()};
+    if (this.scope) {
+      if(!this.scope.$$phase) {
+        this.scope.$apply();
+      }
+    }
 
     // then update items in db
     $timeout(function() {
@@ -214,6 +219,11 @@ angular.module('Publicapp.sharedMethods', [])
     // first delete item in memory, so user gets immediate feedback
     var stubsInMemory = signedInUser().listeneeStubs;
     delete stubsInMemory[targetUser.$id];
+    if (this.scope) {
+      if(!this.scope.$$phase) {
+        this.scope.$apply();
+      }
+    }
 
     // then update items in db
     $timeout(function() {
