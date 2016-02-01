@@ -122,8 +122,9 @@ angular.module('Publicapp.profile', [])
     ctrl.createMessage({
       subjectUserId: ctrl.userId,
       text: ctrl.newMessage
+    }, function(error) {
+      ctrl.newMessage = '';
     });
-    ctrl.message = '';
 
     //
     // // scroll to top of posts so you can see new post

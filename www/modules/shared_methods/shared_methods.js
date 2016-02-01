@@ -95,6 +95,8 @@ angular.module('Publicapp.sharedMethods', [])
                     subjectUserId: uid,
                     text: faker.directive('lorem')('%w',40),
                     createdAt: recentDate()
+                  }, function(error) {
+                    console.log("got error");
                   });
                 }
 
@@ -123,6 +125,8 @@ angular.module('Publicapp.sharedMethods', [])
                       subjectUserId: subjectUserId,
                       text: faker.directive('lorem')('%w',40),
                       createdAt: recentDate()
+                    }, function(error) {
+                      console.log("got error");
                     });
                   }
                 });
