@@ -32,7 +32,7 @@ angular.module('Publicapp.profile', [])
     })
 }])
 
-.controller('ProfileCtrl', function($scope, $location, SharedMethods, $stateParams, Fireb, $firebaseObject, $firebaseArray, $state) {
+.controller('ProfileCtrl', function($scope, $location, SharedMethods, $stateParams, Fireb, $firebaseObject, $firebaseArray, $state, $timeout) {
   var ctrl = this;
 
   ctrl.userId = $stateParams.id;
@@ -62,13 +62,21 @@ angular.module('Publicapp.profile', [])
   };
 
   ctrl.profileMessages = [];
+  var incomingMessageSound = new buzz.sound('/sounds/dewdrop_touchdown.ogg');
   userRef.child("profileMessageStubs").orderByChild("createdAt").on("child_added", function(snapshot) {
+
     var messageId = snapshot.key();
     ctrl.profileMessages.unshift({$id: messageId});
 
     Fireb.ref.child("messages").child(messageId).once("value", function(messageSnapshot) {
       var message = _.find(ctrl.profileMessages, function(message){ return message.$id == messageSnapshot.key() });
       _.extend(message, messageSnapshot.val());
+
+      // play incoming message sound if appropriate
+      if (Date.now() - message.createdAt < 30000 && ctrl.userId == ctrl.signedInUserId() && message.authorUserId != ctrl.signedInUserId()) {
+        console.log("gonna try to beep");
+        incomingMessageSound.play();
+      }
 
       if (!userFirebaseObjects[message.authorUserId]) {
         userFirebaseObjects[message.authorUserId] = $firebaseObject(Fireb.ref.child("users").child(message.authorUserId));

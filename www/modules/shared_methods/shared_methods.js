@@ -9,7 +9,6 @@ angular.module('Publicapp.sharedMethods', [])
     signedIn: signedIn,
     createdAtRelative: createdAtRelative,
     isListeningTo: isListeningTo,
-    toggleListeningTo: toggleListeningTo,
     startListeningTo: startListeningTo,
     stopListeningTo: stopListeningTo,
     showProfile: showProfile,
@@ -171,38 +170,50 @@ angular.module('Publicapp.sharedMethods', [])
     }
   };
 
-  function toggleListeningTo(targetUser, event) {
-    if (isListeningTo(targetUser)) {
-      stopListeningTo(targetUser);
-    } else {
-      startListeningTo(targetUser);
-    }
+  function startListeningTo(targetUser, event) {
     if (event) {
       event.stopPropagation(); // prevent ng-click of enclosing item from being processed
     }
-  };
 
-  function startListeningTo(targetUser) {
-    var signedInUserRef = Fireb.ref.child("users").child(signedInUserId());
-    var targetUserRef = Fireb.ref.child("users").child(targetUser.$id);
-    if (!isListeningTo(targetUser)) {
+    // first add items in memory, so user gets immediate feedback
+    var stubsInMemory = signedInUser().listeneeStubs;
+    stubsInMemory[targetUser.$id] = {addeAt: Date.now()};
+
+    // then update items in db
+    $timeout(function() {
       // add new listenee to signed-in user
+      var signedInUserRef = Fireb.ref.child("users").child(signedInUserId());
       signedInUserRef.child("listeneeStubs").child(targetUser.$id).set({addedAt: Date.now()});
+
       // add new listener to target user
+      var targetUserRef = Fireb.ref.child("users").child(targetUser.$id);
       targetUserRef.child("listenerStubs").child(signedInUserId()).set({addedAt: Date.now()});
-    }
+    }, 0);
+
   };
 
-  function stopListeningTo(targetUser) {
-    var signedInUserRef = Fireb.ref.child("users").child(signedInUserId());
-    var targetUserRef = Fireb.ref.child("users").child(targetUser.$id);
-    if (isListeningTo(targetUser)) {
-      // remove listenee from signed-in user
-      signedInUserRef.child("listeneeStubs").child(targetUser.$id).remove();
-      // remove listener from target user
-      targetUserRef.child("listenerStubs").child(signedInUserId()).remove();
+  function stopListeningTo(targetUser, event) {
+    if (event) {
+      event.stopPropagation(); // prevent ng-click of enclosing item from being processed
     }
+
+    // first delete item in memory, so user gets immediate feedback
+    var stubsInMemory = signedInUser().listeneeStubs;
+    delete stubsInMemory[targetUser.$id];
+
+    // then update items in db
+    $timeout(function() {
+      // remove listenee from signed-in user
+      var signedInUserRef = Fireb.ref.child("users").child(signedInUserId());
+      signedInUserRef.child("listeneeStubs").child(targetUser.$id).remove();
+
+      // remove listener from target user
+      var targetUserRef = Fireb.ref.child("users").child(targetUser.$id);
+      targetUserRef.child("listenerStubs").child(signedInUserId()).remove();
+    }, 0);
+
   };
+
 
   function generateUsernameOnTheFly(scope, formName) {
     var ctrl = this;
