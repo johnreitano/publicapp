@@ -188,7 +188,7 @@ angular.module('Publicapp.sharedMethods', [])
       // add new listener to target user
       var targetUserRef = Fireb.ref.child("users").child(targetUser.$id);
       targetUserRef.child("listenerStubs").child(signedInUserId()).set({addedAt: Date.now()});
-    }, 0);
+    }, 10);
 
   };
 
@@ -210,7 +210,7 @@ angular.module('Publicapp.sharedMethods', [])
       // remove listener from target user
       var targetUserRef = Fireb.ref.child("users").child(targetUser.$id);
       targetUserRef.child("listenerStubs").child(signedInUserId()).remove();
-    }, 0);
+    }, 10);
 
   };
 
