@@ -36,7 +36,6 @@ angular.module('Publicapp.people', [])
 
   .controller('PeopleCtrl', function($scope, SharedMethods, Contacts, $timeout, $state, Fireb, $firebaseArray, $firebaseObject, $ionicModal) {
     var ctrl = this;
-    ctrl.scope = $scope; // HACK: this is here so that we can call $scope.$apply() in sharedmethods
 
     angular.extend(ctrl, SharedMethods);
 

@@ -189,26 +189,13 @@ angular.module('Publicapp.sharedMethods', [])
       event.stopPropagation(); // prevent ng-click of enclosing item from being processed
     }
 
-    // first add items in memory, so user gets immediate feedback
-    var stubsInMemory = signedInUser().listeneeStubs;
-    stubsInMemory[targetUser.$id] = {addeAt: Date.now()};
-    if (this.scope) {
-      if(!this.scope.$$phase) {
-        this.scope.$apply();
-      }
-    }
+    // add new listenee to signed-in user
+    var signedInUserRef = Fireb.ref.child("users").child(signedInUserId());
+    signedInUserRef.child("listeneeStubs").child(targetUser.$id).set({addedAt: Date.now()});
 
-    // then update items in db
-    $timeout(function() {
-      // add new listenee to signed-in user
-      var signedInUserRef = Fireb.ref.child("users").child(signedInUserId());
-      signedInUserRef.child("listeneeStubs").child(targetUser.$id).set({addedAt: Date.now()});
-
-      // add new listener to target user
-      var targetUserRef = Fireb.ref.child("users").child(targetUser.$id);
-      targetUserRef.child("listenerStubs").child(signedInUserId()).set({addedAt: Date.now()});
-    }, 10);
-
+    // add new listener to target user
+    var targetUserRef = Fireb.ref.child("users").child(targetUser.$id);
+    targetUserRef.child("listenerStubs").child(signedInUserId()).set({addedAt: Date.now()});
   };
 
   function stopListeningTo(targetUser, event) {
@@ -216,26 +203,13 @@ angular.module('Publicapp.sharedMethods', [])
       event.stopPropagation(); // prevent ng-click of enclosing item from being processed
     }
 
-    // first delete item in memory, so user gets immediate feedback
-    var stubsInMemory = signedInUser().listeneeStubs;
-    delete stubsInMemory[targetUser.$id];
-    if (this.scope) {
-      if(!this.scope.$$phase) {
-        this.scope.$apply();
-      }
-    }
+    // remove listenee from signed-in user
+    var signedInUserRef = Fireb.ref.child("users").child(signedInUserId());
+    signedInUserRef.child("listeneeStubs").child(targetUser.$id).remove();
 
-    // then update items in db
-    $timeout(function() {
-      // remove listenee from signed-in user
-      var signedInUserRef = Fireb.ref.child("users").child(signedInUserId());
-      signedInUserRef.child("listeneeStubs").child(targetUser.$id).remove();
-
-      // remove listener from target user
-      var targetUserRef = Fireb.ref.child("users").child(targetUser.$id);
-      targetUserRef.child("listenerStubs").child(signedInUserId()).remove();
-    }, 10);
-
+    // remove listener from target user
+    var targetUserRef = Fireb.ref.child("users").child(targetUser.$id);
+    targetUserRef.child("listenerStubs").child(signedInUserId()).remove();
   };
 
 
