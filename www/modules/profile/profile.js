@@ -34,7 +34,6 @@ angular.module('Publicapp.profile', [])
 
 .controller('ProfileCtrl', function($scope, $location, SharedMethods, $stateParams, Fireb, $firebaseObject, $firebaseArray, $state, $timeout) {
   var ctrl = this;
-  ctrl.scope = $scope; // HACK: this is here so that we can call $scope.$apply() in sharedmethods
 
   ctrl.userId = $stateParams.id;
   if (s.isBlank(ctrl.userId)) {
