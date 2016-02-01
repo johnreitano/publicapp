@@ -25,11 +25,11 @@
 
                   <button class="button button-positive"
                       ng-click="vm.startListeningTo(contact.user, $event)"
-                      ng-show="!vm.isListeningTo(contact.user)">Listen</button>
+                      ng-show="vm.showListenButton(contact.user)">Listen</button>
 
                   <button class="button button-energized"
                       ng-click="vm.stopListeningTo(contact.user, $event, this)"
-                      ng-show="vm.isListeningTo(contact.user)">Unlisten</button>
+                      ng-show="vm.showUnlistenButton(contact.user)">Unlisten</button>
 
                 </div>
               </div>
@@ -49,11 +49,11 @@
 
                 <button class="button button-positive"
                     ng-click="vm.startListeningTo(listeneeStub, $event)"
-                    ng-show="!vm.isListeningTo(listeneeStub)">Listen</button>
+                    ng-show="vm.showListenButton(listeneeStub)">Listen</button>
 
                 <button class="button button-energized"
                     ng-click="vm.stopListeningTo(listeneeStub, $event, this)"
-                    ng-show="vm.isListeningTo(listeneeStub)">Unlisten</button>
+                    ng-show="vm.showUnlistenButton(listeneeStub)">Unlisten</button>
               </div>
             </ion-list>
           </ion-content>
@@ -71,11 +71,11 @@
 
                 <button class="button button-positive"
                     ng-click="vm.startListeningTo(user, $event)"
-                    ng-show="!vm.isListeningTo(user)">Listen</button>
+                    ng-show="vm.showListenButton(user)">Listen</button>
 
                 <button class="button button-energized"
                     ng-click="vm.stopListeningTo(user, $event, this)"
-                    ng-show="vm.isListeningTo(user)">Unlisten</button>
+                    ng-show="vm.showUnlistenButton(user)">Unlisten</button>
 
               </div>
 

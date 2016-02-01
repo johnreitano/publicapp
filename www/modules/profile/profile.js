@@ -58,7 +58,7 @@ angular.module('Publicapp.profile', [])
   });
 
   ctrl.listener = function(listenerStub) {
-    return userFirebaseObjects[listenerStub.$id ];
+    return userFirebaseObjects[listenerStub.$id];
   };
 
   ctrl.profileMessages = [];
@@ -153,6 +153,7 @@ angular.module('Publicapp.profile', [])
     event.preventDefault();
     $state.go("app.messageViaProfile", {profileId: ctrl.userId, id: message.$id});
   };
+
 
 })
 

@@ -74,12 +74,11 @@
 
                 <button class="button button-positive"
                     ng-click="vm.startListeningTo(listenerStub, $event)"
-                    ng-show="!vm.isListeningTo(listenerStub)">Listen</button>
+                    ng-show="vm.showListenButton(listenerStub)">Listen</button>
 
                 <button class="button button-energized"
                     ng-click="vm.stopListeningTo(listenerStub, $event)"
-                    ng-show="vm.isListeningTo(listenerStub)">Unlisten</button>
-
+                    ng-show="vm.showUnlistenButton(listenerStub)">Unlisten</button>
               </div>
 
             </ion-list>

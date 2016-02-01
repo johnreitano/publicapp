@@ -9,6 +9,8 @@ angular.module('Publicapp.sharedMethods', [])
     signedIn: signedIn,
     createdAtRelative: createdAtRelative,
     isListeningTo: isListeningTo,
+    showListenButton: showListenButton,
+    showUnlistenButton: showUnlistenButton,
     startListeningTo: startListeningTo,
     stopListeningTo: stopListeningTo,
     showProfile: showProfile,
@@ -163,6 +165,14 @@ angular.module('Publicapp.sharedMethods', [])
     if (event) {
       event.stopPropagation(); // prevent ng-click of enclosing item from being processed
     }
+  };
+
+  function showListenButton(userStub) {
+    return !isListeningTo(userStub) && userStub.$id != signedInUserId();
+  };
+
+  function showUnlistenButton(userStub) {
+    return isListeningTo(userStub) && userStub.$id != signedInUserId();
   };
 
   function isListeningTo(userStub) {
