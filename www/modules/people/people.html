@@ -6,13 +6,13 @@
     <button class="button button-icon button-clear ion-home" ui-sref="app.profile.feed({id:vm.signedInUserId()})"></button>
   </ion-nav-buttons>
   <ion-pane>
+
     <ion-tabs class="tabs-top bar-positive">
 
       <ion-tab id="contacts-tab" title="Contacts" ng-if="vm.usingDevice()" ui-sref="app.people.contacts">
         <ion-nav-view name="feed">
           <ion-content>
             <div>{{ vm.contacts.length > 0 ? "Select one of the contacts below:" : "You have no contacts" }}</div>
-
 
             <ion-list ng-repeat="contact in vm.contacts | orderBy: '-addedAt'">
               <div class="item item-avatar item-button-right" ng-click="vm.showProfileOrOpenAddUserModal(contact)">
@@ -41,6 +41,18 @@
       <ion-tab id="listenees-tab" title="Listening To" ng-if="true" ui-sref="app.people.listenees">
         <ion-nav-view name="listenees">
           <ion-content>
+
+            <div class="list">
+              <div class="item item-input-inset">
+                <label class="item-input-wrapper">
+                  <input class="search-user" type="text" ng-model="vm.searchText" placeholder="Search for user in Public">
+                </label>
+                <button class="button button-small"
+                        ng-click="vm.search()"
+                        ng-disabled="vm.searchText.length === 0">Submit</button>
+              </div>
+            </div>
+
             <ion-list ng-repeat="listeneeStub in vm.listeneeStubs | orderBy: '-addedAt'">
                 <div class="item item-avatar item-button-right" ng-click="vm.showProfile(listeneeStub)">
                 <img ng-src="{{ vm.listenee(listeneeStub).face }}">
@@ -93,15 +105,6 @@
 
     </ion-tabs>
   </ion-pane>
-
-  <ion-footer-bar align-title="left" class="message-footer bar-positive">
-    <textarea class="search-user-textarea" type="text" ng-model="vm.searchText" placeholder="Search for user in Public"></textarea>
-    <div class="buttons">
-      <button class="button button-light"
-              ng-click="vm.search()"
-              ng-disabled="vm.searchText.length === 0">Search</button>
-    </div>
-  </ion-footer-bar>
 
 </ion-view>
 
