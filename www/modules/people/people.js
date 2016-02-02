@@ -223,6 +223,12 @@ angular.module('Publicapp.people', [])
       $scope.modal.remove();
     });
 
+    $scope.validate = function() {
+      if (!$scope.newUser.name) {
+        return true;
+      }
+    };
+
 
   })
 ;

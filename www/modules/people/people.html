@@ -115,27 +115,27 @@
       <p class="button" ng-click="closeModal()">Cancel</p>
     </ion-header-bar>
     <ion-content>
-      <div class="list">
-      <form name="addUser">
-        <label class="item item-input">
-          <span class="input-label">Name</span>
-          <input type="text" ng-model="newUser.name">
-        </label>
-        <label class="item item-input">
-          <span class="input-label">Email</span>
-          <input type="email" ng-model="newUser.email">
-        </label>
-        <label class="item item-input">
-          <span class="input-label">Mobile</span>
-          <input type="tel" ng-model="newUser.phone">
-        </label>
-        <label class="item item-input">
-          <span class="input-label">Message</span>
-          <input type="text" ng-model="newUser.message" placeholder="Say something to {{ newUser.name }}">
-        </label>
-      </div>
+      <form name="newUserForm">
+        <div class="list form-group">
+          <label class="item item-input">
+            <span class="input-label">Name</span>
+            <input type="text" ng-model="newUser.name">
+          </label>
+          <label class="item item-input">
+            <span class="input-label">Email</span>
+            <input type="email" ng-model="newUser.email">
+          </label>
+          <label class="item item-input">
+            <span class="input-label">Mobile</span>
+            <input type="tel" ng-model="newUser.phone">
+          </label>
+          <label class="item item-input">
+            <span class="input-label">Message</span>
+            <input type="text" ng-model="newUser.message" placeholder="Say something to {{ newUser.name }}">
+          </label>
+        </div>
 
-      <button class="button button-full button-positive" ng-click="addUserToPublic()">Add User</button>
+        <button class="button button-full button-positive" ng-click="addUserToPublic()" ng-disabled="validate()">Add User</button>
       </form>
     </ion-content>
   </div>
