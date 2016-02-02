@@ -89,10 +89,10 @@
     </ion-tabs>
   </ion-pane>
 
-  <ion-footer-bar align-title="left" class="message-footer bar-light">
+  <ion-footer-bar align-title="left" class="message-footer bar-positive">
     <textarea class="post-msg-textarea" type="text" ng-model="vm.newMessage" placeholder="What do you want to say {{ vm.viewingOwnProfile() ? '' : 'to ' + vm.user.name + ' ' }}in Public?"></textarea>
     <div class="buttons">
-      <button class="button button-positive"
+      <button class="button button-light"
               ng-click="vm.sendMessage()">Send</button>
     </div>
   </ion-footer-bar>
