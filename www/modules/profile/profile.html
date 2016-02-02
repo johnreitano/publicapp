@@ -3,7 +3,7 @@
     <div class="user-div">
       <img class="user-avatar" ng-src="{{ vm.user.face }}">
       <div class="user-info">
-        <span class="user-profile-name">{{ vm.user.name }}</span>
+        <span class="user-profile-name" ng-class="{ 'custom': viewingOwnProfile() }">{{ vm.user.name }}</span>
         <p class="user-username">{{ vm.user.username }}</p>
       </div>
     </div>

@@ -27,6 +27,12 @@
 
 }
 
+.item-content h2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .message-footer {
 	height: 3em;
 }
@@ -38,8 +44,8 @@
 	background-color: $positive;
 }
 
-
-::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+// white color placeholder
+.post-msg-textarea::-webkit-input-placeholder { /* Chrome/Opera/Safari */
   color: white !important;
 }
 
@@ -48,3 +54,7 @@
   font-weight: 600;
 }
 
+// custom nav color for viewing someone elses profile
+.custom {
+	color: red;
+}
