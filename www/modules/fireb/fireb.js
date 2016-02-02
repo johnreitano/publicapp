@@ -1,7 +1,7 @@
 angular.module('Publicapp.fireb', [])
 
 .factory('Fireb', function (FeedLoader) {
-  var ref = new Firebase("https//publicapp3.firebaseio.com");
+  var ref = new Firebase("https//publicapp-dev.firebaseio.com");
 
   var _signedInUserId = null;
   var _signedInUser = null;

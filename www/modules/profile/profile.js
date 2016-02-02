@@ -32,7 +32,7 @@ angular.module('Publicapp.profile', [])
     })
 }])
 
-.controller('ProfileCtrl', function($scope, $location, SharedMethods, $stateParams, Fireb, $firebaseObject, $firebaseArray, $state, $cordovaNativeAudio) {
+.controller('ProfileCtrl', function($scope, $location, SharedMethods, $stateParams, Fireb, $firebaseObject, $firebaseArray, $state, $cordovaNativeAudio, MessageData) {
   var ctrl = this;
 
   ctrl.userId = $stateParams.id;
@@ -45,96 +45,55 @@ angular.module('Publicapp.profile', [])
   // retrueve user data for specfied id
   var userRef = Fireb.ref.child('users').child(ctrl.userId);
   ctrl.user = $firebaseObject(userRef);
+  ctrl.listeners = $firebaseArray(userRef.child("listeners"));
 
-  // retrieve listener data
-  var userFirebaseObjects = {};
-  var listenerStubsRef = userRef.child("listenerStubs");
-  ctrl.listenerStubs = $firebaseArray(listenerStubsRef);
-  listenerStubsRef.on("child_added", function(snapshot) {
-    var userId = snapshot.key();
-    userFirebaseObjects[userId] = $firebaseObject(Fireb.ref.child("users").child(userId));
-  });
+  // // retrieve listener data
+  // var userFirebaseObjects = {};
+  // var listenersRef = userRef.child("listeners");
+  // ctrl.listeners = $firebaseArray(listenersRef);
+  //
+  // // retrieve profile messages
+  // var profileMessagesRef = userRef.child("profileMessages");
+  // ctrl.profileMessages = $firebaseArray(profileMessagesRef);
+  //
+  // // retrieve feed messages
+  // var feedMessagesRef = userRef.child("feedMessages");
+  // ctrl.feedMessages = $firebaseArray(feedMessagesRef);
 
-  ctrl.listener = function(listenerStub) {
-    return userFirebaseObjects[listenerStub.$id];
-  };
+  // play incoming message sound for recent messages when viewing signed in users' profile page
+  if (ctrl.userId == ctrl.signedInUserId()) {
 
-  // load sounds
-  var webAudio;
-  ionic.Platform.ready(function() {
-    if (ionic.Platform.isWebView()) {
-    $cordovaNativeAudio
-      .preloadSimple('incoming', 'sounds/dewdrop_touchdown.ogg')
-      .then(function (msg) {
-        console.log("loaded sound: " + msg);
-      }, function (error) {
-        alert(error);
-      });
-    } else {
-      webAudio = new buzz.sound('/sounds/dewdrop_touchdown.ogg');
-    }
-  });
+    // load sounds
+    var webAudio;
+    ionic.Platform.ready(function() {
+      if (ionic.Platform.isWebView()) {
+      $cordovaNativeAudio
+        .preloadSimple('incoming', 'sounds/dewdrop_touchdown.ogg')
+        .then(function (msg) {
+          console.log("loaded sound: " + msg);
+        }, function (error) {
+          alert(error);
+        });
+      } else {
+        webAudio = new buzz.sound('/sounds/dewdrop_touchdown.ogg');
+      }
+    });
 
-  ctrl.profileMessages = [];
-  userRef.child("profileMessageStubs").orderByChild("createdAt").on("child_added", function(snapshot) {
+    userRef.child("profileMessages").orderByChild("createdAt").startAt(Date.now() - 60000).on("child_added", function(snapshot) {
+      var message = snapshot.val();
 
-    var messageId = snapshot.key();
-    ctrl.profileMessages.unshift({$id: messageId});
-
-    Fireb.ref.child("messages").child(messageId).once("value", function(messageSnapshot) {
-      var message = _.find(ctrl.profileMessages, function(message){ return message.$id == messageSnapshot.key() });
-      _.extend(message, messageSnapshot.val());
-
-      // play incoming message sound if appropriate
-      if (Date.now() - message.createdAt < 30000 && ctrl.userId == ctrl.signedInUserId() && message.authorUserId != ctrl.signedInUserId()) {
-
+      if (message.author.userId != ctrl.signedInUserId()) {
         if (ionic.Platform.isWebView()) {
           $cordovaNativeAudio.play('incoming').then(function (msg) {
-            // console.log("played sound: " + msg);
           }, function (error) {
-            alert(error);
+            console.log("got error trying to play sound on cordova")
           });
         } else {
           webAudio.play();
-          // console.log("played sound");
         }
       }
-
-      if (!userFirebaseObjects[message.authorUserId]) {
-        userFirebaseObjects[message.authorUserId] = $firebaseObject(Fireb.ref.child("users").child(message.authorUserId));
-      }
-      if (!userFirebaseObjects[message.subjectUserId]) {
-        userFirebaseObjects[message.subjectUserId] = $firebaseObject(Fireb.ref.child("users").child(message.subjectUserId));
-      }
     });
-  });
-
-  ctrl.feedMessages = [];
-  userRef.child("feedMessageStubs").orderByChild("createdAt").on("child_added", function(snapshot) {
-    var messageId = snapshot.key();
-    ctrl.feedMessages.unshift({$id: messageId});
-
-    Fireb.ref.child("messages").child(messageId).once("value", function(messageSnapshot) {
-      var message = _.find(ctrl.feedMessages, function(message){ return message.$id == messageSnapshot.key() });
-      _.extend(message, messageSnapshot.val());
-
-      if (!userFirebaseObjects[message.authorUserId]) {
-        userFirebaseObjects[message.authorUserId] = $firebaseObject(Fireb.ref.child("users").child(message.authorUserId));
-      }
-      if (!userFirebaseObjects[message.subjectUserId]) {
-        userFirebaseObjects[message.subjectUserId] = $firebaseObject(Fireb.ref.child("users").child(message.subjectUserId));
-      }
-    });
-  });
-
-
-  ctrl.author = function(message) {
-    return userFirebaseObjects[message.authorUserId];
-  };
-
-  ctrl.subject = function(message) {
-    return userFirebaseObjects[message.subjectUserId];
-  };
+  }
 
   ctrl.viewingOwnProfile = function() {
     return !ctrl.userId || !ctrl.signedInUserId() || ctrl.userId == ctrl.signedInUserId();
@@ -168,12 +127,18 @@ angular.module('Publicapp.profile', [])
 
   ctrl.showMessageViaFeed = function(message, event) {
     event.preventDefault();
+    MessageData.message = message;
     $state.go("app.messageViaFeed", {profileId: ctrl.userId, id: message.$id});
   };
 
   ctrl.showMessageViaProfile = function(message, event) {
     event.preventDefault();
+    MessageData.message = message;
     $state.go("app.messageViaProfile", {profileId: ctrl.userId, id: message.$id});
+  };
+
+  ctrl.textWithoutProfileLinks = function(message) {
+    return message.text.replace( /<profile-link[^>]*>/, "" ).replace( /<\/profile-link>/, "" );
   };
 
 

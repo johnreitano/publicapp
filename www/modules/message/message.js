@@ -28,24 +28,71 @@ angular.module('Publicapp.message', [])
 
 }])
 
-.controller('MessageCtrl', function($scope, $stateParams, SharedMethods, Fireb, $firebaseObject) {
+.service('MessageData', function($timeout, $state, Fireb) {
+  var message;
+
+  return {
+    message: message
+  };
+
+})
+
+// .directive('profileLink', function() {
+//   return {
+//     restrict: 'E',
+//     scope: {
+//         uid: '=uid'
+//     },
+//     compile: function(elem) {
+//       var oldText = elem.html();
+//       var newText = "<span class='profile-link' ui-sref='app.profile.feed{id: \"{{uid}}\"}'>" + oldText + "</span>",
+//       elem.replaceWith(newText);
+//     }
+//   };
+// })
+
+// .directive('profileLink', function() {
+//   return {
+//     restrict: 'E',
+//     replace: true,
+//     transclude: true,
+//     scope: {
+//         uid: '=uid'
+//     },
+//     template: "<span class='profile-link' ui-sref='app.profile.feed{id: \"{{uid}}\"}' ng-transclude></span>",
+//   };
+// });
+//
+.controller('MessageCtrl', function($scope, $stateParams, SharedMethods, Fireb, $firebaseObject, MessageData, $sce) {
   var ctrl = this;
 
   angular.extend(ctrl, SharedMethods);
 
-  ctrl.messageId = $stateParams.id;
+  ctrl.message = MessageData.message;
 
-  Fireb.ref.child("messages").child(ctrl.messageId).once("value", function(snapshot) {
-    ctrl.message = snapshot.val();
-    ctrl.createdAtRel = ctrl.createdAtRelative(ctrl.message);
-    var usersRef = Fireb.ref.child("users");
-    ctrl.author = $firebaseObject(usersRef.child(ctrl.message.authorUserId));
-    ctrl.subject = $firebaseObject(usersRef.child(ctrl.message.subjectUserId));
-    var x = 7;
-  });
+  var re = /(<profile-link[^\>]*>[\@_\w \,\.]+<\/profile-link>)/;
+  ctrl.messageParts = ctrl.message.text.replace(re, '|$1|').split("|");
 
+  ctrl.linkText = function(part) {
+    var re = /<profile-link[^\>]*>([\@_\w \,\.]+)<\/profile-link>/;
+    if (re.test(part)) {
+      return RegExp.$1;
+    } else {
+      return null;
+    }
+  };
 
+  ctrl.linkUiSref = function(part) {
+    var re = /<profile-link[^\>]*uid\=[\'\"]([\w-]+)[\'\"][^\>]*>[\@_\w \,\.]+<\/profile-link>/;
+    if (re.test(part)) {
+      var uid = RegExp.$1
+      return "app.profile.messages({id: '" + uid + "'})";
+    } else {
+      return null;
+    }
+  };
 
+  var x = 7;
 })
 
 ;

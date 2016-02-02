@@ -14,6 +14,7 @@
     "underscore.string": "~3.2.3",
     "font-awesome": "fontawesome#~4.5.0",
     "buzz": "~1.1.10",
-    "ngCordova": "~0.1.24-alpha"
+    "ngCordova": "~0.1.24-alpha",
+    "angular-moment": "~0.10.3"
   }
 }

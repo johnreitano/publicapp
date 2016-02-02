@@ -8,17 +8,24 @@
     <div class="list card">
 
       <div class="item item-avatar">
-        <img ng-src="{{ vm.author.face }}" ui-sref="app.profile({id: vm.message.authorUserId})">
-        <strong ui-sref="app.profile({id: vm.message.authorUserId})">{{ vm.author.name }}</strong> said
-        <span ng-if="vm.message.authorUserId != vm.message.subjectUserId">
-          to <strong ui-sref="app.profile({id: vm.message.subjectUserId})">{{ vm.subject.name || vm.subject.username }}</strong>
+        <img ng-src="{{ vm.message.author.face }}" ui-sref="app.profile({id: vm.message.author.userId})">
+        <strong ui-sref="app.profile({id: vm.message.author.userId})">{{ vm.message.author.name }}</strong> said
+        <span ng-if="vm.message.author.userId != vm.message.subject.userId">
+          to <strong ui-sref="app.profile({id: vm.message.subject.userId})">{{ vm.message.subject.name || vm.message.subject.username }}</strong>
         </span>
-        <span class="message-created-at">{{ vm.createdAtRel }}</span>
+        <span class="message-created-at" am-time-ago="vm.message.createdAt"></span>
       </div>
 
       <div class="item item-body">
         <p>
-          {{ vm.message.text }}
+          <span ng-repeat="messagePart in vm.messageParts">
+            <span ng-if="vm.linkUiSref(messagePart)" ui-sref="{{vm.linkUiSref(messagePart)}}">
+              {{ vm.linkText(messagePart) }}
+            </span>
+            <span ng-if="!vm.linkUiSref(messagePart)">
+              {{ messagePart }}
+            </span>
+          <span>
         </p>
         <!-- <p>
           <a href="#" class="subdued"><i class="fa fa-thumbs-up"></i> 1 Like</a>

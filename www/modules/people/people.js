@@ -40,14 +40,7 @@ angular.module('Publicapp.people', [])
     angular.extend(ctrl, SharedMethods);
 
     var userRef = Fireb.ref.child("users").child(Fireb.signedInUserId());
-
-    var userFirebaseObjects = {};
-    var listeneeStubsRef = userRef.child("listeneeStubs");
-    ctrl.listeneeStubs = $firebaseArray(listeneeStubsRef);
-    listeneeStubsRef.on("child_added", function(snapshot) {
-      var userId = snapshot.key();
-      userFirebaseObjects[userId] = $firebaseObject(Fireb.ref.child("users").child(userId));
-    });
+    ctrl.listenees = $firebaseArray(userRef.child("listenees"));
 
     Contacts.get(function(retrievedContacts) {
       ctrl.contacts = retrievedContacts;
@@ -55,10 +48,6 @@ angular.module('Publicapp.people', [])
 
     ctrl.usingDevice = function() {
       return ionic.Platform.isWebView();
-    };
-
-    ctrl.listenee = function(listeneeStub) {
-      return userFirebaseObjects[listeneeStub.$id ];
     };
 
     ctrl.showSearchResultsTab = false;
