@@ -21,7 +21,7 @@
         <ion-nav-view name="feed">
           <ion-content>
             <ion-list ng-repeat="message in vm.user.feedMessages | orderBy: '-createdAt'">
-              <div class="item item-avatar" ng-click="vm.showMessageViaFeed(message, $event)">
+              <div class="item item-profile-message item-avatar" ng-click="vm.showMessageViaFeed(message, $event)">
                 <img ng-src="{{ message.author.face }}">
                 <div>
                   <h2>
@@ -46,7 +46,7 @@
         <ion-nav-view name="messages">
           <ion-content>
             <ion-list ng-repeat="message in vm.user.profileMessages | orderBy: '-createdAt'">
-              <div class="item item-avatar" ng-click="vm.showMessageViaProfile(message, $event)">
+              <div class="item item-profile-message item-avatar" ng-click="vm.showMessageViaProfile(message, $event)">
                 <img ng-src="{{ message.author.face }}">
                 <div>
                   <h2>
