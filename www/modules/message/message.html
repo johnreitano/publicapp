@@ -10,6 +10,7 @@
       <div class="item item-avatar">
         <img ng-src="{{ vm.message.author.face }}" ui-sref="app.profile({id: vm.message.author.userId})">
         <strong ui-sref="app.profile({id: vm.message.author.userId})">{{ vm.message.author.name }}</strong> said
+        <br>
         <span ng-if="vm.message.author.userId != vm.message.subject.userId">
           to <strong ui-sref="app.profile({id: vm.message.subject.userId})">{{ vm.message.subject.name || vm.message.subject.username }}</strong>
         </span>
