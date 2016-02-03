@@ -27,8 +27,12 @@
 
 }
 
-.item h2 {
+.item h2, p {
  	white-space: initial !important;
+}
+
+.item p {
+	height: 3em;
 }
 
 .message-footer {

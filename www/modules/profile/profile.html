@@ -31,7 +31,7 @@
                     <span class="message-created-at" am-time-ago="message.createdAt"></span>
                   </h2>
                   <p>
-                    <em>{{ vm.textWithoutProfileLinks(message) }}</em>
+                    <em>{{ vm.textWithoutProfileLinks(message) | limitTo: 80 }}...</em>
                   </p>
                 </div>
               </div>
@@ -56,7 +56,7 @@
                     <span class="message-created-at" am-time-ago="message.createdAt"></span>
                   </h2>
                   <p>
-                    <em>{{ vm.textWithoutProfileLinks(message) }}</em>
+                    <em>{{ vm.textWithoutProfileLinks(message) | limitTo: 80 }}...</em>
                   </p>
                 </div>
               </div>
