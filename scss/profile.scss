@@ -32,7 +32,7 @@
 }
 
 .item p {
-	height: 3em;
+	height: 4em;
 }
 
 .message-footer {
@@ -42,22 +42,16 @@
 .post-msg-textarea {
 	resize: none;
 	width: 100%;
-	color: white;
-	background-color: $positive;
+	background-color: #CECECE;
 	padding: 0.5em;
 }
 
 // white color placeholder
 .post-msg-textarea::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-  color: white !important;
+  color: black !important;
 }
 
 .tab-item-active .tab-title {
   color: $positive !important;
   font-weight: 600;
-}
-
-// custom nav color for viewing someone elses profile
-.custom {
-	color: red;
 }
