@@ -23,14 +23,14 @@
       <ion-tab id="feed-tab" title="Newsfeed" ng-if="vm.viewingOwnProfile()" ui-sref="app.profile.feed">
         <ion-nav-view name="feed">
           <ion-content>
-            <ion-list ng-repeat="message in vm.user.feedMessages | orderBy: '-createdAt'">
+            <ion-list ng-repeat="message in vm.user.feedMessages">
               <div class="item item-profile-message item-avatar" ng-click="vm.showMessageViaFeed(message, $event)">
                 <img ng-src="{{ message.author.face }}">
                 <div>
                   <h2>
                     <strong>{{ message.author.name }}</strong> said
                     <br>
-                    <span ng-if="message.author.userId != message.subjectUserId">
+                    <span ng-if="message.author.id != message.subject.id">
                       to <strong>{{ message.subject.name || message.subject.username }}</strong>
                     </span>
                     <span class="message-created-at" am-time-ago="message.createdAt"></span>
@@ -48,14 +48,14 @@
       <ion-tab id="messages-tab" title="{{ vm.viewingOwnProfile() ? 'Your Messages' : 'Messages' }}" ng-if="true" ui-sref="app.profile.messages">
         <ion-nav-view name="messages">
           <ion-content>
-            <ion-list ng-repeat="message in vm.user.profileMessages | orderBy: '-createdAt'">
+            <ion-list ng-repeat="message in vm.user.profileMessages">
               <div class="item item-profile-message item-avatar" ng-click="vm.showMessageViaProfile(message, $event)">
                 <img ng-src="{{ message.author.face }}">
                 <div>
                   <h2>
                     <strong>{{ message.author.name }}</strong> said
                     <br>
-                    <span ng-if="message.author.userId != message.subjectUserId">
+                    <span ng-if="message.author.id != message.subject.id">
                       to <strong>{{ message.subject.name || message.subject.username }}</strong>
                     </span>
                     <span class="message-created-at" am-time-ago="message.createdAt"></span>
@@ -73,8 +73,8 @@
       <ion-tab id="listeners-tab" title="Listeners" ng-if="true" ui-sref="app.profile.listeners">
         <ion-nav-view name="listeners">
           <ion-content>
-            <ion-list ng-repeat="listener in vm.listeners | orderBy: '-addedAt'">
-                <div class="item item-avatar item-button-right" ng-click="vm.showProfile(listener)">
+            <ion-list ng-repeat="listener in vm.user.listeners | orderBy: '-addedAt'">
+              <div class="item item-avatar item-button-right" ui-sref="app.profile({id: listener.id})">
                 <img ng-src="{{ listener.face }}">
                 <h2>{{ listener.name }}</h2>
                 <h2>{{ listener.username }}</h2>

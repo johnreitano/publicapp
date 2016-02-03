@@ -1,3 +1,4 @@
 excludeInFolderSearch = "{$excludeInFolderSearch,bower_components,_site,node_modules,www/lib,.meteor,platforms,plugins}"
 include = "{$include,.gitignore,.htpasswd}"
 excludeInFileChooser = "{$exclude,$excludeInFolderSearch}"
+exclude = "{$exclude,.git,*.orig}"

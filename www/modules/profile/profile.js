@@ -45,20 +45,6 @@ angular.module('Publicapp.profile', [])
   // retrueve user data for specfied id
   var userRef = Fireb.ref.child('users').child(ctrl.userId);
   ctrl.user = $firebaseObject(userRef);
-  ctrl.listeners = $firebaseArray(userRef.child("listeners"));
-
-  // // retrieve listener data
-  // var userFirebaseObjects = {};
-  // var listenersRef = userRef.child("listeners");
-  // ctrl.listeners = $firebaseArray(listenersRef);
-  //
-  // // retrieve profile messages
-  // var profileMessagesRef = userRef.child("profileMessages");
-  // ctrl.profileMessages = $firebaseArray(profileMessagesRef);
-  //
-  // // retrieve feed messages
-  // var feedMessagesRef = userRef.child("feedMessages");
-  // ctrl.feedMessages = $firebaseArray(feedMessagesRef);
 
   // play incoming message sound for recent messages when viewing signed in users' profile page
   if (ctrl.userId == ctrl.signedInUserId()) {
@@ -82,7 +68,7 @@ angular.module('Publicapp.profile', [])
     userRef.child("profileMessages").orderByChild("createdAt").startAt(Date.now() - 60000).on("child_added", function(snapshot) {
       var message = snapshot.val();
 
-      if (message.author.userId != ctrl.signedInUserId()) {
+      if (message.author.id != ctrl.signedInUserId()) {
         if (ionic.Platform.isWebView()) {
           $cordovaNativeAudio.play('incoming').then(function (msg) {
           }, function (error) {
@@ -101,6 +87,7 @@ angular.module('Publicapp.profile', [])
 
   ctrl.sendMessage = function() {
     ctrl.createMessage({
+      subject: ctrl.user,
       subjectUserId: ctrl.userId,
       text: ctrl.newMessage
     }, function(error) {

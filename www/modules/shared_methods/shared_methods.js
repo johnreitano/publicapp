@@ -43,7 +43,7 @@ angular.module('Publicapp.sharedMethods', [])
         remainingItemsInStep = _.keys(oldUsers).length;
 
         _.each(oldUsers, function(oldUser, userId) {
-          Fireb.ref.removeUser({email: oldUser.emailCopy, password: "123"}, function(error) {
+          Fireb.ref.removeUser({email: oldUser.emailCopy || oldUser.email, password: "123"}, function(error) {
             if (error && !/The specified user does not exist/.test(error)) {
               console.log("unable to remove user!", error);
               // return;
@@ -99,11 +99,11 @@ angular.module('Publicapp.sharedMethods', [])
           createdAt: recentDate()
         });
 
-        createUser(userDataRecord, function(error, userId) {
+        createUser(userDataRecord, true, function(error, newUser) {
           if (error) {
             console.log("got error creating user", error)
           } else {
-            newUsers[userId] = userDataRecord;
+            newUsers[newUser.id] = newUser;
           }
           nextStepIfDone();
         });
@@ -164,7 +164,7 @@ angular.module('Publicapp.sharedMethods', [])
 
   function showProfile(user, event) {
     if (user) {
-      $state.go( "app.profile", { id: user.$id } );
+      $state.go( "app.profile", { id: user.id } );
     }
     if (event) {
       event.stopPropagation(); // prevent ng-click of enclosing item from being processed
@@ -172,17 +172,17 @@ angular.module('Publicapp.sharedMethods', [])
   };
 
   function showListenButton(user) {
-    return !isListeningTo(user) && user.$id != signedInUserId();
+    return !isListeningTo(user) && user.id != signedInUserId();
   };
 
   function showUnlistenButton(user) {
-    return isListeningTo(user) && user.$id != signedInUserId();
+    return isListeningTo(user) && user.id != signedInUserId();
   };
 
   function isListeningTo(user) {
     if (signedInUser()) {
       var keys = _.keys(signedInUser().listenees);
-      return keys.indexOf(user.$id) != -1
+      return keys.indexOf(user.id) != -1
     } else {
       return false;
     }
@@ -197,18 +197,15 @@ angular.module('Publicapp.sharedMethods', [])
   }
 
   function startListeningToTargetBySource(sourceUser, targetUser, addedAt) {
-    sourceUserId = sourceUser.$id || sourceUser.userId || signedInUserId();
-    targetUserId = targetUser.$id || targetUser.userId
-
     // add new listenee to source user
-    listeneeRecord = {addedAt: addedAt, name: targetUser.name, username: targetUser.username, face: targetUser.face};
-    var sourceUserRef = Fireb.ref.child("users").child(sourceUserId);
-    sourceUserRef.child("listenees").child(targetUserId).set(listeneeRecord);
+    listeneeRecord = {id: targetUser.id, addedAt: addedAt, name: targetUser.name, username: targetUser.username, face: targetUser.face};
+    var sourceUserRef = Fireb.ref.child("users").child(sourceUser.id);
+    sourceUserRef.child("listenees").child(targetUser.id).set(listeneeRecord);
 
     // add new listener to target user
-    listenerRecord = {addedAt: addedAt, name: sourceUser.name, username: sourceUser.username, face: sourceUser.face};
-    var targetUserRef = Fireb.ref.child("users").child(targetUserId);
-    targetUserRef.child("listeners").child(sourceUserId).set(listenerRecord);
+    listenerRecord = {id: sourceUser.id, addedAt: addedAt, name: sourceUser.name, username: sourceUser.username, face: sourceUser.face};
+    var targetUserRef = Fireb.ref.child("users").child(targetUser.id);
+    targetUserRef.child("listeners").child(sourceUser.id).set(listenerRecord);
   };
 
   function stopListeningTo(targetUser, event) {
@@ -295,15 +292,11 @@ angular.module('Publicapp.sharedMethods', [])
       }
       numUsernamesLeftToProcess = newMentionedUsernames.length;
       for (var i = 0; i < newMentionedUsernames.length; i++ ) {
-        mentionedUsername = newMentionedUsernames[i];
-        var newUser = {
-          username: mentionedUsername
-        };
-        createUser(newUser, function(error, uid) {
+        createUser({username: newMentionedUsernames[i]}, false, function(error, newUser) {
           if (error) {
-            console.log("got an error creating users");
+            console.log("got an error creating user with username", newMentionedUsernames[i]);
           } else {
-            mentionedUsers[uid] = newUser;
+            mentionedUsers[newUser.id] = newUser;
           }
           storeMessageIfReady();
         });
@@ -322,52 +315,34 @@ angular.module('Publicapp.sharedMethods', [])
       _.each(mentionedUsers, function(mentionedUser, mentionedUserId) {
         var re = new RegExp(mentionedUser.username, 'ig');
         var nameAndUsername = s.isBlank(mentionedUser.name) ? mentionedUser.name + " " + mentionedUser.username : mentionedUser.username;
-        var linkText = "<profile-link uid='" + mentionedUserId + "'>" + nameAndUsername + "</profile-link>";
+        var linkText = "<profile-link data-user-id='" + mentionedUserId + "'>" + nameAndUsername + "</profile-link>";
         message.text = message.text.replace( re, linkText);
       });
 
       message.createdAt = message.createdAt || Date.now();
       if (message.author) {
-        message.author.userId = message.authorUserId;
+        message.author.id = message.authorUserId;
       } else {
         message.author = signedInUser();
-        message.author.userId = message.signedInUserId();
+        message.author.id = signedInUserId();
       }
-      message.subject.userId = message.subjectUserId;
+      message.subject.id = message.subjectUserId;
 
-      messageFields = [ "author", "subject", "text", "createdAt"];
-      message = _.pick(message, messageFields);
-      _.each(messageFields, function(field) {
-        if (!message[field]) {
-          console.log("error: field " + field + " missing from message");
-        }
-      });
-
-      userFields = ["name", "username", "face", "userId"];
-      message.author = _.pick(message.author, userFields);
-      _.each(userFields, function(field) {
-        if (!message.author[field]) {
-          console.log("error: field " + field + " missing from message author");
-        }
-      });
-      message.subject = _.pick(message.subject, userFields);
-      _.each(userFields, function(field) {
-        if (!message.subject[field]) {
-          console.log("error: field " + field + " missing from message subject");
-        }
-      });
+      message = ensureCorrectFieldsPresent(message, [ "author", "subject", "text", "createdAt"]);
+      message.author = ensureCorrectFieldsPresent(message.author, ["name", "username", "face", "id"]);
+      message.subject = ensureCorrectFieldsPresent(message.subject, ["name", "username", "face", "id"]);
 
       var usersRef = Fireb.ref.child("users");
-      var ref = usersRef.child(message.author.userId).child("profileMessages").push({});
+      var ref = usersRef.child(message.author.id).child("profileMessages").push({});
       var messageId = ref.key();
 
       var mentionedUserIds = _.keys(mentionedUsers);
-      var associatedUserIds = _.uniq([message.author.userId, message.subject.userId].concat(mentionedUserIds));
+      var associatedUserIds = _.uniq([message.author.id, message.subject.id].concat(mentionedUserIds));
       _.each(associatedUserIds, function(associatedUserId, index) {
-        usersRef.child(associatedUserId).child("profileMessages").child(messageId).set(message);
+        usersRef.child(associatedUserId).child("profileMessages").child(messageId).setWithPriority(message, 0 - message.createdAt);
       });
 
-      if (message.author.userId != message.subject.userId) {
+      if (message.author.id != message.subject.id) {
         startListeningToTargetBySource(message.author, message.subject, message.createdAt);
       }
 
@@ -379,42 +354,69 @@ angular.module('Publicapp.sharedMethods', [])
 
   };
 
-  function createUser(user, callback) {
-    user.email = s.isBlank(user.email) ? username.replace(/\@/,'') + "@users.getpublic.co" : user.email;
-    user.password = s.isBlank(user.password) ? Math.random().toString().slice(2,12) : user.password;
-    Fireb.ref.createUser(user, function(error, userData) {
-      if (error) {
-        console.log(error);
-        callback(error, null);
-        return;
-      }
-      console.log("Successfully created user account with uid:", userData.uid);
+  function createUser(userInfo, allowEmailReUse, callback) {
 
-      user.username = s.isBlank(user.username) ? generateUsername(user.name) : user.username;
-      user.face = s.isBlank(user.face) ?  generateFaceUrl(user.name, user.username) : user.face;
-      user.admin = user.admin ? true : false;
-      user.createdAt = user.createdAt || Date.now();
-      user.emailCopy = user.email
-      fields = [ "admin", "createdAt", "name", "username", "face", "phone", "emailCopy"];
-      var sanitizedUUser = _.pick(user, fields);
-      _.each(fields, function(field) {
-        if (_.isUndefined(sanitizedUUser[field]) || _.isNull(sanitizedUUser[field])) {
-          console.log("error: field " + field + " missing from user");
-        }
-      });
+    function createUserProfile(newUser, uid, callback) {
+      console.log("Successfully created user account with user id:", uid);
 
-      Fireb.ref.child("users").child(userData.uid).set(sanitizedUUser, function(error) {
+      newUser.id = uid;
+      newUser.username = s.isBlank(newUser.username) ? generateUsername(newUser.name) : newUser.username;
+      newUser.face = s.isBlank(newUser.face) ?  generateFaceUrl(newUser.name, newUser.username) : newUser.face;
+      newUser.admin = newUser.admin ? true : false;
+      newUser.createdAt = newUser.createdAt || Date.now();
+
+      ensureCorrectFieldsPresent( newUser, [ "id", "admin", "createdAt", "name", "newUsername", "face", "phone", "email"])
+
+      Fireb.ref.child("users").child(newUser.id).set(newUser, function(error) {
         if (error) {
           console.log('error saving profile data', error);
-        } else {
-          console.log('successfully saved profile data');
+          callback(error, null);
+          return
         }
-        callback(error, userData.uid);
-      })
+        console.log('successfully saved profile data');
+        callback(null, newUser);
+      });
+    };
+
+    var newUser = _.clone(userInfo);
+    newUser.email = s.isBlank(newUser.email) ? username.replace(/\@/,'') + "@users.getpublic.co" : newUser.email;
+    newUser.password = s.isBlank(newUser.password) ? Math.random().toString().slice(2,12) : newUser.password;
+    Fireb.ref.createUser(newUser, function(error, userData) {
+
+      if (error) {
+        if (allowEmailReUse && /specified email address is already in use/.test(error)) {
+          Fireb.ref.authWithPassword({
+            email: newUser.email,
+            password : "123"
+          }, function(error, authData) {
+            if (error) {
+              console.log("Login Failed!", error);
+              callback(error, null);
+              return;
+            }
+            createUserProfile(newUser, authData.uid, callback);
+          });
+        } else {
+          console.log(error);
+          callback(error, null);
+        }
+      } else {
+        createUserProfile(newUser, userData.uid, callback);
+      }
     });
   };
 
   ////
+
+  function ensureCorrectFieldsPresent( object, fieldNames) {
+    object = _.pick(object, fieldNames);
+    _.each(fieldNames, function(fieldName) {
+      if (_.isUndefined(object[fieldName]) || _.isNull(object[fieldName])) {
+        console.log("error: field " + fieldName + " missing from object", object);
+      }
+    });
+    return object;
+  };
 
   function generateUsername( name ) {
     return "@" + ( name || "" ).replace(/[\ \@]/g,"").toLowerCase(); // TODO: remove nonalpha characters

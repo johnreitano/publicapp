@@ -188,14 +188,14 @@ angular.module('Publicapp.people', [])
         email: $scope.newUser.email,
         phone: $scope.newUser.phone
       };
-      SharedMethods.createUser(user, function(error) {
+      SharedMethods.createUser(user, false, function(error, newUser) {
         if (error) {
           console.log("got an error creating user");
           return;
         }
-        SharedMethods.startListeningTo(user);
+        SharedMethods.startListeningTo(newUser);
         SharedMethods.createMessage({
-          subjectUserId: user.$id,
+          subject: newUser,
           text: $scope.newUser.message
         }, function(error) {
           if (error) {

@@ -83,7 +83,7 @@ angular.module('Publicapp.auth', [])
       phone: ctrl.phone,
       name: ctrl.name,
       username: ctrl.username
-    }, function(error) {
+    }, false, function(error, newUser) {
       if (error) {
         ctrl.errorMessage = error.message;
       } else {
