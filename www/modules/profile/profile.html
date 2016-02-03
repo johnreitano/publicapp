@@ -24,6 +24,7 @@
                 <div>
                   <h2>
                     <strong>{{ message.author.name }}</strong> said
+                    <br>
                     <span ng-if="message.author.userId != message.subjectUserId">
                       to <strong>{{ message.subject.name || message.subject.username }}</strong>
                     </span>
@@ -48,6 +49,7 @@
                 <div>
                   <h2>
                     <strong>{{ message.author.name }}</strong> said
+                    <br>
                     <span ng-if="message.author.userId != message.subjectUserId">
                       to <strong>{{ message.subject.name || message.subject.username }}</strong>
                     </span>
@@ -90,7 +92,7 @@
   </ion-pane>
 
   <ion-footer-bar align-title="left" class="message-footer bar-positive">
-    <textarea class="post-msg-textarea" type="text" ng-model="vm.newMessage" placeholder="What do you want to say {{ vm.viewingOwnProfile() ? '' : 'to ' + vm.user.name + ' ' }}in Public?"></textarea>
+    <textarea class="post-msg-textarea" type="text" ng-model="vm.newMessage" placeholder="Say something {{ vm.viewingOwnProfile() ? '' : 'to ' + vm.user.name + ' ' }}in Public"></textarea>
     <div class="buttons">
       <button class="button button-light"
               ng-click="vm.sendMessage()">Send</button>
