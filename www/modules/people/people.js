@@ -50,7 +50,7 @@ angular.module('Publicapp.people', [])
       return ionic.Platform.isWebView();
     };
 
-    ctrl.showSearchResultsTab = false;
+    ctrl.showSearchResultsMsg = false;
 
     ctrl.search = function() {
       var normalizedSearchText = s.trim(ctrl.searchText).replace(/ +/g,' ').replace(/@/,'');
@@ -66,7 +66,11 @@ angular.module('Publicapp.people', [])
         query = usersRef.orderByChild("username").startAt(username).endAt(username);
         ctrl.searchResults = $firebaseArray(query);
       }
-      ctrl.showSearchResultsTab = true;
+
+      ctrl.showSearchResultsMsg = true;
+
+      ctrl.searchText = '';
+      
       $state.go( "app.people.searchResults" );
 
     };
