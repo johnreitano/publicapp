@@ -215,10 +215,10 @@ angular.module('Publicapp.sharedMethods', [])
 
     // remove listenee from signed-in user
     var signedInUserRef = Fireb.ref.child("users").child(signedInUserId());
-    signedInUserRef.child("listenees").child(targetUser.$id).remove();
+    signedInUserRef.child("listenees").child(targetUser.id).remove();
 
     // remove listener from target user
-    var targetUserRef = Fireb.ref.child("users").child(targetUser.$id);
+    var targetUserRef = Fireb.ref.child("users").child(targetUser.id);
     targetUserRef.child("listeners").child(signedInUserId()).remove();
   };
 
