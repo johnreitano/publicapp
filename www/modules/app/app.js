@@ -28,11 +28,11 @@ angular.module('Publicapp', [
 
 .constant('GCM_SENDER_ID', '574597432927')
 
-.run(function($rootScope, $state, $location, Contacts, FeedLoader, $ionicConfig, Fireb, $ionicPlatform, $ionicPopup) {
+.run(function($rootScope, $state, $stateParams, $location, Contacts, FeedLoader, $ionicConfig, Fireb, $ionicPlatform, $ionicPopup, $ionicHistory, $ionicSideMenuDelegate) {
 
   // Disable BACK button on home
   $ionicPlatform.registerBackButtonAction(function(event) {
-    if (/^app.profile/.test($state.current.name)) {
+    if (/^app.profile/.test($state.current.name) && $stateParams.id == Fireb.signedInUserId()) {
       $ionicPopup.confirm({
         title: 'Leaving Public',
         template: 'Are you sure you want to quit?'
@@ -41,6 +41,8 @@ angular.module('Publicapp', [
           ionic.Platform.exitApp();
         }
       })
+    } else {
+      $ionicHistory.goBack();
     }
   }, 100);
 
