@@ -110,7 +110,7 @@
     <textarea class="post-msg-textarea" type="text" ng-model="vm.newMessage" placeholder="Say something {{ vm.viewingOwnProfile() ? '' : 'to ' + vm.user.name + ' ' }}in Public"></textarea>
     <div class="buttons">
       <button class="button button-light"
-              ng-click="vm.sendMessage()">Send</button>
+              ng-click="vm.sendMessage($event)">Send</button>
     </div>
   </ion-footer-bar>
 

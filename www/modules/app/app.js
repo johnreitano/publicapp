@@ -28,7 +28,21 @@ angular.module('Publicapp', [
 
 .constant('GCM_SENDER_ID', '574597432927')
 
-.run(function($rootScope, $state, $location, Contacts, FeedLoader, $ionicConfig, Fireb) {
+.run(function($rootScope, $state, $location, Contacts, FeedLoader, $ionicConfig, Fireb, $ionicPlatform, $ionicPopup) {
+
+  // Disable BACK button on home
+  $ionicPlatform.registerBackButtonAction(function(event) {
+    if (/^app.profile/.test($state.current.name)) {
+      $ionicPopup.confirm({
+        title: 'Leaving Public',
+        template: 'Are you sure you want to quit?'
+      }).then(function(res) {
+        if (res) {
+          ionic.Platform.exitApp();
+        }
+      })
+    }
+  }, 100);
 
   $rootScope.$on('$stateChangeStart', function(){
      // $rootScope.$broadcast('$routeChangeSuccess');
