@@ -14,11 +14,11 @@
     <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
   </ion-nav-buttons>
   <ion-nav-buttons side="right">
-    <button class="button button-icon button-clear ion-person-stalker"        ui-sref="app.people" 
+    <button class="button button-icon button-clear ion-person-stalker"        ui-sref="app.people"
             ng-if="vm.viewingOwnProfile()"></button>
 
     <button class="button button-icon button-clear ion-home" ui-sref="app.profile.feed({id:vm.signedInUserId()})" ng-show="!vm.viewingOwnProfile()"></button>
-    
+
     <button class="button button-light"
             ng-click="vm.startListeningTo(vm.user, $event)"
             ng-show="vm.showListenButton(vm.user)">Listen</button>
@@ -48,7 +48,7 @@
                     <span class="message-created-at" am-time-ago="message.createdAt"></span>
                   </h2>
                   <p>
-                    <em>{{ vm.textWithoutProfileLinks(message) | limitTo: 125 }}</em><span ng-if="vm.textWithoutProfileLinks(message).length > 40">...</span>
+                    <em>{{ vm.textWithoutProfileLinks(message) | limitTo: 125 }}</em><span ng-if="vm.textWithoutProfileLinks(message).length >= 125">...</span>
                   </p>
                 </div>
               </div>

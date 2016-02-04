@@ -70,29 +70,28 @@ angular.module('Publicapp.message', [])
 
   ctrl.message = MessageData.message;
 
-  var re = /(<profile-link[^\>]*>[\@_\w \,\.]+<\/profile-link>)/;
-  ctrl.messageParts = ctrl.message.text.replace(re, '|$1|').split("|");
-
-  ctrl.linkText = function(part) {
-    var re = /<profile-link[^\>]*>([\@_\w \,\.]+)<\/profile-link>/;
-    if (re.test(part)) {
-      return RegExp.$1;
-    } else {
-      return null;
-    }
-  };
-
-  ctrl.linkUiSref = function(part) {
-    var re = /<profile-link[^\>]*uid\=[\'\"]([\w-]+)[\'\"][^\>]*>[\@_\w \,\.]+<\/profile-link>/;
-    if (re.test(part)) {
-      var uid = RegExp.$1
-      return "app.profile.messages({id: '" + uid + "'})";
-    } else {
-      return null;
-    }
-  };
-
-  var x = 7;
+  // var re = /(<profile-link[^\>]*>[\@_\w \,\.]+<\/profile-link>)/;
+  // ctrl.messageParts = ctrl.message.text.replace(re, '|$1|').split("|");
+  //
+  // ctrl.linkText = function(part) {
+  //   var re = /<profile-link[^\>]*>([\@_\w \,\.]+)<\/profile-link>/;
+  //   if (re.test(part)) {
+  //     return RegExp.$1;
+  //   } else {
+  //     return null;
+  //   }
+  // };
+  //
+  // ctrl.linkUiSref = function(part) {
+  //   var re = /<profile-link[^\>]*uid\=[\'\"]([\w-]+)[\'\"][^\>]*>[\@_\w \,\.]+<\/profile-link>/;
+  //   if (re.test(part)) {
+  //     var uid = RegExp.$1
+  //     return "app.profile.messages({id: '" + uid + "'})";
+  //   } else {
+  //     return null;
+  //   }
+  // };
+  //
 })
 
 ;

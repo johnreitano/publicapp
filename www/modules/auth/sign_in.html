@@ -1,6 +1,6 @@
 <ion-view title="Sign In">
   <ion-content>
-    <form role="form" ng-submit='vm.signIn()'>
+    <form role="form" name="vm.form" ng-submit='vm.signIn()'>
       <div class="list list-inset">
         <label class="item item-input">
           <input type="email"
@@ -14,14 +14,17 @@
                  ng-model="vm.password"
                  placeholder="Password"
                  required>
+
         </label>
+        <p style="color:red">{{ vm.errorMessage }}</p>
       </div>
 
-      <p style="color:red">{{ vm.errorMessage }}</p>
 
       <hr>
-      
-      <button type="submit" class="button button-block button-positive" style="width:90%;margin:1em auto;">Sign in</button>
+      <button type="submit"
+              class='button button-block button-positive'
+              ng-disabled="vm.form.$invalid"
+              style="width:90%;margin:1em auto;">Sign in</button>
 
     </form>
 

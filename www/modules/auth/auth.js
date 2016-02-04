@@ -64,7 +64,10 @@ angular.module('Publicapp.auth', [])
     Fireb.ref.authWithPassword({ email: ctrl.email, password: ctrl.password }, function(error, authData) {
       if (error) {
         console.log("Login Failed!", error);
-        ctrl.errorMessage = error.reason;
+        ctrl.errorMessage = "Your email or password is not correct";
+        if(!$scope.$$phase) {
+          $scope.$apply();
+        }
       } else {
         console.log("Authenticated successfully with payload:", authData);
         $state.go('app.profile.feed', {id: authData.uid})

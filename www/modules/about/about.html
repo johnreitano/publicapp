@@ -12,7 +12,7 @@
         <br>
         <p>Please send your questions and feedback to <a href="mailto://team@getpublic.co">team@getpublic.co</a> .</p>
         <br>
-        <button class="button button-stable" ng-click="vm.confirmAndReSeedDatabase()">Reseed Database</button>
+        <button ng-if="vm.signedInUser() && vm.signedInUser().admin" class="button button-assertive" ng-click="vm.confirmAndReSeedDatabase()">Reseed Database</button>
       </div>
     </div>
 

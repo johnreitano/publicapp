@@ -21,7 +21,7 @@ angular.module('Publicapp.sharedMethods', [])
     createMessage: createMessage
   };
 
-  function reSeedDatabase() {
+  function reSeedDatabase(fakeData) {
     console.log("about to re-seed database");
 
     var nextStep;
@@ -43,7 +43,7 @@ angular.module('Publicapp.sharedMethods', [])
         remainingItemsInStep = _.keys(oldUsers).length;
 
         _.each(oldUsers, function(oldUser, userId) {
-          Fireb.ref.removeUser({email: oldUser.emailCopy || oldUser.email, password: "123"}, function(error) {
+          Fireb.ref.removeUser({email: oldUser.email, password: "123"}, function(error) {
             if (error && !/The specified user does not exist/.test(error)) {
               console.log("unable to remove user!", error);
               // return;
@@ -69,24 +69,25 @@ angular.module('Publicapp.sharedMethods', [])
       Fireb.ref.child("messages").remove(); // TODO: remove this
 
       var userDataRecords = [];
-      _.each(_.range(3), function() {
-        userDataRecords.push({
-          email: faker.directive('email')(),
-          name: faker.directive('firstName')() + ' ' + faker.directive('lastName')(),
-          phone: "+1" + faker.directive('phone')().replace(/\D/g,'').replace(/^(\d{10}).*/,'$1')
+
+      if (fakeData) {
+        _.each(_.range(10), function() {
+          userDataRecords.push({
+            email: faker.directive('email')(),
+            name: faker.directive('firstName')() + ' ' + faker.directive('lastName')(),
+            phone: "+1" + faker.directive('phone')().replace(/\D/g,'').replace(/^(\d{10}).*/,'$1')
+          });
         });
-      });
+      }
 
       userDataRecords = userDataRecords.concat([
         { email: "jreitano@gmail.com", name: "John Reitano", phone: "+16196746211", admin: true },
         { email: "sarmadhbokhari@gmail.com", name: "Sarmad Bokhari", phone: "+16196746211", admin: true },
         { email: "jasminereitano7@gmail.com", name: "Jasmine Reitano", phone: "+16196746211" },
-        { email: "jreitano+nicolo@gmail.com", name: "Nicolo Reitano", phone: "+16196746211" },
-        { email: "jreitano+giovanni@gmail.com", name: "Giovanni Reitano", phone: "+16196746211" },
-        { email: "jreitano+alessandra@gmail.com", name: "Alessandra Reitano", phone: "+16196746211" },
         { email: "gabrielreitano06@gmail.com", name: "Gabriel Reitano", phone: "+16196746211"  },
         { email: "crisdavid0925@gmail.com", name: "Cristian Ramirez", phone: "+16196746211",  },
         { email: "jack@black.com", name: "Jack Black", phone: "+16196746211"  }
+
       ]);
 
       nextStep = step3;
@@ -111,6 +112,11 @@ angular.module('Publicapp.sharedMethods', [])
     };
 
     function step3() {
+
+      if (!fakeData) {
+        step4();
+        return;
+      }
 
       nextStep = step4;
       remainingItemsInStep = _.keys(newUsers).length;
@@ -315,7 +321,7 @@ angular.module('Publicapp.sharedMethods', [])
       _.each(mentionedUsers, function(mentionedUser, mentionedUserId) {
         var re = new RegExp(mentionedUser.username, 'ig');
         var nameAndUsername = s.isBlank(mentionedUser.name) ? mentionedUser.name + " " + mentionedUser.username : mentionedUser.username;
-        var linkText = "<profile-link data-user-id='" + mentionedUserId + "'>" + nameAndUsername + "</profile-link>";
+        var linkText = "<a class='profile-link' data-user-id='" + mentionedUserId + "'>" + nameAndUsername + "</a>";
         message.text = message.text.replace( re, linkText);
       });
 
@@ -354,39 +360,16 @@ angular.module('Publicapp.sharedMethods', [])
 
   };
 
-  function createUser(userInfo, allowEmailReUse, callback) {
+  function createUser(user, allowEmailReUse, callback) {
 
-    function createUserProfile(newUser, uid, callback) {
-      console.log("Successfully created user account with user id:", uid);
-
-      newUser.id = uid;
-      newUser.username = s.isBlank(newUser.username) ? generateUsername(newUser.name) : newUser.username;
-      newUser.face = s.isBlank(newUser.face) ?  generateFaceUrl(newUser.name, newUser.username) : newUser.face;
-      newUser.admin = newUser.admin ? true : false;
-      newUser.createdAt = newUser.createdAt || Date.now();
-
-      ensureCorrectFieldsPresent( newUser, [ "id", "admin", "createdAt", "name", "newUsername", "face", "phone", "email"])
-
-      Fireb.ref.child("users").child(newUser.id).set(newUser, function(error) {
-        if (error) {
-          console.log('error saving profile data', error);
-          callback(error, null);
-          return
-        }
-        console.log('successfully saved profile data');
-        callback(null, newUser);
-      });
-    };
-
-    var newUser = _.clone(userInfo);
-    newUser.email = s.isBlank(newUser.email) ? username.replace(/\@/,'') + "@users.getpublic.co" : newUser.email;
-    newUser.password = s.isBlank(newUser.password) ? Math.random().toString().slice(2,12) : newUser.password;
-    Fireb.ref.createUser(newUser, function(error, userData) {
+    user.email = s.isBlank(user.email) ? username.replace(/\@/,'') + "@users.getpublic.co" : user.email;
+    user.password = s.isBlank(user.password) ? Math.random().toString().slice(2,12) : user.password;
+    Fireb.ref.createUser(user, function(error, userData) {
 
       if (error) {
         if (allowEmailReUse && /specified email address is already in use/.test(error)) {
           Fireb.ref.authWithPassword({
-            email: newUser.email,
+            email: user.email,
             password : "123"
           }, function(error, authData) {
             if (error) {
@@ -394,19 +377,44 @@ angular.module('Publicapp.sharedMethods', [])
               callback(error, null);
               return;
             }
-            createUserProfile(newUser, authData.uid, callback);
+            createUserProfile(user, authData.uid, callback);
           });
         } else {
           console.log(error);
           callback(error, null);
         }
       } else {
-        createUserProfile(newUser, userData.uid, callback);
+        createUserProfile(user, userData.uid, callback);
       }
     });
   };
 
   ////
+
+  function createUserProfile(user, uid, callback) {
+    console.log("Successfully created user account with user id:", uid);
+
+    newUser = {
+      id: uid,
+      admin: user.admin ? true : false,
+      createdAt: = user.createdAt || Date.now(),
+      name: user.name,
+      username: user.username,
+      face: s.isBlank(user.face) ? generateFaceUrl(user.name, user.username) : user.face,
+      phone: user.phone,
+      email: user.email
+    };
+
+    Fireb.ref.child("users").child(newUser.id).set(newUser, function(error) {
+      if (error) {
+        console.log('error saving profile data', error);
+        callback(error, null);
+        return
+      }
+      console.log('successfully saved profile data');
+      callback(null, newUser);
+    });
+  };
 
   function ensureCorrectFieldsPresent( object, fieldNames) {
     object = _.pick(object, fieldNames);

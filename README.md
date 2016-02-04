@@ -23,3 +23,18 @@ More info on this can be found on the Ionic [Getting Started](http://ionicframew
 
 ## Issues
 Issues have been disabled on this repo, if you do find an issue or have a question consider posting it on the [Ionic Forum](http://forum.ionicframework.com/).  Or else if there is truly an error, follow our guidelines for [submitting an issue](http://ionicframework.com/submit-issue/) to the main Ionic repository.
+
+
+cordova build --release android
+
+keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
+
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/John/Documents/Public/my-release-key.keystore /Users/John/dev/publicapp2/platforms/android/build/outputs/apk/android-release-unsigned.apk alias_name
+
+rm /Users/John/dev/publicapp2/platforms/android/build/outputs/apk/Public.apk
+
+/usr/local/opt/android-sdk/build-tools/23.0.2/zipalign -v 4 /Users/John/dev/publicapp2/platforms/android/build/outputs/apk/android-release-unsigned.apk /Users/John/dev/publicapp2/platforms/android/build/outputs/apk/Public.apk
+
+open /Users/John/dev/publicapp2/platforms/android/build/outputs/apk/
+
+ls /Users/John/dev/publicapp2/platforms/android/build/outputs/apk/Public.apk

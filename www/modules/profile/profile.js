@@ -125,9 +125,9 @@ angular.module('Publicapp.profile', [])
     $state.go("app.messageViaProfile", {profileId: ctrl.userId, id: message.$id});
   };
 
-  ctrl.textWithoutProfileLinks = function(message) {
-    return message.text.replace( /<profile-link[^>]*>/, "" ).replace( /<\/profile-link>/, "" );
-  };
+  // ctrl.textWithoutProfileLinks = function(message) {
+  //   return message.text.replace( /<profile-link[^>]*>/, "" ).replace( /<\/profile-link>/, "" );
+  // };
 
 
 })
