@@ -85,7 +85,8 @@ angular.module('Publicapp.profile', [])
     return !ctrl.userId || !ctrl.signedInUserId() || ctrl.userId == ctrl.signedInUserId();
   };
 
-  ctrl.sendMessage = function() {
+  ctrl.sendMessage = function(event) {
+    event.preventDefault();
     ctrl.createMessage({
       subject: ctrl.user,
       subjectUserId: ctrl.userId,

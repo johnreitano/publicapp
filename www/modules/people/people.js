@@ -207,7 +207,7 @@ angular.module('Publicapp.people', [])
             return;
           }
           $scope.modal.hide();
-          $state.go( "app.profile.messages", { id: user.$id } );
+          $state.go( "app.profile.messages", { id: user.id } );
         });
       });
     };
