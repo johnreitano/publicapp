@@ -16,6 +16,8 @@
   <ion-nav-buttons side="right">
     <button class="button button-icon button-clear ion-person-stalker"        ui-sref="app.people" 
             ng-if="vm.viewingOwnProfile()"></button>
+
+    <button class="button button-icon button-clear ion-home" ui-sref="app.profile.feed({id:vm.signedInUserId()})" ng-show="!vm.viewingOwnProfile()"></button>
     
     <button class="button button-light"
             ng-click="vm.startListeningTo(vm.user, $event)"
