@@ -57,10 +57,13 @@ angular.module('Publicapp.auth', [])
   ctrl.password = '';
 
   ctrl.signIn = function() {
+    ctrl.errorMessage = "in signIn()";
     if (Fireb.signedIn()) {
+      ctrl.errorMessage = "unauthing";
       Fireb.ref.unauth();
     }
 
+    ctrl.errorMessage = "about to call authWithPassword";
     Fireb.ref.authWithPassword({ email: ctrl.email, password: ctrl.password }, function(error, authData) {
       if (error) {
         console.log("Login Failed!", error);
@@ -69,9 +72,12 @@ angular.module('Publicapp.auth', [])
           $scope.$apply();
         }
       } else {
+        ctrl.errorMessage = "login succeeded";
         console.log("Authenticated successfully with payload:", authData);
         $state.go('app.profile.feed', {id: authData.uid})
       }
+    }).catch(function(error) {
+      ctrl.errorMessage = "got auth error";
     });
   };
 

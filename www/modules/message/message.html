@@ -19,14 +19,7 @@
 
       <div class="item item-body">
         <p>
-          <span ng-repeat="messagePart in vm.messageParts">
-            <span ng-if="vm.linkUiSref(messagePart)" ui-sref="{{vm.linkUiSref(messagePart)}}">
-              {{ vm.linkText(messagePart) }}
-            </span>
-            <span ng-if="!vm.linkUiSref(messagePart)">
-              {{ messagePart }}
-            </span>
-          <span>
+          {{ vm.message.text }}
         </p>
         <!-- <p>
           <a href="#" class="subdued"><i class="fa fa-thumbs-up"></i> 1 Like</a>
