@@ -14,8 +14,18 @@
     <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
   </ion-nav-buttons>
   <ion-nav-buttons side="right">
-    <button class="button button-icon button-clear ion-person-stalker" ui-sref="app.people"></button>
-    <button class="button button-icon button-clear ion-home" ui-sref="app.profile.feed({id:vm.signedInUserId()})" ng-show="!vm.viewingOwnProfile()"></button>
+    <button class="button button-icon button-clear ion-person-stalker"        ui-sref="app.people" 
+            ng-if="vm.viewingOwnProfile()"></button>
+    
+    <button class="button button-light"
+            ng-click="vm.startListeningTo(vm.user, $event)"
+            ng-show="vm.showListenButton(vm.user)">Listen</button>
+
+    <button class="button button-assertive"
+            ng-click="vm.stopListeningTo(vm.user, $event, this)"
+            ng-show="vm.showUnlistenButton(vm.user)">Unlisten</button>
+
+    <!-- <button class="button button-icon button-clear ion-home" ui-sref="app.profile.feed({id:vm.signedInUserId()})" ng-show="!vm.viewingOwnProfile()"></button> -->
   </ion-nav-buttons>
   <ion-pane>
     <ion-tabs class="tabs-top profile-tabs">
