@@ -397,7 +397,7 @@ angular.module('Publicapp.sharedMethods', [])
     newUser = {
       id: uid,
       admin: user.admin ? true : false,
-      createdAt: = user.createdAt || Date.now(),
+      createdAt: user.createdAt || Date.now(),
       name: user.name,
       username: user.username,
       face: s.isBlank(user.face) ? generateFaceUrl(user.name, user.username) : user.face,
