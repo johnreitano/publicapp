@@ -1,0 +1,27 @@
+<ion-view>
+  <ion-nav-title>
+    All Users
+  </ion-nav-title>
+  <ion-nav-buttons side="right">
+    <button class="button button-icon button-clear ion-home" ng-click="vm.goHome()"></button>
+  </ion-nav-buttons>
+
+
+  <ion-content>
+    <ion-list ng-repeat="user in vm.allUsers">
+        <div class="item item-avatar item-button-right" ng-click="vm.showProfile(user)">
+        <img ng-src="{{ user.face }}">
+        <h2><a ng-href="/#/profile/{{ user.id }}/messages">{{ user.name }}</a></h2>
+        <h2><a ng-href="/#/profile/{{ user.id }}/messages">{{ user.username }}</a></h2>
+
+        <button class="button button-positive"
+            ng-click="vm.startListeningTo(user, $event)"
+            ng-show="vm.showListenButton(user)">Listen</button>
+
+        <button class="button button-energized"
+            ng-click="vm.stopListeningTo(user, $event, this)"
+            ng-show="vm.showUnlistenButton(user)">Unlisten</button>
+      </div>
+    </ion-list>
+  </ion-content>
+</ion-view>

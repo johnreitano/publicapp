@@ -1,0 +1,86 @@
+<ion-view hide-nav-bar="true">
+
+  <ion-content>
+
+    <div class="row">
+      <div class="col">
+      </div>
+      <div class="col">
+      </div>
+      <div class="col">
+        <a ui-sref="app.profile.feed">
+          Sign In or Sign Up
+        </a>
+      </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="row">
+      <div class="col">
+        <img src="/img/public.png">
+      </div>
+      <div class="col">
+        <span style="font-size: 4em;">
+          Public
+        </span>
+      </div>
+    </div>
+
+    <br>
+    <br>
+
+
+    <form name="vm.searchForm" ng-submit="vm.search()">
+      <div class="list">
+
+        <div class="item item-input-inset">
+          <label class="item-input-wrapper">
+            <input type="text" ng-model="vm.searchText" placeholder="Enter first and last name">
+          </label>
+          <button class="button button-small">
+            Search
+          </button>
+        </div>
+
+      </div>
+    </form>
+
+    <div class="search-results" ng-if="vm.showSearchResults">
+      <ion-list ng-repeat="user in vm.searchResults | orderBy: '-addedAt'">
+          <div class="item item-avatar item-button-right" ng-click="vm.showProfile(user)">
+          <img ng-src="{{ user.face }}">
+          <h2>{{ user.name }}</h2>
+          <h2>{{ user.username }}</h2>
+        </div>
+      </ion-list>
+
+      <div class="text-center" style="margin-top:1em">
+        <p ng-if="vm.searchResults.length">None of these users is the one you're looking for?</p>
+        <p ng-if="!vm.searchResults.length">No matching users found.</p>
+        <button class="button button-positive add-user-button" ng-click="openModal()">Add User To Public</button>
+      </div>
+    </div>
+
+
+
+    <div class="row">
+      <div class="col">
+      </div>
+      <div class="col">
+        <a ui-sref="app.terms">
+          Terms
+        </a>
+      </div>
+      <div class="col">
+        <a ui-sref="app.privacy">
+          Privacy
+        </a>
+      </div>
+    </div>
+
+
+  </ion-content>
+
+</ion-view>

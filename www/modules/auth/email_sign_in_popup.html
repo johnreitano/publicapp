@@ -1,0 +1,30 @@
+<div class="row auth-content-outer">
+  <div class="list">
+    <div class="item item-input-inset">
+      <label class="item-input-wrapper">
+        <input type="email"
+               name="email"
+               ng-model="vm.email"
+               class="form-control"
+               placeholder="Your email"
+               required>
+      </label>
+    </div>
+    <div class="item item-input-inset">
+      <label class="item-input-wrapper" focus-me>
+        <input id="password-field"
+          type="password"
+          name="password"
+          ng-model="vm.password"
+          class="form-control"
+          placeholder="Enter your password"
+          required>
+      </label>
+      <p style="color:red">{{ vm.errorMessage }}</p>
+      <button class="button button-medium button-positve" ng-disabled="false" ng-click="vm.signInWithEmail()">
+        Sign In!
+      </button>
+    </div>
+
+  </div>
+</div>

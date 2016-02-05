@@ -38,20 +38,17 @@ angular.module('Publicapp.settings', [])
 })
 
 
-.controller('SettingsCtrl', function($scope, Fireb, SharedMethods) {
+.controller('SettingsCtrl', function($scope, $rootScope, Fireb, SharedMethods, $firebaseObject, $timeout, $ionicLoading) {
   var ctrl = this;
 
   angular.extend(ctrl, SharedMethods);
 
   ctrl.user = {};
-  resetFields();
-  var userRef = Fireb.ref().child("users").child(ctrl.signedInUserId());
-  userRef.once("value", function(snapshot) {
-    var retrievedUser = snapshot.val();
-    ctrl.user.name = retrievedUser.name;
-    ctrl.user.phone = retrievedUser.phone;
-    ctrl.user.username = retrievedUser.username;
-    ctrl.user.email = Fireb.ref().getAuth().password.email;
+  if (Fireb.signedIn()) {
+    resetFields();
+  }
+  $rootScope.$on('signedInUserSet', function(signedInUser){
+    resetFields();
   });
 
   function addError(newError) {
@@ -61,30 +58,12 @@ angular.module('Publicapp.settings', [])
     ctrl.errorMessage = ctrl.errorMessage + newError;
   };
 
-  function changePassword(callback) {
-    if (!s.isBlank(ctrl.user.currentPassword) && !s.isBlank(ctrl.user.newPassword)) {
-      var options = {
-        email: Fireb.ref().getAuth().password.email,
-        oldPassword: ctrl.user.currentPassword,
-        newPassword: ctrl.user.newPassword
-      };
-      Fireb.ref().changePassword(options, function(error) {
-        if (error) {
-          addError("Error changing password: " + error.reason);
-        }
-        callback(error);
-      });
-    } else {
-      callback();
-    }
-  };
-
-  function changeEmail(dirty, callback) {
-    if (dirty) {
+  function changeAuthEmail(emailDirty, callback) {
+    if (ctrl.usesPasswordAuth() && emailDirty) {
       Fireb.ref().changeEmail({
-        oldEmail: Fireb.ref().getAuth().password.email,
-        newEmail: ctrl.user.email,
-        password: ctrl.user.currentPassword
+          oldEmail: Fireb.ref().getAuth().password.email,
+          newEmail: ctrl.user.email,
+          password: ctrl.currentPassword
       }, function(error) {
         if (error) {
           switch (error.code) {
@@ -98,11 +77,30 @@ angular.module('Publicapp.settings', [])
               addError("Error changing email: ", error.reason);
               break;
           }
-        } else {
-          console.log("User email changed successfully!");
+          callback(error);
+          return;
+        }
+        console.log("User email changed in auth record");
+        callback();
+      });
+    } else {
+      callback();
+    }
+  };
+
+  function changeAuthPassword(callback) {
+    if (ctrl.usesPasswordAuth() && !s.isBlank(ctrl.currentPassword) && !s.isBlank(ctrl.newPassword) && ctrl.newPassword == ctrl.newPasswordConfirmation) {
+      var options = {
+        email: Fireb.ref().getAuth().password.email,
+        oldPassword: ctrl.currentPassword,
+        newPassword: ctrl.newPassword
+      };
+      Fireb.ref().changeAuthPassword(options, function(error) {
+        if (error) {
+          addError("Error changing password: " + error.reason);
         }
         callback(error);
-      })
+      });
     } else {
       callback();
     }
@@ -110,13 +108,18 @@ angular.module('Publicapp.settings', [])
 
   function changeCoreFields(coreFieldsDirty, callback) {
     if (coreFieldsDirty) {
-      userRef.update({
-        name: ctrl.user.name,
-        phone: ctrl.user.phone,
-        username: ctrl.user.username,
-      }, function(error) {
+      var updatedFields = {
+        name: ctrl.user.name || '',
+        email: ctrl.user.email || '',
+        username: ctrl.user.username || '',
+        phone: ctrl.user.phone || ''
+      }
+      Fireb.signedInUserRef().update(updatedFields, function(error) {
         if (error) {
-          addError("Error saving data: " + error.reason);
+          console.log("Error saving core fields:", error);
+          addError("Error saving core fields: ", error);
+        } else {
+          console.log("successfully saved core fields");
         }
         callback(error);
       });
@@ -126,33 +129,47 @@ angular.module('Publicapp.settings', [])
   };
 
   function resetFields() {
-    ctrl.user.currentPassword = "";
-    ctrl.user.newPassword = "";
-    ctrl.user.newPasswordConfirmation = "";
+    var signedInUser = Fireb.signedInUser();
+    ctrl.user = {
+      name: signedInUser.name,
+      email: signedInUser.email,
+      username: signedInUser.username,
+      phone: signedInUser.phone,
+      signInType: signedInUser.authProvider == "password" ? "Email and Password" : s.titleize(signedInUser.authProvider)
+    };
+    ctrl.currentPassword = "";
+    ctrl.newPassword = "";
+    ctrl.newPasswordConfirmation = "";
     ctrl.errorMessage = "";
   };
 
+  ctrl.usesPasswordAuth = function() {
+    return ctrl.user.signInType == "Email and Password";
+  };
+
   ctrl.updateSettings = function(form) {
-    changeEmail(form.email.$dirty, function(error) {
+    changeAuthEmail(form.email.$dirty, function(error) {
       if (error) {
-        resetFields();
-      } else {
-        changePassword(function(error) {
-          if (error) {
-            resetFields();
-          } else {
-            changeCoreFields(
-              form.name.$dirty || form.username.$dirty || form.phone.$dirty, function(error) {
-                if (!error) {
-                  console.log("successfully saved all settings");
-                }
-                resetFields();
-            })
-          }
-        });
+        return;
       }
+
+      changeAuthPassword(function(error) {
+        if (error) {
+          return;
+        }
+
+        changeCoreFields(form.email.$dirty || form.name.$dirty || form.username.$dirty || form.phone.$dirty, function(error) {
+            if (!error) {
+              console.log("successfully saved all settings");
+              resetFields();
+              $ionicLoading.show({ template: 'Settings have been updated', noBackdrop: true, duration: 3000 });
+              ctrl.goHome();
+            }
+        });
+      });
     });
   };
+
 })
 ;
 

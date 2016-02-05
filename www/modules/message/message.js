@@ -11,8 +11,7 @@ angular.module('Publicapp.message', [])
         templateUrl: "modules/message/message.html",
         controller: "MessageCtrl as vm"
       }
-    },
-    authenticate: true
+    }
   })
 
   .state('app.messageViaProfile', {
@@ -22,8 +21,7 @@ angular.module('Publicapp.message', [])
         templateUrl: "modules/message/message.html",
         controller: "MessageCtrl as vm"
       }
-    },
-    authenticate: true
+    }
   })
 
 }])
@@ -45,7 +43,7 @@ angular.module('Publicapp.message', [])
 //     },
 //     compile: function(elem) {
 //       var oldText = elem.html();
-//       var newText = "<span class='profile-link' ui-sref='app.profile.feed{id: \"{{uid}}\"}'>" + oldText + "</span>",
+//       var newText = "<span class='profile-link' ui-sref='app.profile'>" + oldText + "</span>",
 //       elem.replaceWith(newText);
 //     }
 //   };

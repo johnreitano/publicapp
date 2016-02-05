@@ -3,8 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *"> -->
-    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src &apos;self&apos; &apos;unsafe-inline&apos;; script-src &apos;self&apos; https://*.firebaseio.com http://localhost:* &apos;unsafe-inline&apos; &apos;unsafe-eval&apos;">
+
+    <meta http-equiv="Content-Security-Policy" content="default-src *; script-src &apos;self&apos; &apos;unsafe-inline&apos; &apos;unsafe-eval&apos; *; style-src  &apos;self&apos; &apos;unsafe-inline&apos; *">
+
     <title>Public</title>
 
     <link href="css/ionic.app.css" rel="stylesheet">
@@ -27,16 +28,21 @@
 
     <script src="modules/app/app.js"></script>
     <script src="modules/about/about.js"></script>
+    <script src="modules/all_users/all_users.js"></script>
     <script src="modules/auth/auth.js"></script>
+    <script src="modules/claim_page/claim_page.js"></script>
     <script src="modules/contacts/contacts.js"></script>
     <script src="modules/fireb/fireb.js"></script>
     <script src="modules/help/help.js"></script>
     <script src="modules/feed_loader/feed_loader.js"></script>
+    <script src="modules/landing/landing.js"></script>
+    <script src="modules/listenees/listenees.js"></script>
     <script src="modules/people/people.js"></script>
     <script src="modules/message/message.js"></script>
     <script src="modules/profile/profile.js"></script>
     <script src="modules/settings/settings.js"></script>
     <script src="modules/shared_methods/shared_methods.js"></script>
+    <script src="modules/static_pages/static_pages.js"></script>
 
   </head>
 

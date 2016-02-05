@@ -15,30 +15,35 @@
     </ion-header-bar> -->
     <ion-content>
       <ion-list>
-        <ion-item menu-close ui-sref="app.profile.feed({id: vm.signedInUserId()})">
+        <ion-item menu-toggle ng-click="vm.goHome()">
           <i class="ion-home"></i>
           Home
         </ion-item>
-        <ion-item menu-close ui-sref="app.settings">
+        <ion-item menu-toggle ui-sref="app.settings" ng-if="vm.signedIn()">
           <i class="ion-settings"></i>
           Settings
         </ion-item>
-        <ion-item menu-close ui-sref="app.help">
+        <ion-item menu-toggle ui-sref="app.listenees" ng-if="vm.signedIn()">
+          <i class="ion-settings"></i>
+          Listening To
+        </ion-item>
+        <ion-item menu-toggle ui-sref="app.help">
           <i class="ion-help-circled"></i>
           Help &amp; Feedback
         </ion-item>
-        <ion-item menu-close ui-sref="app.about">
+        <ion-item menu-toggle ui-sref="app.about">
           <i class="ion-information-circled"></i>
           About Public
         </ion-item>
-        <ion-item menu-close ui-sref="app.signIn" ng-if="!vm.signedIn()">
+        <ion-item menu-toggle ui-sref="app.profile.feed" ng-if="!vm.signedIn()">
           <i class="ion-log-in"></i>
-          Sign In
+          Sign In or Sign Up
         </ion-item>
-        <ion-item menu-close ui-sref="app.signOut" ng-if="vm.signedIn()">
+        <ion-item menu-toggle ui-sref="app.signOut" ng-if="vm.signedIn()">
           <i class="ion-log-out"></i>
           Sign Out
         </ion-item>
+
       </ion-list>
     </ion-content>
   </ion-side-menu>

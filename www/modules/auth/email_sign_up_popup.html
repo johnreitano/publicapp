@@ -1,0 +1,63 @@
+<div class="row auth-content-outer">
+  <div class="col col-center">
+    <div class="row related-copy">
+      <div class="col">
+        <h5 class="auth-copy">You're almost there. We just need the following info:</h5>
+      </div>
+    </div>
+    <div class="row form-wrapper">
+      <form role="form" name="vm.form" ng-submit='vm.signUp()'>
+        <div class="list list-inset">
+          <label class="item item-input item-floating-label">
+            <span class="input-label">First &amp; Last Name</span>
+            <input name="name"
+                   type="text"
+                   ng-model="vm.name"
+                   class="form-control"
+                   placeholder="First Last"
+                   focus-me
+                   ng-required="true">
+          </label>
+          <label class="item item-input item-floating-label">
+            <span class="input-label">Username</span>
+            <input type="text"
+                   name="username"
+                   ng-model="vm.username"
+                   ng-minlength="2"
+                   class="form-control"
+                   placeholder="Your username"
+                   ng-required="true">
+          </label>
+          <label class="item item-input item-floating-label">
+            <span class="input-label">Email</span>
+            <input type="email"
+                   name="email"
+                   ng-model="vm.email"
+                   class="form-control"
+                   placeholder="Your email"
+                   required>
+          </label>
+          <label class="item item-input item-floating-label">
+            <span class="input-label">Password</span>
+             <input type="password"
+                   name="password"
+                   ng-model="vm.password"
+                   class="form-control"
+                   placeholder="Password"
+                   required>
+          </label>
+
+          <p style="color:red">{{ vm.errorMessage }}</p>
+        </div>
+
+
+        <hr>
+        <button type="submit"
+                class='button button-block button-positive'
+                ng-disabled="vm.form.$invalid"
+                style="width:90%;margin:1em auto;">Sign up!</button>
+
+      </form>
+		</div>
+  </div>
+</div>

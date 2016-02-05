@@ -14,25 +14,31 @@ angular.module('Publicapp', [
   'angularMoment',
   'internationalPhoneNumber',
   'Publicapp.about',
+  'Publicapp.allUsers',
   'Publicapp.auth',
   'Publicapp.contacts',
+  'Publicapp.claimPage',
   'Publicapp.fireb',
   'Publicapp.help',
   'Publicapp.feedLoader',
-  'Publicapp.people',
+  'Publicapp.landing',
+  'Publicapp.listenees',
   'Publicapp.message',
+  'Publicapp.people',
   'Publicapp.profile',
   'Publicapp.settings',
-  'Publicapp.sharedMethods'
+  'Publicapp.sharedMethods',
+  'Publicapp.staticPages'
 ])
 
 .constant('GCM_SENDER_ID', '574597432927')
 
-.run(function($rootScope, $state, $stateParams, $location, Contacts, FeedLoader, $ionicConfig, Fireb, $ionicPlatform, $ionicPopup, $ionicHistory, $ionicSideMenuDelegate) {
+.run(function($rootScope, $state, $stateParams, $location, Contacts, $ionicConfig, Fireb, $ionicPlatform, $ionicPopup, $ionicHistory, $timeout) {
 
   // Disable BACK button on home
   $ionicPlatform.registerBackButtonAction(function(event) {
-    if (/^app.profile/.test($state.current.name) && $stateParams.id == Fireb.signedInUserId()) {
+    var viewingOwnProfile = app.profile.test($state.current.name) && $stateParams.id == Fireb.signedInUserId();
+    if (viewingOwnProfile) {
       $ionicPopup.confirm({
         title: 'Leaving Public',
         template: 'Are you sure you want to quit?'
@@ -46,39 +52,45 @@ angular.module('Publicapp', [
     }
   }, 100);
 
-  $rootScope.$on('$stateChangeStart', function(){
-     // $rootScope.$broadcast('$routeChangeSuccess');
-  });
+  var rootScope = $rootScope;
 
   $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-    if (toState.authenticate && !Fireb.signedIn()) {
+    if (toState.name == "app.home") {
       event.preventDefault();
-      $state.go('app.signIn');
-    } else if (toState.name == "app.signOut") {
       if (Fireb.signedIn()) {
-        Fireb.ref().unauth();
+        $state.go("app.profile.feed");
+      } else {
+        $state.go("app.landing");
       }
-      $state.go("app.signIn");
-    } else if (toState.name == "app.start") {
+    } else if (toState.name == "app.landing" && Fireb.signedIn()) {
       event.preventDefault();
-      $state.go("app.profile.feed", toParams);
+      $state.go("app.profile.feed");
+    } else if (toState.name == "app.signOut") {
+      event.preventDefault();
+      if (Fireb.signedIn()) {
+        Fireb.doUnauth();
+      }
+      $state.go("app.landing");
     } else if (toState.name == "app.profile") {
-      if (s.isBlank(toParams.id)) {
-        toParams.id = Fireb.signedInUserId()
-      }
       event.preventDefault();
+      if (s.isBlank(toParams.id)) {
+        toParams.id = Fireb.signedInUserId();
+      }
       if (toParams.id == Fireb.signedInUserId()) {
         $state.go("app.profile.feed", toParams);
       } else {
         $state.go("app.profile.messages", toParams);
       }
-    } else if (toState.name == "app.people") {
+    } else if (toState.name == "app.claimPage") {
       event.preventDefault();
-      if (ionic.Platform.isWebView()) {
-        $state.go('app.people.contacts');
+      if (Fireb.signedIn()) {
+        $state.go("app.claimPage.signedIn", toParams);
       } else {
-        $state.go('app.people.listenees');
+        $state.go("app.claimPage.notSignedIn", toParams);
       }
+    } else if (toState.name == "app.profile.feed" && Fireb.signedIn() && s.isBlank(toParams.id)) {
+      event.preventDefault();
+      $state.go("app.profile.feed", {id: Fireb.signedInUserId()});
     }
   });
 
@@ -116,23 +128,18 @@ angular.module('Publicapp', [
     controller: 'AppCtrl as app',
   })
 
-  .state('app.start', {
-    url: "/start/:id"
+  .state('app.home', {
+    url: "/home"
   })
 
-  ;
+  $urlRouterProvider.otherwise('/landing');
 
-  // $urlRouterProvider.otherwise('/start');
-
-  $urlRouterProvider.otherwise(function ($injector, $location) {
-    $injector.invoke(function($state, Fireb) {
-      $state.go('app.start', {id: Fireb.signedInUserId()});
-    });
-  });
 })
 
-.controller('AppCtrl', function($scope) {
+.controller('AppCtrl', function($scope, $rootScope, $ionicPopup) {
   ctrl = this;
+
+
 })
 
 ;

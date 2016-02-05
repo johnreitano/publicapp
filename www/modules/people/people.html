@@ -3,11 +3,62 @@
     People
   </ion-nav-title>
   <ion-nav-buttons side="right">
-    <button class="button button-icon button-clear ion-home" ui-sref="app.profile.feed({id:vm.signedInUserId()})"></button>
+    <button class="button button-icon button-clear ion-home" ng-click="vm.goHome()"></button>
   </ion-nav-buttons>
   <ion-pane>
 
     <ion-tabs class="tabs-top bar-positive">
+
+      <ion-tab id="search-results-tab" title="Users in Public" ui-sref="app.people.search">
+        <ion-nav-view name="search-results">
+          <ion-content>
+
+            <div class="list">
+              <div class="item item-input-inset">
+                <form name="vm.searchForm">
+                  <label class="item-input-wrapper">
+                    <input class="search-user"
+                      type="text"
+                      ng-model="vm.searchText"
+                      placeholder="Enter first and last name"
+                      required>
+                  </label>
+                  <button class="button button-small"
+                    type="submit"
+                    ng-click="vm.search()"
+                    ng-disabled="vm.searchForm.$invalid">
+                    Search
+                  </button>
+              </div>
+            </div>
+
+            <ion-list ng-repeat="user in vm.searchResults | orderBy: '-addedAt'">
+                <div class="item item-avatar item-button-right" ng-click="vm.showProfile(user)">
+                <img ng-src="{{ user.face }}">
+                <h2>{{ user.name }}</h2>
+                <h2>{{ user.username }}</h2>
+
+                <button class="button button-positive"
+                    ng-click="vm.startListeningTo(user, $event)"
+                    ng-show="vm.showListenButton(user)">Listen</button>
+
+                <button class="button button-energized"
+                    ng-click="vm.stopListeningTo(user, $event, this)"
+                    ng-show="vm.showUnlistenButton(user)">Unlisten</button>
+
+              </div>
+
+            </ion-list>
+
+            <div class="text-center" style="margin-top:1em" ng-if="vm.showSearchResults">
+              <p ng-if="vm.searchResults.length">None of these users is the one you're looking for?</p>
+              <p ng-if="!vm.searchResults.length">No matching users found.</p>
+              <button class="button button-positive add-user-button" ng-click="openModal()">Add User To Public</button>
+            </div>
+
+          </ion-content>
+        </ion-nav-view>
+      </ion-tab>
 
       <ion-tab id="contacts-tab" title="Contacts" ng-if="vm.usingDevice()" ui-sref="app.people.contacts">
         <ion-nav-view name="feed">
@@ -36,72 +87,6 @@
             </ion-list>
           </ion-content>
         </ion-nave>
-      </ion-tab>
-
-      <ion-tab id="listenees-tab" title="Listening To" ui-sref="app.people.listenees">
-        <ion-nav-view name="listenees">
-          <ion-content>
-
-            <ion-list ng-repeat="listenee in vm.listenees | orderBy: '-addedAt'">
-                <div class="item item-avatar item-button-right" ng-click="vm.showProfile(listenee)">
-                <img ng-src="{{ listenee.face }}">
-                <h2>{{ listenee.name }}</h2>
-                <h2>{{ listenee.username }}</h2>
-
-                <button class="button button-positive"
-                    ng-click="vm.startListeningTo(listenee, $event)"
-                    ng-show="vm.showListenButton(listenee)">Listen</button>
-
-                <button class="button button-energized"
-                    ng-click="vm.stopListeningTo(listenee, $event, this)"
-                    ng-show="vm.showUnlistenButton(listenee)">Unlisten</button>
-              </div>
-            </ion-list>
-          </ion-content>
-        </ion-nav-view>
-      </ion-tab>
-
-      <ion-tab id="search-results-tab" title="Search" ui-sref="app.people.searchResults">
-        <ion-nav-view name="search-results">
-          <ion-content>
-            
-            <div class="list">
-              <div class="item item-input-inset">
-                <label class="item-input-wrapper">
-                  <input class="search-user" type="text" ng-model="vm.searchText" placeholder="Search for user in Public">
-                </label>
-                <button class="button button-small"
-                        ng-click="vm.search()"
-                        ng-disabled="vm.searchText.length === 0">Submit</button>
-              </div>
-            </div>
-
-            <ion-list ng-repeat="user in vm.searchResults | orderBy: '-addedAt'">
-                <div class="item item-avatar item-button-right" ng-click="vm.showProfile(user)">
-                <img ng-src="{{ user.face }}">
-                <h2>{{ user.name }}</h2>
-                <h2>{{ user.username }}</h2>
-
-                <button class="button button-positive"
-                    ng-click="vm.startListeningTo(user, $event)"
-                    ng-show="vm.showListenButton(user)">Listen</button>
-
-                <button class="button button-energized"
-                    ng-click="vm.stopListeningTo(user, $event, this)"
-                    ng-show="vm.showUnlistenButton(user)">Unlisten</button>
-
-              </div>
-
-            </ion-list>
-
-            <div class="text-center" style="margin-top:1em">
-              <p ng-if="vm.searchResults.length">None of these users is the one you're looking for?</p>
-              <p ng-if="vm.showSearchResultsMsg">No matching users found.</p>
-              <button class="button button-positive add-user-button" ng-click="openModal()">Add User To Public</button>
-            </div>
-
-          </ion-content>
-        </ion-nav-view>
       </ion-tab>
 
     </ion-tabs>

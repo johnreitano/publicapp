@@ -12,8 +12,7 @@ angular.module('Publicapp.help', [])
             templateUrl: "modules/help/help.html",
             controller: "HelpCtrl"
           }
-        },
-        authenticate: false
+        }
       })
 
       ;

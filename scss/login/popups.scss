@@ -1,0 +1,45 @@
+.popup-outer
+{
+  .popup
+  {
+    border-radius: 4px;
+    background-color: $popup-bg;
+    width: 90vw;
+    max-width: 300px;
+  }
+
+  .popup-head
+  {
+    padding: 10px;
+  }
+
+  .popup-title
+  {
+    color: $auth-color;
+  }
+
+
+  .popup-buttons
+  {
+    height: 0px;
+    min-height: 0px;
+    padding: 0px;
+
+    .close-popup
+    {
+      top: 0px;
+      position: absolute;
+      right: 0px;
+      background-color: $popup-bg;
+      color: $auth-color;
+      border: none;
+      padding: 0px;
+      min-width: 0px;
+      min-height: 0px;
+      margin: 6px;
+      display: inline-block;
+      font-family: "Ionicons";
+      font-size: 26px;
+    }
+  }
+}

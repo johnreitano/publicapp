@@ -6,30 +6,35 @@
         <div class="user-info">
           <span class="user-profile-name" ng-class="{ 'custom': viewingOwnProfile() }">{{ vm.user.name }}</span>
           <p class="user-username">{{ vm.user.username }}</p>
+
         </div>
+
+        <a style="font-size: 0.75em; padding: 2px;"
+          ui-sref="app.claimPage({id: vm.user.id})"
+          ng-if="!vm.claimed(vm.user)">Is this you?</a>
+
+
+        <button style="width: 60px; font-size: 0.75em; padding: 2px;" class="button"
+                ng-class="vm.isListeningTo(vm.user) ? 'button-energized' : 'button-calm'"
+                ng-click="vm.toggleListeningTo(vm.user, $event)"
+                ng-if="vm.signedIn() && !vm.viewingOwnProfile()">{{ vm.isListeningTo(vm.user) ? 'Unlisten' : 'Listen' }}</button>
+
+
       </div>
+
     </ion-nav-title>
   </ion-nav-bar>
   <ion-nav-buttons side="left">
     <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
   </ion-nav-buttons>
   <ion-nav-buttons side="right">
-    <button class="button button-icon button-clear ion-person-stalker"        ui-sref="app.people"
+    <button class="button button-icon button-clear ion-person-stalker"  ui-sref="app.people.search"
             ng-if="vm.viewingOwnProfile()"></button>
 
-    <button class="button button-icon button-clear ion-home" ui-sref="app.profile.feed({id:vm.signedInUserId()})" ng-show="!vm.viewingOwnProfile()"></button>
-
-    <button class="button button-light"
-            ng-click="vm.startListeningTo(vm.user, $event)"
-            ng-show="vm.showListenButton(vm.user)">Listen</button>
-
-    <button class="button button-assertive"
-            ng-click="vm.stopListeningTo(vm.user, $event, this)"
-            ng-show="vm.showUnlistenButton(vm.user)">Unlisten</button>
-
-    <!-- <button class="button button-icon button-clear ion-home" ui-sref="app.profile.feed({id:vm.signedInUserId()})" ng-show="!vm.viewingOwnProfile()"></button> -->
+    <button class="button button-icon button-clear ion-home" ng-click="vm.goHome()" ng-show="!vm.viewingOwnProfile()"></button>
   </ion-nav-buttons>
   <ion-pane>
+
     <ion-tabs class="tabs-top profile-tabs">
 
       <ion-tab id="feed-tab" title="Newsfeed" ng-if="vm.viewingOwnProfile()" ui-sref="app.profile.feed">
@@ -40,10 +45,10 @@
                 <img ng-src="{{ message.author.face }}">
                 <div>
                   <h2>
-                    <strong>{{ message.author.name }}</strong> said
+                    <strong>{{ vm.primaryName(message.author)}}</strong><span class="weak">{{ vm.paddedSecondaryName(message.author) }}</span> said
                     <br>
                     <span ng-if="message.author.id != message.subject.id">
-                      to <strong>{{ message.subject.name || message.subject.username }}</strong>
+                      to <strong>{{ vm.primaryName(message.subject)}}</strong><span class="weak">{{ vm.paddedSecondaryName(message.subject)}}</span>
                     </span>
                     <span class="message-created-at" am-time-ago="message.createdAt"></span>
                   </h2>
@@ -65,10 +70,10 @@
                 <img ng-src="{{ message.author.face }}">
                 <div>
                   <h2>
-                    <strong>{{ message.author.name }}</strong> said
+                    <strong>{{ vm.primaryName(message.author)}}</strong><span class="weak">{{ vm.paddedSecondaryName(message.author) }}</span> said
                     <br>
                     <span ng-if="message.author.id != message.subject.id">
-                      to <strong>{{ message.subject.name || message.subject.username }}</strong>
+                      to <strong>{{ vm.primaryName(message.subject)}}</strong><span class="weak">{{ vm.paddedSecondaryName(message.subject)}}</span>
                     </span>
                     <span class="message-created-at" am-time-ago="message.createdAt"></span>
                   </h2>
@@ -91,13 +96,10 @@
                 <h2>{{ listener.name }}</h2>
                 <h2>{{ listener.username }}</h2>
 
-                <button class="button button-positive"
-                    ng-click="vm.startListeningTo(listener, $event)"
-                    ng-show="vm.showListenButton(listener)">Listen</button>
-
-                <button class="button button-energized"
-                    ng-click="vm.stopListeningTo(listener, $event)"
-                    ng-show="vm.showUnlistenButton(listener)">Unlisten</button>
+                <button class="button activated"
+                        ng-class="vm.isListeningTo(listener) ? 'button-energized' : 'button-calm'"
+                        ng-click="vm.toggleListeningTo(listener, $event)"
+                        ng-if="vm.signedIn() && listener.id != vm.signedInUserId()">{{vm.isListeningTo(listener) ? "Unlisten" : "Listen"}}</button>
               </div>
 
             </ion-list>
@@ -109,10 +111,10 @@
   </ion-pane>
 
   <ion-footer-bar align-title="left" class="message-footer" style="background-color:#CECECE">
-    <textarea class="post-msg-textarea" type="text" ng-model="vm.newMessage" placeholder="Say something {{ vm.viewingOwnProfile() ? '' : 'to ' + vm.user.name + ' ' }}in Public"></textarea>
+    <textarea id="message-textarea" class="message-textarea" type="text" ng-model="vm.newMessage" placeholder="Say something {{ vm.viewingOwnProfile() ? '' : 'to ' + vm.user.name + ' ' }}in Public"></textarea>
     <div class="buttons">
       <button class="button button-light"
-              ng-click="vm.sendMessage($event)">Send</button>
+              ng-click="vm.startSendingMessage($event)">Send</button>
     </div>
   </ion-footer-bar>
 
