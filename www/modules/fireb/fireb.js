@@ -6,6 +6,10 @@ angular.module('Publicapp.fireb', [])
   var _signedInUserId = null;
   var _signedInUser = null;
 
+  function ref() {
+    return _ref;
+  };
+
   function signedIn() {
     return !!_signedInUserId;
   };
@@ -39,7 +43,7 @@ angular.module('Publicapp.fireb', [])
   });
 
   return {
-    ref: _ref,
+    ref: ref,
     signedIn: signedIn,
     signedInUserId: signedInUserId,
     signedInUser: signedInUser

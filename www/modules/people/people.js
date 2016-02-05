@@ -39,7 +39,7 @@ angular.module('Publicapp.people', [])
 
     angular.extend(ctrl, SharedMethods);
 
-    var userRef = Fireb.ref.child("users").child(Fireb.signedInUserId());
+    var userRef = Fireb.ref().child("users").child(Fireb.signedInUserId());
     ctrl.listenees = $firebaseArray(userRef.child("listenees"));
 
     Contacts.get(function(retrievedContacts) {
@@ -54,7 +54,7 @@ angular.module('Publicapp.people', [])
 
     ctrl.search = function() {
       var normalizedSearchText = s.trim(ctrl.searchText).replace(/ +/g,' ').replace(/@/,'');
-      var usersRef = Fireb.ref.child("users");
+      var usersRef = Fireb.ref().child("users");
       if (/ /.test(normalizedSearchText)) {
         // search by name
         var name = normalizedSearchText;

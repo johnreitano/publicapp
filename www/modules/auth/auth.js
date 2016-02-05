@@ -63,7 +63,7 @@ angular.module('Publicapp.auth', [])
   };
 
   function authenticateAndRedirect() {
-    Fireb.ref.authWithPassword({ email: ctrl.email, password: ctrl.password }, function(error, authData) {
+    Fireb.ref().authWithPassword({ email: ctrl.email, password: ctrl.password }, function(error, authData) {
       ctrl.hideSpinner();
       if (error) {
         console.log("Login Failed!", error);

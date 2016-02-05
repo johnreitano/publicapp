@@ -31,7 +31,7 @@ angular.module('Publicapp.sharedMethods', [])
     step1();
 
     function step1() {
-      Fireb.ref.child("users").once("value", function(snapshot) {
+      Fireb.ref().child("users").once("value", function(snapshot) {
 
         var oldUsers = snapshot.val();
         if (!oldUsers) {
@@ -43,7 +43,7 @@ angular.module('Publicapp.sharedMethods', [])
         remainingItemsInStep = _.keys(oldUsers).length;
 
         _.each(oldUsers, function(oldUser, userId) {
-          Fireb.ref.removeUser({email: oldUser.email, password: "123"}, function(error) {
+          Fireb.ref().removeUser({email: oldUser.email, password: "123"}, function(error) {
             if (error && !/The specified user does not exist/.test(error)) {
               console.log("unable to remove user!", error);
               // return;
@@ -65,8 +65,8 @@ angular.module('Publicapp.sharedMethods', [])
 
     function step2() {
       console.log("removed all users!");
-      Fireb.ref.child("users").remove();
-      Fireb.ref.child("messages").remove(); // TODO: remove this
+      Fireb.ref().child("users").remove();
+      Fireb.ref().child("messages").remove(); // TODO: remove this
 
       var userDataRecords = [];
 
@@ -205,12 +205,12 @@ angular.module('Publicapp.sharedMethods', [])
   function startListeningToTargetBySource(sourceUser, targetUser, addedAt) {
     // add new listenee to source user
     listeneeRecord = {id: targetUser.id, addedAt: addedAt, name: targetUser.name, username: targetUser.username, face: targetUser.face};
-    var sourceUserRef = Fireb.ref.child("users").child(sourceUser.id);
+    var sourceUserRef = Fireb.ref().child("users").child(sourceUser.id);
     sourceUserRef.child("listenees").child(targetUser.id).set(listeneeRecord);
 
     // add new listener to target user
     listenerRecord = {id: sourceUser.id, addedAt: addedAt, name: sourceUser.name, username: sourceUser.username, face: sourceUser.face};
-    var targetUserRef = Fireb.ref.child("users").child(targetUser.id);
+    var targetUserRef = Fireb.ref().child("users").child(targetUser.id);
     targetUserRef.child("listeners").child(sourceUser.id).set(listenerRecord);
   };
 
@@ -220,11 +220,11 @@ angular.module('Publicapp.sharedMethods', [])
     }
 
     // remove listenee from signed-in user
-    var signedInUserRef = Fireb.ref.child("users").child(signedInUserId());
+    var signedInUserRef = Fireb.ref().child("users").child(signedInUserId());
     signedInUserRef.child("listenees").child(targetUser.id).remove();
 
     // remove listener from target user
-    var targetUserRef = Fireb.ref.child("users").child(targetUser.id);
+    var targetUserRef = Fireb.ref().child("users").child(targetUser.id);
     targetUserRef.child("listeners").child(signedInUserId()).remove();
   };
 
@@ -265,7 +265,7 @@ angular.module('Publicapp.sharedMethods', [])
     ////
 
     function processExistingMentionedUsers() {
-      var usersRef = Fireb.ref.child("users");
+      var usersRef = Fireb.ref().child("users");
       for (var i = 0; i < mentionedUsernames.length; i++ ) {
         var mentionedUsername = mentionedUsernames[i];
         usersRef.orderByChild("username").equalTo(mentionedUsername).once("value", function(snapshot) {
@@ -338,7 +338,7 @@ angular.module('Publicapp.sharedMethods', [])
       message.author = ensureCorrectFieldsPresent(message.author, ["name", "username", "face", "id"]);
       message.subject = ensureCorrectFieldsPresent(message.subject, ["name", "username", "face", "id"]);
 
-      var usersRef = Fireb.ref.child("users");
+      var usersRef = Fireb.ref().child("users");
       var ref = usersRef.child(message.author.id).child("profileMessages").push({});
       var messageId = ref.key();
 
@@ -364,11 +364,11 @@ angular.module('Publicapp.sharedMethods', [])
 
     user.email = s.isBlank(user.email) ? username.replace(/\@/,'') + "@users.getpublic.co" : user.email;
     user.password = s.isBlank(user.password) ? Math.random().toString().slice(2,12) : user.password;
-    Fireb.ref.createUser(user, function(error, userData) {
+    Fireb.ref().createUser(user, function(error, userData) {
 
       if (error) {
         if (allowEmailReUse && /specified email address is already in use/.test(error)) {
-          Fireb.ref.authWithPassword({
+          Fireb.ref().authWithPassword({
             email: user.email,
             password : "123"
           }, function(error, authData) {
@@ -405,7 +405,7 @@ angular.module('Publicapp.sharedMethods', [])
       email: user.email
     };
 
-    Fireb.ref.child("users").child(newUser.id).set(newUser, function(error) {
+    Fireb.ref().child("users").child(newUser.id).set(newUser, function(error) {
       if (error) {
         console.log('error saving profile data', error);
         callback(error, null);

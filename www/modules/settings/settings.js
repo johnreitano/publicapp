@@ -45,13 +45,13 @@ angular.module('Publicapp.settings', [])
 
   ctrl.user = {};
   resetFields();
-  var userRef = Fireb.ref.child("users").child(ctrl.signedInUserId());
+  var userRef = Fireb.ref().child("users").child(ctrl.signedInUserId());
   userRef.once("value", function(snapshot) {
     var retrievedUser = snapshot.val();
     ctrl.user.name = retrievedUser.name;
     ctrl.user.phone = retrievedUser.phone;
     ctrl.user.username = retrievedUser.username;
-    ctrl.user.email = Fireb.ref.getAuth().password.email;
+    ctrl.user.email = Fireb.ref().getAuth().password.email;
   });
 
   function addError(newError) {
@@ -64,11 +64,11 @@ angular.module('Publicapp.settings', [])
   function changePassword(callback) {
     if (!s.isBlank(ctrl.user.currentPassword) && !s.isBlank(ctrl.user.newPassword)) {
       var options = {
-        email: Fireb.ref.getAuth().password.email,
+        email: Fireb.ref().getAuth().password.email,
         oldPassword: ctrl.user.currentPassword,
         newPassword: ctrl.user.newPassword
       };
-      Fireb.ref.changePassword(options, function(error) {
+      Fireb.ref().changePassword(options, function(error) {
         if (error) {
           addError("Error changing password: " + error.reason);
         }
@@ -81,8 +81,8 @@ angular.module('Publicapp.settings', [])
 
   function changeEmail(dirty, callback) {
     if (dirty) {
-      Fireb.ref.changeEmail({
-        oldEmail: Fireb.ref.getAuth().password.email,
+      Fireb.ref().changeEmail({
+        oldEmail: Fireb.ref().getAuth().password.email,
         newEmail: ctrl.user.email,
         password: ctrl.user.currentPassword
       }, function(error) {

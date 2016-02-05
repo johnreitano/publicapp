@@ -56,7 +56,7 @@ angular.module('Publicapp', [
       $state.go('app.signIn');
     } else if (toState.name == "app.signOut") {
       if (Fireb.signedIn()) {
-        Fireb.ref.unauth();
+        Fireb.ref().unauth();
       }
       $state.go("app.signIn");
     } else if (toState.name == "app.start") {

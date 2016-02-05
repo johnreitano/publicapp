@@ -43,7 +43,7 @@ angular.module('Publicapp.profile', [])
   angular.extend(ctrl, SharedMethods);
 
   // retrueve user data for specfied id
-  var userRef = Fireb.ref.child('users').child(ctrl.userId);
+  var userRef = Fireb.ref().child('users').child(ctrl.userId);
   ctrl.user = $firebaseObject(userRef);
 
   // play incoming message sound for recent messages when viewing signed in users' profile page
