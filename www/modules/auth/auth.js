@@ -48,7 +48,7 @@ angular.module('Publicapp.auth', [])
   }
 ])
 
-.controller('AuthCtrl', function($scope, $state, $q, $rootScope, $location, Contacts, SharedMethods, Fireb) {
+.controller('AuthCtrl', function($scope, $state, $q, $rootScope, $location, Contacts, SharedMethods, Fireb, $ionicLoading) {
   var ctrl = this;
 
   angular.extend(ctrl, SharedMethods);
@@ -57,14 +57,14 @@ angular.module('Publicapp.auth', [])
   ctrl.password = '';
 
   ctrl.signIn = function() {
-    ctrl.errorMessage = "in signIn()";
-    if (Fireb.signedIn()) {
-      ctrl.errorMessage = "unauthing";
-      Fireb.ref.unauth();
-    }
+    ctrl.errorMessage = '';
+    ctrl.showSpinner("Signing in...");
+    authenticateAndRedirect();
+  };
 
-    ctrl.errorMessage = "about to call authWithPassword";
+  function authenticateAndRedirect() {
     Fireb.ref.authWithPassword({ email: ctrl.email, password: ctrl.password }, function(error, authData) {
+      ctrl.hideSpinner();
       if (error) {
         console.log("Login Failed!", error);
         ctrl.errorMessage = "Your email or password is not correct";
@@ -72,7 +72,6 @@ angular.module('Publicapp.auth', [])
           $scope.$apply();
         }
       } else {
-        ctrl.errorMessage = "login succeeded";
         console.log("Authenticated successfully with payload:", authData);
         $state.go('app.profile.feed', {id: authData.uid})
       }
@@ -82,10 +81,7 @@ angular.module('Publicapp.auth', [])
   };
 
   ctrl.signUp = function() {
-    if (Fireb.signedIn()) {
-      Fireb.ref.unauth();
-    }
-
+    ctrl.showSpinner("Signing up...");
     ctrl.createUser({
       email: ctrl.email,
       password: ctrl.password,
@@ -93,16 +89,29 @@ angular.module('Publicapp.auth', [])
       name: ctrl.name,
       username: ctrl.username
     }, false, function(error, newUser) {
+      ctrl.hideSpinner();
       if (error) {
         ctrl.errorMessage = error.message;
       } else {
-        ctrl.signIn();
+        authenticateAndRedirect();
       }
     });
+  };
+
+  ctrl.showSpinner = function(spinnerMessage) {
+    $ionicLoading.show(
+      { template: '<ion-spinner icon="android"></ion-spinner><p style="margin: 5px 0 0 0;">' + spinnerMessage + '</p>'}
+    );
+
+  };
+
+  ctrl.hideSpinner= function() {
+    $ionicLoading.hide();
   };
 
   ctrl.generateUsernameOnTheFly($scope, 'form');
 
 })
+
 
 ;
