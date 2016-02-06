@@ -30,9 +30,25 @@
     <!-- <button class="button button-icon button-clear ion-home" ui-sref="app.profile.feed({id:vm.signedInUserId()})" ng-show="!vm.viewingOwnProfile()"></button> -->
   </ion-nav-buttons>
   <ion-pane>
-    <ion-tabs class="tabs-top profile-tabs">
+    
+    <!-- <div class="tabs tabs-icon-left">
+      <a class="tab-item">
+        <i class="icon ion-home"></i>
+        Home
+      </a>
+      <a class="tab-item">
+        <i class="icon ion-star"></i>
+        Favorites
+      </a>
+      <a class="tab-item">
+        <i class="icon ion-gear-a"></i>
+        Settings
+      </a>
+    </div>
+ -->
+    <ion-tabs class="tabs-top tabs-icon-left profile-tabs">
 
-      <ion-tab id="feed-tab" title="Newsfeed" ng-if="vm.viewingOwnProfile()" ui-sref="app.profile.feed">
+      <ion-tab id="feed-tab" icon-on="icon ion-ios-paper" icon-off="icon ion-ios-paper-outline" title="Newsfeed" ng-if="vm.viewingOwnProfile()" ui-sref="app.profile.feed">
         <ion-nav-view name="feed">
           <ion-content>
             <ion-list ng-repeat="message in vm.user.feedMessages">
@@ -57,7 +73,7 @@
         </ion-nav-view>
       </ion-tab>
 
-      <ion-tab id="messages-tab" title="{{ vm.viewingOwnProfile() ? 'Your Messages' : 'Messages' }}" ng-if="true" ui-sref="app.profile.messages">
+      <ion-tab id="messages-tab" icon-on="fa fa-file-text" icon-off="fa fa-file-text-o" title="{{ vm.viewingOwnProfile() ? 'Your Messages' : 'Messages' }}" ng-if="true" ui-sref="app.profile.messages">
         <ion-nav-view name="messages">
           <ion-content>
             <ion-list ng-repeat="message in vm.user.profileMessages">
@@ -82,7 +98,7 @@
         </ion-nav-view>
       </ion-tab>
 
-      <ion-tab id="listeners-tab" title="Listeners" ng-if="true" ui-sref="app.profile.listeners">
+      <ion-tab id="listeners-tab" icon-on="ion-ios-people" icon-off="ion-ios-people-outline" title="Listeners" ng-if="true" ui-sref="app.profile.listeners">
         <ion-nav-view name="listeners">
           <ion-content>
             <ion-list ng-repeat="listener in vm.user.listeners | orderBy: '-addedAt'">
