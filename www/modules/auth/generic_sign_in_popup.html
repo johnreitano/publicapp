@@ -16,35 +16,11 @@
                 Facebook
               </a>
             </div>
-            <div class="item item-divider" style="padding: 0px;">
-              ...or use your email address
-            </div>
-
-            <div class="item item-input-inset">
-              <label class="item-input-wrapper">
-                <input type="email"
-                       name="email"
-                       ng-model="vm.email"
-                       class="form-control"
-                       placeholder="Your email"
-                       required>
-              </label>
-              <button class="button button-medium button-positve" ng-if="!vm.showPassword">
-                Go!
-              </button>
-            </div>
-            <div class="item item-input-inset" ng-if="vm.showPassword">
-              <label class="item-input-wrapper">
-                <input type="password"
-                       name="password"
-                       ng-model="vm.password"
-                       class="form-control"
-                       placeholder="Enter your password"
-                       required>
-              </label>
-              <button class="button button-medium button-positve" ng-disabled="false">
-                Sign In!
-              </button>
+            <div class="item" style="padding: 0px;">
+              <a class="google-sign-in button button-block" ng-click="vm.showEmailSignInPopup()">
+                <i class="icon ion-email"></i>
+                Email Address
+              </a>
             </div>
           </div>
         </div>

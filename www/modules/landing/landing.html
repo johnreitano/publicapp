@@ -7,17 +7,17 @@
         <a ui-sref="app.profile.feed">
           Sign In
         </a>
-        <button class="button button-small button-positive sign-up" ui-sref="app.profile.feed">
+        <button class="button button-small button-positive sign-up" ui-sref="app.genericSignUp">
           Sign Up
         </button>
       </div>
     </div>
-    
+
     <div class="public text-center" ng-class="{ 'animate': vm.searchResults.length }">
       <h1>Public</h1>
       <img class="logo" src="/img/public.png">
     </div>
-      
+
     <form name="vm.searchForm" ng-submit="vm.search()">
       <div class="list">
         <label class="item item-input item-stacked-label">

@@ -37,7 +37,11 @@
         </ion-item>
         <ion-item menu-toggle ui-sref="app.profile.feed" ng-if="!vm.signedIn()">
           <i class="ion-log-in"></i>
-          Sign In or Sign Up
+          Sign In
+        </ion-item>
+        <ion-item menu-toggle ui-sref="app.genericSignUp" ng-if="!vm.signedIn()">
+          <i class="ion-log-in"></i>
+          Sign Up
         </ion-item>
         <ion-item menu-toggle ui-sref="app.signOut" ng-if="vm.signedIn()">
           <i class="ion-log-out"></i>

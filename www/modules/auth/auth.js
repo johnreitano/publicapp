@@ -5,17 +5,22 @@ angular.module('Publicapp.auth', [])
 
     $stateProvider
 
+    .state('app.genericSignUp', {
+      url: '/generic-sign-up',
+      controller: 'AuthCtrl as vm'
+    })
+
+    .state('app.emailSignUp', {
+      url: '/email-sign-in',
+      controller: 'AuthCtrl as vm'
+    })
+
     .state('app.genericSignIn', {
       url: '/generic-sign-in',
       controller: 'AuthCtrl as vm'
     })
 
     .state('app.emailSignIn', {
-      url: '/email-sign-in',
-      controller: 'AuthCtrl as vm'
-    })
-
-    .state('app.emailSignUp', {
       url: '/email-sign-in',
       controller: 'AuthCtrl as vm'
     })
@@ -51,23 +56,22 @@ angular.module('Publicapp.auth', [])
   angular.extend(ctrl, SharedMethods);
 
   $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-    if (toState.authenticate && !Fireb.signedIn()) {
+    if (Fireb.signedIn()) {
+      return;
+    }
+
+    if (toState.authenticate) {
       ctrl.originalToState = toState;
       ctrl.originalToParams = toParams;
       event.preventDefault();
       ctrl.showGenericSignInPopup();
+    } else if (toState.name == "app.genericSignUp") {
+      ctrl.originalToState = "app.profile.feed";
+      ctrl.originalToParams = {};
+      event.preventDefault();
+      ctrl.showGenericSignUpPopup();
     }
   });
-
-  // $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
-  //   if (toState.name == "app.genericSignIn") {
-  //     ctrl.showGenericSignInPopup();
-  //   } else if (toState.name == "app.emailSignIn") {
-  //     ctrl.showEmailSignInPopup();
-  //   } else if (toState.name == "app.emailSignUp") {
-  //     ctrl.showEmailSignUpPopup();
-  //   }
-  // });
 
   ctrl.signUp = function() {
     var ctrl = this;
@@ -89,36 +93,21 @@ angular.module('Publicapp.auth', [])
     });
   };
 
-  ctrl.showGenericSignInPopup = function() {
+  ctrl.showGenericSignUpPopup = function() {
     var ctrl = this;
 
     ctrl.showPassword = false;
     ctrl.email = '';
     ctrl.password = '';
-    ctrl.genericSignInPopup = $ionicPopup.show({
+    ctrl.genericSignUpPopup = $ionicPopup.show({
       cssClass: 'popup-outer auth-view',
-      templateUrl: 'modules/auth/generic_sign_in_popup.html',
+      templateUrl: 'modules/auth/generic_sign_up_popup.html',
       scope: ctrl.sharedScope,
-      title: 'Please sign in or sign up to continue.',
+      title: 'Sign Up with Public',
       buttons: [{
         text: '',
         type: 'close-popup ion-ios-close-outline'
       }]
-    });
-  };
-
-  ctrl.lookupEmail = function() {
-    var ctrl = this;
-
-    ctrl.showSpinner('Looking up email...');
-    Fireb.ref().child("users").orderByChild("email").equalTo(ctrl.email).once("value", function(snapshot) {
-      var matchingUser = _.values(snapshot.val())[0];
-      ctrl.hideSpinner();
-      if (matchingUser) {
-        ctrl.showEmailSignInPopup();
-      } else {
-        ctrl.showEmailSignUpPopup();
-      }
     });
   };
 
@@ -129,7 +118,7 @@ angular.module('Publicapp.auth', [])
     ctrl.username = '';
     ctrl.password = '';
     ctrl.errorMessage = '';
-    ctrl.signUpPopup = $ionicPopup.show({
+    ctrl.emailSignUpPopup = $ionicPopup.show({
       cssClass: 'popup-outer auth-view',
       templateUrl: 'modules/auth/email_sign_up_popup.html',
       scope: ctrl.sharedScope,
@@ -142,6 +131,24 @@ angular.module('Publicapp.auth', [])
 
     ctrl.generateUsernameOnTheFly();
 
+  };
+
+  ctrl.showGenericSignInPopup = function() {
+    var ctrl = this;
+
+    ctrl.showPassword = false;
+    ctrl.email = '';
+    ctrl.password = '';
+    ctrl.genericSignInPopup = $ionicPopup.show({
+      cssClass: 'popup-outer auth-view',
+      templateUrl: 'modules/auth/generic_sign_in_popup.html',
+      scope: ctrl.sharedScope,
+      title: 'Please sign in to continue',
+      buttons: [{
+        text: '',
+        type: 'close-popup ion-ios-close-outline'
+      }]
+    });
   };
 
   ctrl.showEmailSignInPopup = function() {
@@ -216,6 +223,14 @@ angular.module('Publicapp.auth', [])
   ctrl.closePopups = function() {
     var ctrl = this;
 
+    if (ctrl.genericSignUpPopup) {
+      ctrl.genericSignUpPopup.close();
+      ctrl.genericSignUpPopup = null;
+    }
+    if (ctrl.emailSignUpPopup) {
+      ctrl.emailSignUpPopup.close();
+      ctrl.emailSignUpPopup = null;
+    }
     if (ctrl.genericSignInPopup) {
       ctrl.genericSignInPopup.close();
       ctrl.genericSignInPopup = null;
@@ -223,10 +238,6 @@ angular.module('Publicapp.auth', [])
     if (ctrl.emailSignInPopup) {
       ctrl.emailSignInPopup.close();
       ctrl.emailSignInPopup = null;
-    }
-    if (ctrl.signUpPopup) {
-      ctrl.signUpPopup.close();
-      ctrl.signUpPopup = null;
     }
   };
 })
