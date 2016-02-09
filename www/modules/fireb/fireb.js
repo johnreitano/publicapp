@@ -97,6 +97,8 @@ angular.module('Publicapp.fireb', [])
           }
 
           createUserObject(user, function(error, newUser) {
+            _signedInUser = newUser;
+            _signedInUserId = newUser.id;
             doOneTimeCallback(error);
           });
         }
