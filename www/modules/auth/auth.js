@@ -1,37 +1,12 @@
 angular.module('Publicapp.auth', [])
 
 .config(['$urlRouterProvider', '$stateProvider',
-  function($urlRouterProvider, $stateProvider){
+  function($urlRouterProvider, $stateProvider) {
 
     $stateProvider
 
-    .state('app.genericSignUp', {
-      url: '/generic-sign-up',
-      controller: 'AuthCtrl as vm'
-    })
-
-    .state('app.emailSignUp', {
-      url: '/email-sign-in',
-      controller: 'AuthCtrl as vm'
-    })
-
-    .state('app.genericSignIn', {
-      url: '/generic-sign-in',
-      controller: 'AuthCtrl as vm'
-    })
-
-    .state('app.emailSignIn', {
-      url: '/email-sign-in',
-      controller: 'AuthCtrl as vm'
-    })
-
     .state('app.signOut', {
       url: '/sign-out',
-      controller: 'AuthCtrl as vm'
-    })
-
-    .state('app.seed', {
-      url: '/seed',
       controller: 'AuthCtrl as vm'
     })
 
@@ -56,20 +31,15 @@ angular.module('Publicapp.auth', [])
   angular.extend(ctrl, SharedMethods);
 
   $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-    if (Fireb.signedIn()) {
-      return;
-    }
-
-    if (toState.authenticate) {
+    if (!Fireb.signedIn() && toState.authenticate) {
       ctrl.originalToState = toState;
       ctrl.originalToParams = toParams;
       event.preventDefault();
-      ctrl.showGenericSignInPopup();
-    } else if (toState.name == "app.genericSignUp") {
-      ctrl.originalToState = "app.profile.feed";
-      ctrl.originalToParams = {};
-      event.preventDefault();
-      ctrl.showGenericSignUpPopup();
+      if (toParams.viaSignUp) {
+        ctrl.showGenericSignUpPopup();
+      } else {
+        ctrl.showGenericSignInPopup();
+      }
     }
   });
 

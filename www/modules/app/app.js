@@ -81,13 +81,6 @@ angular.module('Publicapp', [
       } else {
         $state.go("app.profile.messages", toParams);
       }
-    } else if (toState.name == "app.claimPage") {
-      event.preventDefault();
-      if (Fireb.signedIn()) {
-        $state.go("app.claimPage.signedIn", toParams);
-      } else {
-        $state.go("app.claimPage.notSignedIn", toParams);
-      }
     } else if (toState.name == "app.profile.feed" && Fireb.signedIn() && s.isBlank(toParams.id)) {
       event.preventDefault();
       $state.go("app.profile.feed", {id: Fireb.signedInUserId()});

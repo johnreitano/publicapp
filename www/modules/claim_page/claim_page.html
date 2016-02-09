@@ -14,24 +14,26 @@
       <h2>{{ vm.user.username }}</h2>
     </div>
 
-    <h4>Are you the real {{ vm.user.name }}?</h4>
+    <h4>Are you {{ vm.identifier(vm.user) }}?</h4>
     <p>
-      The Public page for {{ vm.user.name }} ({{ vm.user.username }}) is currently unclaimed.
+      The Public page for {{ vm.identifier(vm.user) }} is currently unclaimed.
     </p>
-
 
     <div ng-if="vm.ready && !vm.signedIn()">
       <p>
         If you are sure that this page represents your own identity and would like to moderate your own page, you can submit a <strong>Page Identity Request</strong> to Public.
       </p>
       <p>
-        To submit a Page Identity Request to Public, you must first sign up for a separate account under your name, and then sign in using that account. Once you've signed in, you can return to this user page and click again on the 'Is this you?' link, and you will be asked a few additional questions.
+        To submit a Page Identity Request to Public, you must first sign up for a separate account under your name, and then sign in using that account. Once you've signed in, you can return to this user's page and click again on the 'Is this you?' link. You will then be asked a few additional questions and your request will be received.
       </p>
 
-      <p>The Request usually takes just 1 or 2 minutes to prepare.</p>
+      <p>Most Page Identity Requests can be reviewed and approved by Public within 1 day. If we need more information to make a decision, we'll let you know via email. </p>
 
       <p>
-        <button ui-sref="app.claimPage.signedIn({id: vm.user.id})" class="button button-balanced button-medium">NextS Step: Sign Up or Sign In</button>
+        <strong>Next Step:</strong>
+        <button ui-sref="app.claimPage.signedIn({id: vm.user.id, viaSignUp: true})" class="button button-balanced button-medium">Sign Up</button>
+        or
+        <button ui-sref="app.claimPage.signedIn({id: vm.user.id})" class="button button-balanced button-medium">Sign In</button>
       <p>
     </div>
 

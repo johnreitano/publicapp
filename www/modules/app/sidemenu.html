@@ -39,7 +39,7 @@
           <i class="ion-log-in"></i>
           Sign In
         </ion-item>
-        <ion-item menu-toggle ui-sref="app.genericSignUp" ng-if="!vm.signedIn()">
+        <ion-item menu-toggle ui-sref="app.profile.feed({viaSignUp: true})" ng-if="!vm.signedIn()">
           <i class="ion-log-in"></i>
           Sign Up
         </ion-item>

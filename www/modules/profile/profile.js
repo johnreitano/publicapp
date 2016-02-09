@@ -17,7 +17,10 @@ angular.module('Publicapp.profile', [])
 
     .state('app.profile.feed', {
       url: "/feed",
-      authenticate: true
+      authenticate: true,
+      params: {
+        viaSignUp: false
+      }
     })
 
     .state('app.profile.messages', {

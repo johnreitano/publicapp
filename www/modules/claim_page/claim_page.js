@@ -21,12 +21,15 @@ angular.module('Publicapp.claimPage', [])
 
     .state('app.claimPage.signedIn', {
       url: "/signed-in",
-      authenticate: true
+      authenticate: true,
+      params: {
+        viaSignUp: false
+      }
     })
 
 }])
 
-.controller('ClaimPageCtrl', function($scope, SharedMethods, $stateParams, Fireb, $firebaseObject, $state, $ionicLoading) {
+.controller('ClaimPageCtrl', function($scope, SharedMethods, $stateParams, Fireb, $firebaseObject, $state, $ionicLoading, $rootScope) {
   var ctrl = this;
 
   angular.extend(ctrl, SharedMethods);
@@ -35,6 +38,17 @@ angular.module('Publicapp.claimPage', [])
   var userRef = Fireb.ref().child('users').child($stateParams.id);
   ctrl.user = $firebaseObject(userRef);
   ctrl.ready = false;
+
+  $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
+    if (toState.name == "app.claimPage") {
+      event.preventDefault();
+      if (Fireb.signedIn()) {
+        $state.go("app.claimPage.signedIn", toParams);
+      } else {
+        $state.go("app.claimPage.notSignedIn", toParams);
+      }
+    }
+  });
 
   ctrl.request = {
     reason: '',
@@ -50,6 +64,16 @@ angular.module('Publicapp.claimPage', [])
     Fireb.signedInUserRef().child("pageIdentityRequests").push(ctrl.request);
     $ionicLoading.show({ template: 'Item Added!', noBackdrop: true, duration: 2000 });
     // $state.go('app.home');
+  };
+
+  ctrl.identifier = function(user) {
+    if (s.isBlank(user.name)) {
+      return user.username;
+    } else if (s.isBlank(user.username)) {
+      return user.name;
+    } else {
+      return user.name + " (" + user.username + ")";
+    }
   };
 
   ionic.Platform.ready(function() {
