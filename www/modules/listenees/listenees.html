@@ -1,0 +1,27 @@
+<ion-view>
+  <ion-nav-title>
+    Listening To
+  </ion-nav-title>
+  <ion-nav-buttons side="right">
+    <button class="button button-icon button-clear ion-home" ng-click="vm.goHome()"></button>
+  </ion-nav-buttons>
+
+
+  <ion-content>
+    <ion-list ng-repeat="listenee in vm.listenees | orderBy: '-addedAt'">
+        <div class="item item-avatar item-button-right" ng-click="vm.showProfile(listenee)">
+        <img ng-src="{{ listenee.face }}">
+        <h2>{{ listenee.name }}</h2>
+        <h2>{{ listenee.username }}</h2>
+
+        <button class="button button-positive"
+            ng-click="vm.startListeningTo(listenee, $event)"
+            ng-show="vm.showListenButton(listenee)">Listen</button>
+
+        <button class="button button-energized"
+            ng-click="vm.stopListeningTo(listenee, $event, this)"
+            ng-show="vm.showUnlistenButton(listenee)">Unlisten</button>
+      </div>
+    </ion-list>
+  </ion-content>
+</ion-view>

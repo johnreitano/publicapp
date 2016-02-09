@@ -1,0 +1,144 @@
+.auth-outer
+{
+	background-color: transparent !important;
+
+	ion-view
+	{
+		background-color: transparent;
+		box-shadow: none !important; // Need to set this with important to prevent awefull vertical line when transitioning
+	}
+
+	ion-header-bar
+	{
+		background-color: transparent;
+
+		*
+		{
+			color: $auth-color;
+		}
+	}
+}
+
+.auth-view
+{
+	ion-content
+	{
+		.scroll
+		{
+			height: 100%
+		}
+	}
+
+	.auth-content-outer
+	{
+		padding: 0px;
+		min-height: 100%;
+
+		.col
+		{
+			padding: 0px;
+		}
+	}
+
+	.related-copy
+	{
+		padding-top: 0px;
+		padding-right: 0px;
+		padding-left: 0px;
+
+		.col
+		{
+			padding: 0px;
+		}
+
+		.auth-copy
+		{
+			color: lighten($auth-color, 5%);
+			font-weight: 400;
+			margin: 5px 0px 10px 0px;
+		}
+	}
+
+	.form-wrapper
+	{
+		padding: 0px;
+
+		.col
+		{
+			padding-bottom: 0px;
+			padding-right: 0px;
+			padding-left: 0px;
+		}
+
+		.form-fields-outer
+		{
+			margin: 0px;
+
+			.item-input
+			{
+				margin-bottom: 15px;
+				padding-top: 4px;
+  			padding-bottom: 4px;
+				border-radius: 4px;
+				background-color: $auth-field-bg;
+				border-color: darken($auth-field-bg, 2%);
+
+				&:last-child
+				{
+					margin-bottom: 5px;
+				}
+			}
+		}
+
+		.log-in.button,
+		.sign-up.button,
+		.reset-password.button
+		{
+			background-color: $auth-btn-bg;
+			color: $auth-btn-color;
+			border-color: darken($auth-btn-bg, 2);
+			font-weight: 500;
+		}
+	}
+
+	// Misc
+	.message
+  {
+    text-align: center;
+    color: lighten($auth-color, 30%);
+  }
+
+  .message.error:before
+  {
+    content: '*';
+    color: $error-color;
+    text-shadow: 1px 1px 0px rgba(darken($error-color, 20), .3);
+    margin-right: 5px;
+    font-size: 20px;
+  }
+
+	// Show/Hide password
+  .show-hide-input
+  {
+    display: inherit;
+    width: 100%;
+  }
+  .toggle-view-anchor
+  {
+    position:absolute;
+    top:6px;
+    right:0px;
+    height: $line-height-computed + $font-size-base;
+    line-height: $line-height-computed + $font-size-base;
+
+    *
+    {
+      color: darken($auth-field-bg, 30%) !important;
+      display: block;
+      font-size: 24px;
+      width: 45px;
+      text-align: center;
+      font-weight: 500;
+    }
+  }
+}

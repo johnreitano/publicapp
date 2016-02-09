@@ -3,8 +3,9 @@
     Settings
   </ion-nav-title>
   <ion-nav-buttons side="right">
-    <button class="button button-icon button-clear ion-home" ui-sref="app.profile.feed({id:vm.signedInUserId()})"></button>
+    <button class="button button-icon button-clear ion-home" ng-click="vm.goHome()"></button>
   </ion-nav-buttons>
+
   <ion-content>
     <form name="form" ng-submit='vm.updateSettings(form)' novalidate>
 
@@ -30,8 +31,7 @@
           <input type="tel"
                  name="phone"
                  ng-model="vm.user.phone"
-                 placeholder="Mobile"
-                 ng-required="true">
+                 placeholder="Mobile">
         </label>
         <label class="item item-input item-floating-label">
           <span class="input-label">Email</span>
@@ -42,34 +42,39 @@
                  required>
         </label>
         <label class="item item-input item-floating-label">
+          <span class="input-label">Sign In Type</span>
+          <input type="text"
+                 ng-model="vm.user.signInType"
+                 ng-disabled="true">
+        </label>
+        <label class="item item-input item-floating-label" ng-show="vm.usesPasswordAuth()">
           <span class="input-label">Current Password</span>
            <input type="password"
                   name="currentPassword"
-                  ng-model="vm.user.currentPassword"
-                  placeholder="Please enter current password"
-                  required>
+                  ng-model="vm.currentPassword"
+                  placeholder="To change password, enter current password">
         </label>
-        <label class="item item-input item-floating-label">
+        <label class="item item-input item-floating-label" ng-show="vm.usesPasswordAuth()">
           <span class="input-label">New Password</span>
            <input type="password"
                   name="newPassword"
-                  ng-model="vm.user.newPassword"
+                  ng-model="vm.newPassword"
                   placeholder="New Password (optional)">
         </label>
-        <label class="item item-input item-floating-label">
+        <label class="item item-input item-floating-label" ng-show="vm.usesPasswordAuth()">
           <span class="input-label">Confirm New Password</span>
            <input type="password"
                   name="newPasswordConfirmation"
-                  ng-model="vm.user.newPasswordConfirmation"
+                  ng-model="vm.newPasswordConfirmation"
                   placeholder="Confirm New Password"
-                  compare-to="vm.user.newPassword">
+                  compare-to="vm.newPassword">
         </label>
       </div>
 
       <hr>
 
       <button class="button button-block button-positive"
-              style="width:90%;margin:1em auto;" ng-disabled="form.$invalid">Update</button>
+              style="width:90%;margin:1em auto;" ng-disabled="form.$invalid || !form.$dirty">Update</button>
 
     </form>
   </ion-content>

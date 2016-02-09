@@ -24,7 +24,15 @@
 		}
 	}
 
+  .listening{
+    @extend .button-energized;
+    text-decoration: none;
+  }
 
+  .not-listening{
+    @extend .button-calm;
+    text-decoration: line-through;
+  }
 }
 
 .item-profile-message h2, p {
@@ -35,11 +43,15 @@
 	height: 4em;
 }
 
+.item-profile-message .weak {
+	font-size: 0.80em;
+}
+
 .message-footer {
 	height: 3em;
 }
 
-.post-msg-textarea {
+.message-textarea {
 	resize: none;
 	width: 100%;
 	background-color: #CECECE;
@@ -47,7 +59,7 @@
 }
 
 // white color placeholder
-.post-msg-textarea::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+.message-textarea::-webkit-input-placeholder { /* Chrome/Opera/Safari */
   color: black !important;
 }
 
@@ -55,3 +67,12 @@
   color: $positive !important;
   font-weight: 600;
 }
+
+.profile-nav-bar-unauthenticated {
+  height: 200px !important;
+}
+
+.profile-nav-bar-inset {
+  height: 50px;
+}
+

@@ -1,0 +1,102 @@
+<ion-view>
+  <ion-nav-title>
+    Claim Your Page
+  </ion-nav-title>
+  <ion-nav-buttons side="right">
+    <button class="button button-icon button-clear ion-home" ng-click="vm.goHome()"></button>
+  </ion-nav-buttons>
+
+  <ion-content>
+    <div>
+      <div class="item item-avatar item-button-right" ng-click="vm.showProfile(vm.user)">
+      <img ng-src="{{ vm.user.face }}">
+      <h2>{{ vm.user.name }}</h2>
+      <h2>{{ vm.user.username }}</h2>
+    </div>
+
+    <h4>Are you the real {{ vm.user.name }}?</h4>
+    <p>
+      The Public page for {{ vm.user.name }} ({{ vm.user.username }}) is currently unclaimed.
+    </p>
+
+
+    <div ng-if="vm.ready && !vm.signedIn()">
+      <p>
+        If you are sure that this page represents your own identity and would like to moderate your own page, you can submit a <strong>Page Identity Request</strong> to Public.
+      </p>
+      <p>
+        To submit a Page Identity Request to Public, you must first sign up for a separate account under your name, and then sign in using that account. Once you've signed in, you can return to this user page and click again on the 'Is this you?' link, and you will be asked a few additional questions.
+      </p>
+
+      <p>The Request usually takes just 1 or 2 minutes to prepare.</p>
+
+      <p>
+        <button ui-sref="app.claimPage.signedIn({id: vm.user.id})" class="button button-balanced button-medium">NextS Step: Sign Up or Sign In</button>
+      <p>
+    </div>
+
+    <div ng-if="vm.ready && vm.signedIn()">
+      <p>
+        If you are sure that this page represents your own identity and would like to moderate your own page, you can submit the following <strong>Page Identity Request</strong> to Public:
+      </p>
+      <br>
+      <div>
+        <form role="form" name="vm.form" ng-submit='vm.submitRequest()'>
+
+          <div>
+
+            <label class="item item-input item-floating-label">
+              <span class="input-label">Reason for Claim</span>
+              <textarea name="reason"
+                     ng-model="vm.request.reason"
+                     class="form-control"
+                     placeholder="In no more than 30 words, tell us why you think this page represents you and not someone else."
+                     ng-required="true">
+              </textarea>
+            </label>
+            <label class="item item-input item-stacked-label">
+              <p class="input-label">How sure are you that the the person represented by this page is you and not another person with the same name as you?
+              </p>
+              <ion-list>
+                <ion-radio ng-model="vm.request.certainty" ng-value="'not sure'">I'm not sure.</ion-radio>
+                <ion-radio ng-model="vm.request.certainty" ng-value="'probably'">It's probably me.</ion-radio>
+                <ion-radio ng-model="vm.request.certainty" ng-value="'sure'">I'm sure it's me.</ion-radio>
+              </ion-list>
+            </label>
+
+            <label class="item item-input item-floating-label">
+              <span class="input-label">Please enter or confirm your email address</span>
+              <input type="email"
+                     name="email"
+                     ng-model="vm.request.email"
+                     class="form-control"
+                     placeholder="Your email"
+                     required>
+            </label>
+
+            <label class="item item-input item-floating-label">
+              <span class="input-label">Please enter or confirm your phone</span>
+              <input type="tel"
+                     name="phone"
+                     ng-model="vm.request.phone"
+                     class="form-control"
+                     placeholder="Your phone">
+            </label>
+
+          </div>
+
+
+          <hr>
+          <button type="submit"
+            class='button button-block button-positive'
+            ng-disabled="vm.form.$invalid"
+            style="width:90%;margin:1em auto;">
+            Submit Your Page Identity Request
+          </button>
+
+        </form>
+    	</div>
+
+    </div>
+  </ion-content>
+</ion-vview>

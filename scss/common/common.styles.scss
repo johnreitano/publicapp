@@ -1,0 +1,77 @@
+// spinner-on-load
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+.spinner-on-load
+{
+  -webkit-animation: spin 2s infinite linear;
+  animation: spin 2s infinite linear;
+
+  position: absolute;
+  @include cssCalc("top", "50% - #{($spinner-size/2)}");
+  @include cssCalc("left", "50% - #{($spinner-size/2)}");
+  font-size: $spinner-size;
+
+  color: $welcome-color;
+}
+
+ion-spinner.spinner-on-load
+{
+  -webkit-animation: none;
+  animation: none;
+  stroke: $welcome-color;
+}
+
+// Multimedia background
+.multi-bg-outer
+{
+  position: relative;
+  background-color: rgba(darken($multi-bg, 10%), 0.7);
+  height: 100%;
+  @include transition(all ease-in-out .3s);
+
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: -2;
+
+  &.finish-loading
+  {
+    background-color: transparent;
+  }
+
+  .bg-overlay
+  {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: $overlay-bg;
+    z-index: -1;
+    opacity: 0.6;
+  }
+
+  .multi-bg
+  {
+    display: none;
+  }
+}

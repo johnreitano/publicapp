@@ -1,0 +1,70 @@
+<ion-view hide-nav-bar="true">
+
+  <ion-content>
+
+    <div class="row">
+      <div class="col">
+        <a ui-sref="app.profile.feed">
+          Sign In
+        </a>
+        <button class="button button-small button-positive sign-up" ui-sref="app.profile.feed">
+          Sign Up
+        </button>
+      </div>
+    </div>
+    
+    <div class="public text-center" ng-class="{ 'animate': vm.searchResults.length }">
+      <h1>Public</h1>
+      <img class="logo" src="/img/public.png">
+    </div>
+      
+    <form name="vm.searchForm" ng-submit="vm.search()">
+      <div class="list">
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Search for yourself in Public</span>
+          <input type="text" ng-model="vm.searchText" placeholder="Enter name or username">
+        </label>
+      </div>
+    </form>
+
+    <div class="search-results" ng-if="vm.showSearchResults">
+      <ion-list ng-repeat="user in vm.searchResults | orderBy: '-addedAt'">
+          <div class="item item-avatar item-button-right" ng-click="vm.showProfile(user)">
+          <img ng-src="{{ user.face }}">
+          <h2>{{ user.name }}</h2>
+          <h2>{{ user.username }}</h2>
+        </div>
+      </ion-list>
+
+      <div class="text-center" style="margin-top:1em">
+        <p ng-if="vm.searchResults.length">None of these users is the one you're looking for?</p>
+        <p ng-if="!vm.searchResults.length">No matching users found.</p>
+        <button class="button button-positive add-user-button" ng-click="openModal()">Add User To Public</button>
+      </div>
+    </div>
+
+
+
+    <!-- <div class="row">
+      <div class="col text-center">
+        <a ui-sref="app.terms">
+          Terms
+        </a>
+      </div>
+      <div class="col text-center">
+        <a ui-sref="app.privacy">
+          Privacy
+        </a>
+      </div>
+    </div> -->
+
+
+  </ion-content>
+
+  <div class="bar bar-footer bar-positive">
+    <button class="button button-clear" ui-sref="app.terms">Terms</button>
+    <div class="title">Public &#169 2016</div>
+    <button class="button button-clear" ui-sref="app.privacy">Privacy</button>
+  </div>
+
+</ion-view>

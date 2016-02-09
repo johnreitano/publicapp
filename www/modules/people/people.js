@@ -12,22 +12,16 @@ angular.module('Publicapp.people', [])
             templateUrl: "modules/people/people.html",
             controller: "PeopleCtrl as vm"
           }
-        },
+        }
+      })
+
+      .state('app.people.search', {
+        url: "/search",
         authenticate: true
       })
 
       .state('app.people.contacts', {
         url: "/contacts",
-        authenticate: true
-      })
-
-      .state('app.people.listenees', {
-        url: "/listenees",
-        authenticate: true
-      })
-
-      .state('app.people.searchResults', {
-        url: "/search-results",
         authenticate: true
       })
 
@@ -39,40 +33,46 @@ angular.module('Publicapp.people', [])
 
     angular.extend(ctrl, SharedMethods);
 
-    var userRef = Fireb.ref().child("users").child(Fireb.signedInUserId());
-    ctrl.listenees = $firebaseArray(userRef.child("listenees"));
-
-    Contacts.get(function(retrievedContacts) {
-      ctrl.contacts = retrievedContacts;
-    })
+    if (ctrl.isCurrentState('app.people.contacts')) {
+      Contacts.get(function(retrievedContacts) {
+        ctrl.contacts = retrievedContacts;
+      })
+    }
 
     ctrl.usingDevice = function() {
       return ionic.Platform.isWebView();
     };
 
-    ctrl.showSearchResultsMsg = false;
+    ctrl.showSearchResults = false;
 
     ctrl.search = function() {
-      var normalizedSearchText = s.trim(ctrl.searchText).replace(/ +/g,' ').replace(/@/,'');
-      var usersRef = Fireb.ref().child("users");
-      if (/ /.test(normalizedSearchText)) {
-        // search by name
-        var name = normalizedSearchText;
-        query = usersRef.orderByChild("name").startAt(name).endAt(name);
-        ctrl.searchResults = $firebaseArray(query);
+      ctrl.showSpinner("Searching...");
+      var searchText = s.trim(ctrl.searchText).replace(/ +/g,' ').replace(/\@/,'').toLowerCase();
+      var searchTextParts = searchText.split(/ /);
+      if (searchTextParts.length == 0) {
+        ctrl.errorMessage = "Please try again with more characters";
+        ctrl.hideSpinner();
+      } else if (searchTextParts.length == 1) {
+        // do an partial search on username
+        queryStart = "@" + searchTextParts[0];
+        queryEnd = queryStart + "z";
+        Fireb.ref().child("users").orderByChild("username").startAt(queryStart).endAt(queryEnd).once("value", function(snapshot) {
+          ctrl.searchResults = _.values(snapshot.val());
+          ctrl.searchText = '';
+          ctrl.showSearchResults = true;
+          ctrl.hideSpinner();
+        });
       } else {
-        // search by username
-        var username = "@" + normalizedSearchText;
-        query = usersRef.orderByChild("username").startAt(username).endAt(username);
-        ctrl.searchResults = $firebaseArray(query);
+        // do a partial search on searchableName
+        queryStart = searchText;
+        queryEnd = queryStart + "z";
+        Fireb.ref().child("users").orderByChild("searchableName").startAt(queryStart).endAt(queryEnd).once("value", function(snapshot) {
+          ctrl.searchResults = _.values(snapshot.val());
+          ctrl.searchText = '';
+          ctrl.showSearchResults = true;
+          ctrl.hideSpinner();
+        });
       }
-
-      ctrl.showSearchResultsMsg = true;
-
-      ctrl.searchText = '';
-      
-      $state.go( "app.people.searchResults" );
-
     };
 
     ctrl.addUser = function() {
@@ -170,12 +170,12 @@ angular.module('Publicapp.people', [])
       }
     }
 
-    $ionicModal.fromTemplateUrl('add-user-modal.html', {
-      scope: $scope,
-      animation: 'slide-in-up'
-    }).then(function(modal) {
-      $scope.modal = modal
-    })
+    // $ionicModal.fromTemplateUrl('add-user-modal.html', {
+    //   scope: $scope,
+    //   animation: 'slide-in-up'
+    // }).then(function(modal) {
+    //   $scope.modal = modal
+    // })
 
     $scope.openModal = function() {
       $scope.newUser = {};
@@ -192,7 +192,7 @@ angular.module('Publicapp.people', [])
         email: $scope.newUser.email,
         phone: $scope.newUser.phone
       };
-      SharedMethods.createUser(user, false, function(error, newUser) {
+      Fireb.createUserObject(user, function(error, newUser) {
         if (error) {
           console.log("got an error creating user");
           return;
@@ -215,13 +215,6 @@ angular.module('Publicapp.people', [])
     $scope.$on('$destroy', function() {
       $scope.modal.remove();
     });
-
-    // $scope.validate = function() {
-    //   if (!$scope.newUser.name) {
-    //     return true;
-    //   }
-    // };
-
 
   })
 ;

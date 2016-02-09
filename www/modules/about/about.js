@@ -12,8 +12,7 @@ angular.module('Publicapp.about', [])
           templateUrl: "modules/about/about.html",
           controller: "AboutCtrl as vm"
         }
-      },
-      authenticate: false
+      }
     })
 
     ;
@@ -34,7 +33,7 @@ angular.module('Publicapp.about', [])
       return;
     }
 
-    ctrl.reSeedDatabase();
+    ctrl.reSeedDatabase(true);
   };
 })
 

@@ -3,7 +3,7 @@
     Help &amp; Feedback
   </ion-nav-title>
   <ion-nav-buttons side="right">
-    <button ng-if="vm.signedIn()" class="button button-icon button-clear ion-home" ui-sref="app.profile.feed({id:vm.signedInUserId()})"></button>
+    <button class="button button-icon button-clear ion-home" ng-click="vm.goHome()"></button>
   </ion-nav-buttons>
 
   <ion-content>

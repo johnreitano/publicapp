@@ -1,0 +1,17 @@
+.public {
+	transition:0.25s linear all;
+	margin: 5em;
+
+	&.animate {
+		margin: 0 0 1em 0;
+	}
+}
+
+.logo {
+	border-radius: 20px;
+}
+
+button.sign-up {
+	position: absolute;
+	right: 1em;
+}
