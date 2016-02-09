@@ -18,6 +18,17 @@ angular.module('Publicapp.landing', [])
     ;
 }])
 
+.directive('handlePhoneSubmit', function () {
+  return function (scope, element, attr) {
+      var textFields = element.find('input');
+
+      element.bind('submit', function() {
+          console.log('form was submitted');
+          textFields[0].blur();
+      });
+  };
+})
+
 .controller('LandingCtrl', function($scope, SharedMethods, $state, Fireb, $ionicModal, $rootScope) {
   var ctrl = this;
 
