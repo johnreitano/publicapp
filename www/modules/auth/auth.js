@@ -128,6 +128,7 @@ angular.module('Publicapp.auth', [])
     ctrl.name = '';
     ctrl.username = '';
     ctrl.password = '';
+    ctrl.errorMessage = '';
     ctrl.signUpPopup = $ionicPopup.show({
       cssClass: 'popup-outer auth-view',
       templateUrl: 'modules/auth/email_sign_up_popup.html',
@@ -147,6 +148,7 @@ angular.module('Publicapp.auth', [])
     var ctrl = this;
 
     ctrl.password = '';
+    ctrl.errorMessage = '';
     ctrl.emailSignInPopup = $ionicPopup.show({
       cssClass: 'popup-outer auth-view',
       templateUrl: 'modules/auth/email_sign_in_popup.html',
