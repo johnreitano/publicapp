@@ -73,7 +73,7 @@ angular.module('Publicapp.auth', [])
       cssClass: 'popup-outer auth-view',
       templateUrl: 'modules/auth/generic_sign_up_popup.html',
       scope: ctrl.sharedScope,
-      title: 'Sign Up with Public',
+      title: 'Sign up with Public',
       buttons: [{
         text: '',
         type: 'close-popup ion-ios-close-outline'
