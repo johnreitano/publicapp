@@ -1,8 +1,16 @@
 // Public mobile app
 
 angular.module('underscore', [])
-  .factory('_', function() {
-    return window._; // assumes underscore has already been loaded on the page
+.factory('_', function() {
+  return window._; // assumes underscore has already been loaded on the page
+});
+
+_.mixin({
+  compactObject : function(o) {
+    return _.pick(o, function(value, key, object) {
+      return !(_.isNull(value) || _.isUndefined(value) || _.isNaN(value));
+    });
+  }
 });
 
 angular.module('Publicapp', [
