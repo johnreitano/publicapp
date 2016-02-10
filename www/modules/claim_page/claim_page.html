@@ -21,16 +21,16 @@
 
     <div ng-if="vm.ready && !vm.signedIn()">
       <p>
-        If you are sure that this page represents your own identity and would like to moderate your own page, you can submit a <strong>Page Identity Request</strong> to Public.
+        If you are sure that this page represents your own identity and would like to moderate your own page, follow these teps to submit a <strong>Page Identity Request</strong> to Public:
       </p>
-      <p>
-        To submit a Page Identity Request to Public, you must first sign up for a separate account under your name, and then sign in using that account. Once you've signed in, you can return to this user's page and click again on the 'Is this you?' link. You will then be asked a few additional questions and your request will be received.
-      </p>
+      <ul>
+        <li>First, sign up for a separate account that you control (if you don't already have one).</li>
+        <li>After you've signed up (or signed in), you will be shown a Page Identity Request form with a few short questions. Fill out and submit this form.</li>
+        <li>Wait for a response. Most Page Identity Requests can be reviewed and approved by Public within 1 day. If we need more information to make a decision, we'll let you know via email.</li>
+      </ul>
 
-      <p>Most Page Identity Requests can be reviewed and approved by Public within 1 day. If we need more information to make a decision, we'll let you know via email. </p>
-
       <p>
-        <strong>Next Step:</strong>
+        <strong>Ready to proceed?</strong>
         <button ui-sref="app.claimPage.signedIn({id: vm.user.id, viaSignUp: true})" class="button button-balanced button-medium">Sign Up</button>
         or
         <button ui-sref="app.claimPage.signedIn({id: vm.user.id})" class="button button-balanced button-medium">Sign In</button>
@@ -39,10 +39,11 @@
 
     <div ng-if="vm.ready && vm.signedIn()">
       <p>
-        If you are sure that this page represents your own identity and would like to moderate your own page, you can submit the following <strong>Page Identity Request</strong> to Public:
+        If you are sure that this page represents your own identity and would like to moderate your own page, please fill out and submit the following form:
       </p>
       <br>
       <div>
+        <h5>Page Identity Request</h5>
         <form role="form" name="vm.form" ng-submit='vm.submitRequest()'>
 
           <div>

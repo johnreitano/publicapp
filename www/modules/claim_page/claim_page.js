@@ -63,7 +63,7 @@ angular.module('Publicapp.claimPage', [])
     ctrl.request.claimedUserId = $stateParams.id;
     Fireb.signedInUserRef().child("pageIdentityRequests").push(ctrl.request);
     $ionicLoading.show({ template: 'Item Added!', noBackdrop: true, duration: 2000 });
-    $ionicLoading.show({ template: 'Your request has been received. We will get back to you within one business day.', noBackdrop: true, duration: 6000 });
+    $ionicLoading.show({ template: 'Your request has been received. We will get back to you soon.', noBackdrop: true, duration: 6000 });
     ctrl.goHome();
   };
 
