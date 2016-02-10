@@ -22,7 +22,7 @@
       <div class="list">
         <label class="item item-input item-stacked-label">
           <span class="input-label">Search for someone in Public</span>
-          <input type="text" ng-model="vm.searchText" placeholder="Enter name or username">
+          <input type="text" ng-model="vm.searchText" placeholder="Enter name or username" ng-focus="vm.inSearchField=true" ng-blur="vm.inSearchField=false">
         </label>
       </div>
     </form>
@@ -62,7 +62,7 @@
 
   </ion-content>
 
-  <div class="bar bar-footer bar-positive">
+  <div class="bar bar-footer bar-positive" ng-hide="vm.inSearchField && vm.usingMobileBrowser()">
     <button class="button button-clear" ui-sref="app.terms">Terms</button>
     <div class="title">Public &#169 2016</div>
     <button class="button button-clear" ui-sref="app.privacy">Privacy</button>

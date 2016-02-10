@@ -22,10 +22,45 @@
     hideSpinner: hideSpinner,
     goHome: goHome,
     primaryName: primaryName,
-    paddedSecondaryName: paddedSecondaryName
+    paddedSecondaryName: paddedSecondaryName,
+    search: search
   };
 
   // public methods
+
+  function search() {
+    var ctrl = this;
+
+    ctrl.showSearchResults = false;
+    ctrl.showSpinner("Searching...");
+    var searchText = s.trim(ctrl.searchText).replace(/ +/g,' ').replace(/\@/,'').toLowerCase();
+    var searchTextParts = searchText.split(/ /);
+    if (searchTextParts.length == 0) {
+      ctrl.errorMessage = "Please try again with more characters";
+      ctrl.hideSpinner();
+    } else if (searchTextParts.length == 1) {
+      // do an partial search on username
+      queryStart = "@" + searchTextParts[0];
+      queryEnd = queryStart + "z";
+      Fireb.ref().child("users").orderByChild("username").startAt(queryStart).endAt(queryEnd).once("value", function(snapshot) {
+        ctrl.searchResults = _.values(snapshot.val());
+        ctrl.searchText = '';
+        ctrl.showSearchResults = true;
+        ctrl.hideSpinner();
+      });
+    } else {
+      // do a partial search on searchableName
+      queryStart = searchText;
+      queryEnd = queryStart + "z";
+      Fireb.ref().child("users").orderByChild("searchableName").startAt(queryStart).endAt(queryEnd).once("value", function(snapshot) {
+        ctrl.searchResults = _.values(snapshot.val());
+        ctrl.searchText = '';
+        ctrl.showSearchResults = true;
+        ctrl.hideSpinner();
+      });
+    }
+  };
+
 
   function primaryName(user) {
     return s.isBlank(user.name) ? user.username : user.name;
