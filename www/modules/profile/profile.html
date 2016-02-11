@@ -35,18 +35,30 @@
 
     <ion-tabs class="tabs-top profile-tabs">
 
-      <ion-tab id="feed-tab" title="Newsfeed" ng-if="vm.viewingOwnProfile()" ui-sref="app.profile.feed">
+      <ion-tab ng-if="vm.viewingOwnProfile()" id="feed-tab" title="Newsfeed" ui-sref="app.profile.feed">
         <ion-nav-view name="feed">
           <ion-content>
-            <ion-list ng-repeat="message in vm.user.feedMessages">
-              <div class="item item-profile-message item-avatar" ng-click="vm.showMessageViaFeed(message, $event)">
-                <img ng-src="{{ message.author.face }}">
+            <ion-list>
+              <div ng-repeat="message in vm.user.feedMessages" class="item item-profile-message item-avatar" ng-click="vm.showMessageViaFeed(message, $event)">
+                <img ng-src="{{ message.author.face }}"  ng-click="vm.showProfile(message.author, $event)">
                 <div>
                   <h2>
-                    <strong>{{ vm.primaryName(message.author)}}</strong><span class="weak">{{ vm.paddedSecondaryName(message.author) }}</span> said
+                    <strong ng-click="vm.showProfile(message.author, $event)">
+                      {{ vm.primaryName(message.author)}}
+                    </strong>
+                    <span class="weak" ng-click="vm.showProfile(message.author, $event)">
+                      {{ vm.paddedSecondaryName(message.author) }}
+                    </span>
+                    said
                     <br>
                     <span ng-if="message.author.id != message.subject.id">
-                      to <strong>{{ vm.primaryName(message.subject)}}</strong><span class="weak">{{ vm.paddedSecondaryName(message.subject)}}</span>
+                      to
+                      <strong ng-click="vm.showProfile(message.subject, $event)">
+                        {{ vm.primaryName(message.subject)}}
+                      </strong>
+                      <span class="weak" ng-click="vm.showProfile(message.subject, $event)">
+                        {{ vm.paddedSecondaryName(message.subject)}}
+                      </span>
                     </span>
                     <span class="message-created-at" am-time-ago="message.createdAt"></span>
                   </h2>
@@ -60,23 +72,35 @@
         </ion-nav-view>
       </ion-tab>
 
-      <ion-tab id="messages-tab" title="{{ vm.viewingOwnProfile() ? 'Your Messages' : 'Messages' }}" ng-if="true" ui-sref="app.profile.messages">
+      <ion-tab ng-if="true" id="messages-tab" title="{{ vm.viewingOwnProfile() ? 'Your Messages' : 'Messages' }}" ui-sref="app.profile.messages">
         <ion-nav-view name="messages">
           <ion-content>
-            <ion-list ng-repeat="message in vm.user.profileMessages">
-              <div class="item item-profile-message item-avatar" ng-click="vm.showMessageViaProfile(message, $event)">
-                <img ng-src="{{ message.author.face }}">
+            <ion-list>
+              <div ng-repeat="message in vm.user.profileMessages" class="item item-profile-message item-avatar" ng-click="vm.showMessageViaFeed(message, $event)">
+                <img ng-src="{{ message.author.face }}"  ng-click="vm.showProfile(message.author, $event)">
                 <div>
                   <h2>
-                    <strong>{{ vm.primaryName(message.author)}}</strong><span class="weak">{{ vm.paddedSecondaryName(message.author) }}</span> said
+                    <strong ng-click="vm.showProfile(message.author, $event)">
+                      {{ vm.primaryName(message.author)}}
+                    </strong>
+                    <span class="weak" ng-click="vm.showProfile(message.author, $event)">
+                      {{ vm.paddedSecondaryName(message.author) }}
+                    </span>
+                    said
                     <br>
                     <span ng-if="message.author.id != message.subject.id">
-                      to <strong>{{ vm.primaryName(message.subject)}}</strong><span class="weak">{{ vm.paddedSecondaryName(message.subject)}}</span>
+                      to
+                      <strong ng-click="vm.showProfile(message.subject, $event)">
+                        {{ vm.primaryName(message.subject)}}
+                      </strong>
+                      <span class="weak" ng-click="vm.showProfile(message.subject, $event)">
+                        {{ vm.paddedSecondaryName(message.subject)}}
+                      </span>
                     </span>
                     <span class="message-created-at" am-time-ago="message.createdAt"></span>
                   </h2>
                   <p>
-                    <em>{{ message.text | limitTo: 125 }}</em><span ng-if="vm.textWithoutProfileLinks(message).length > 125">...</span>
+                    <em>{{ message.text | limitTo: 125 }}</em><span ng-if="vm.textWithoutProfileLinks(message).length >= 125">...</span>
                   </p>
                 </div>
               </div>
@@ -85,7 +109,7 @@
         </ion-nav-view>
       </ion-tab>
 
-      <ion-tab id="listeners-tab" title="Listeners" ng-if="true" ui-sref="app.profile.listeners">
+      <ion-tab ng-if="true" id="listeners-tab" title="Listeners" ui-sref="app.profile.listeners">
         <ion-nav-view name="listeners">
           <ion-content>
             <ion-list ng-repeat="listener in vm.user.listeners | orderBy: '-addedAt'">

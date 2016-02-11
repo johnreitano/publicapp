@@ -179,6 +179,7 @@ angular.module('Publicapp.fireb', [])
 
     var preferredUsername = s.isBlank(user.username) ? generateUsername(newUser.name) : user.username;
     findAvailableUsername(preferredUsername, function(availableUsername) {
+      // store new user in db
       newUser.username = availableUsername;
       newUserRef.set(newUser, function(error) {
         if (error) {
@@ -187,6 +188,7 @@ angular.module('Publicapp.fireb', [])
           return
         }
         console.log('successfully saved profile data for user', newUser);
+        // TODO: consider adding signed-in-user to listerners of the
         callback(null, newUser);
       });
     });
