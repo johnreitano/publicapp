@@ -9,10 +9,6 @@
 
         </div>
 
-        <a style="font-size: 0.75em; padding: 2px;"
-          ui-sref="app.claimPage({id: vm.user.id})"
-          ng-if="!vm.claimed(vm.user)">Is this you?</a>
-
         <button style="width: 60px; font-size: 0.75em; padding: 2px;" class="button"
                 ng-class="vm.isListeningTo(vm.user) ? 'button-energized' : 'button-calm'"
                 ng-click="vm.toggleListeningTo(vm.user, $event)"
@@ -21,8 +17,8 @@
       </div>
 
     </ion-nav-title>
-<ion-header-bar align-title="left" class="bar-energized bar-subheader profile-is-this-you">
-  Are you {{ vm.nameOrUsername(vm.user) }}?
+<ion-header-bar align-title="left" class="bar-energized bar-subheader profile-is-this-you" ui-sref="app.claimPage({id: vm.user.id})" ng-if="!vm.claimed(vm.user)">
+  Are you {{ vm.firstNameOrUsername(vm.user) }}?
 </ion-header-bar>
 
   </ion-nav-bar>
@@ -37,7 +33,7 @@
   </ion-nav-buttons>
   <ion-pane>
 
-    <ion-tabs class="tabs-top profile-tabs foo">
+    <ion-tabs class="tabs-top profile-tabs {{ vm.claimed(vm.user) ? '' : 'profile-tabs-is-this-you' }}">
 
       <ion-tab ng-if="vm.viewingOwnProfile()" id="feed-tab" title="Newsfeed" ui-sref="app.profile.feed">
         <ion-nav-view name="feed">

@@ -32,7 +32,7 @@
     addUserWithMessage: addUserWithMessage,
     authenticateAndAddUserWithMessage: authenticateAndAddUserWithMessage,
     authenticateAndGo: authenticateAndGo,
-    nameOrUsername: nameOrUsername
+    firstNameOrUsername: firstNameOrUsername
   };
 
   // public methods
@@ -174,11 +174,11 @@
     }
   };
 
-  function nameOrUsername(user) {
+  function firstNameOrUsername(user) {
     if (s.isBlank(user.name)) {
       return user.username;
     } else {
-      return user.name;
+      return user.name.split(/ /)[0];
     }
   };
 
