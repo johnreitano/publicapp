@@ -31,7 +31,8 @@
     placeholderMessage: placeholderMessage,
     addUserWithMessage: addUserWithMessage,
     authenticateAndAddUserWithMessage: authenticateAndAddUserWithMessage,
-    authenticateAndGo: authenticateAndGo
+    authenticateAndGo: authenticateAndGo,
+    nameOrUsername: nameOrUsername
   };
 
   // public methods
@@ -170,6 +171,14 @@
       return user.name;
     } else {
       return user.name + " (" + user.username + ")";
+    }
+  };
+
+  function nameOrUsername(user) {
+    if (s.isBlank(user.name)) {
+      return user.username;
+    } else {
+      return user.name;
     }
   };
 

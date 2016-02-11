@@ -21,6 +21,10 @@
       </div>
 
     </ion-nav-title>
+<ion-header-bar align-title="left" class="bar-energized bar-subheader profile-is-this-you">
+  Are you {{ vm.nameOrUsername(vm.user) }}?
+</ion-header-bar>
+
   </ion-nav-bar>
   <ion-nav-buttons side="left">
     <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
@@ -33,7 +37,7 @@
   </ion-nav-buttons>
   <ion-pane>
 
-    <ion-tabs class="tabs-top profile-tabs">
+    <ion-tabs class="tabs-top profile-tabs foo">
 
       <ion-tab ng-if="vm.viewingOwnProfile()" id="feed-tab" title="Newsfeed" ui-sref="app.profile.feed">
         <ion-nav-view name="feed">
