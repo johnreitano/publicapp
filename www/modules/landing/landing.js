@@ -35,5 +35,10 @@ angular.module('Publicapp.landing', [])
   ctrl.sharedScope = $scope;
   angular.extend(ctrl, SharedMethods);
 
+  ctrl.usingMobileBrowser = function() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  }
+
+
 })
 ;
