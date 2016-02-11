@@ -356,7 +356,7 @@
 
 
   function reSeedDatabase(fakeData) {
-    if (!signedIn() || !signedInUser.admin) {
+    if (!signedIn() || !signedInUser().admin) {
       console.log("only admins can re-seed the db!");
       return;
     }

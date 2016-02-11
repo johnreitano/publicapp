@@ -33,8 +33,14 @@ angular.module('Publicapp.staticPages', [])
 
   angular.extend(ctrl, SharedMethods);
 
-  // $scope.foo = 6;
-  $rootScope.foo = 16;
+
+  ctrl.isRobot = function() {
+    return /bot|googlebot|crawler|spider|robot|crawling/i.test(window.navigator.userAgent);
+  };
+
+  ctrl.nav = function() {
+    return window.navigator.userAgent;
+  };
 
 })
 ;
