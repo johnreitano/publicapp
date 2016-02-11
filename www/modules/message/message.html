@@ -8,13 +8,30 @@
     <div class="list card">
 
       <div class="item item-avatar">
-        <img ng-src="{{ vm.message.author.face }}" ui-sref="app.profile({id: vm.message.author.id})">
-        <strong ui-sref="app.profile({id: vm.message.author.id})">{{ vm.message.author.name }}</strong> said
-        <br>
-        <span ng-if="vm.message.author.id != vm.message.subject.id">
-          to <strong ui-sref="app.profile({id: vm.message.subject.id})">{{ vm.message.subject.name || vm.message.subject.username }}</strong>
-        </span>
-        <span class="message-created-at" am-time-ago="vm.message.createdAt"></span>
+
+        <img ng-src="{{ vm.message.author.face }}"  ng-click="vm.showProfile(vm.message.author, $event)">
+        <div>
+          <h2>
+            <strong ng-click="vm.showProfile(vm.message.author, $event)">
+              {{ vm.primaryName(vm.message.author)}}
+            </strong>
+            <span class="weak" ng-click="vm.showProfile(vm.message.author, $event)">
+              {{ vm.paddedSecondaryName(vm.message.author) }}
+            </span>
+            said
+            <br>
+            <span ng-if="vm.message.author.id != vm.message.subject.id">
+              to
+              <strong ng-click="vm.showProfile(vm.message.subject, $event)">
+                {{ vm.primaryName(vm.message.subject)}}
+              </strong>
+              <span class="weak" ng-click="vm.showProfile(vm.message.subject, $event)">
+                {{ vm.paddedSecondaryName(vm.message.subject)}}
+              </span>
+            </span>
+            <span class="message-created-at" am-time-ago="vm.message.createdAt"></span>
+          </h2>
+        </div>
       </div>
 
       <div class="item item-body">
@@ -29,6 +46,7 @@
       </div>
 
     </div>
+
 
       <!-- <div>
         <a href="#">
