@@ -67,16 +67,6 @@ angular.module('Publicapp.claimPage', [])
     ctrl.goHome();
   };
 
-  ctrl.identifier = function(user) {
-    if (s.isBlank(user.name)) {
-      return user.username;
-    } else if (s.isBlank(user.username)) {
-      return user.name;
-    } else {
-      return user.name + " (" + user.username + ")";
-    }
-  };
-
   ionic.Platform.ready(function() {
     ctrl.ready = true
   });

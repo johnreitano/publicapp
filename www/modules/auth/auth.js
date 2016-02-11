@@ -99,7 +99,7 @@ angular.module('Publicapp.auth', [])
       }]
     });
 
-    ctrl.generateUsernameOnTheFly();
+    ctrl.generateUsernameOnTheFly($scope);
 
   };
 
@@ -140,18 +140,6 @@ angular.module('Publicapp.auth', [])
   };
 
   // private methods
-
-  ctrl.generateUsernameOnTheFly = function() {
-    var ctrl = this;
-
-    ctrl.form = {};
-    $scope.$watch('vm.name', function() {
-      form = ctrl.form;
-      if (form.username && form.username.$pristine && !s.isBlank(ctrl.name)) {
-        ctrl.username = Fireb.generateUsername(ctrl.name);
-      }
-    }, true);
-  };
 
   ctrl.signInWithEmail = function() {
     var ctrl = this;
