@@ -29,8 +29,8 @@
     openBlankAddUserModal: openBlankAddUserModal,
     closeAddUserModal: closeAddUserModal,
     placeholderMessage: placeholderMessage,
-    addUser: addUser,
-    authenticateAndAddUser: authenticateAndAddUser,
+    addUserWithMessage: addUserWithMessage,
+    authenticateAndAddUserWithMessage: authenticateAndAddUserWithMessage,
     authenticateAndGo: authenticateAndGo
   };
 
@@ -103,7 +103,7 @@
     }
   };
 
-  function authenticateAndAddUser() {
+  function authenticateAndAddUserWithMessage() {
     var ctrl = this;
 
     ctrl.explanation = "In order to finish adding this user, you'll need to join Public."
@@ -116,12 +116,12 @@
           ctrl.signUpOrSignInPopup.close();
           ctrl.signUpOrSignInPopup = null;
         }
-        ctrl.addUser();
+        ctrl.addUserWithMessage();
       }
     });
   }
 
-  function addUser() {
+  function addUserWithMessage() {
     var ctrl = this;
 
     var user = {
