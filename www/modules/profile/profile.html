@@ -10,7 +10,7 @@
         </div>
 
         <button style="width: 60px; font-size: 0.75em; padding: 2px;" class="button"
-                ng-class="vm.isListeningTo(vm.user) ? 'button-energized' : 'button-calm'"
+                ng-class="vm.isListeningTo(vm.user) ? 'button-calm' : 'button-energized'"
                 ng-click="vm.toggleListeningTo(vm.user, $event)"
                 ng-if="vm.signedIn() && !vm.viewingOwnProfile()">{{ vm.isListeningTo(vm.user) ? 'Unlisten' : 'Listen' }}</button>
 
@@ -119,7 +119,7 @@
                 <h2>{{ listener.username }}</h2>
 
                 <button class="button activated"
-                        ng-class="vm.isListeningTo(listener) ? 'button-energized' : 'button-calm'"
+                        ng-class="vm.isListeningTo(listener) ? 'button-calm' : 'button-energized'"
                         ng-click="vm.toggleListeningTo(listener, $event)"
                         ng-if="vm.signedIn() && listener.id != vm.signedInUserId()">{{vm.isListeningTo(listener) ? "Unlisten" : "Listen"}}</button>
               </div>
