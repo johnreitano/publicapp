@@ -44,14 +44,6 @@ angular.module('Publicapp.people', [])
       return ionic.Platform.isWebView();
     };
 
-    ctrl.addUser = function() {
-      // close modal
-      // insert user
-      // get new user id
-      // var newUserId = ...;
-      $state.go( "app.profile", { id: newUserId } );
-    };
-
     ctrl.openAddUserModalUsingContact = function(contact) {
 
       var standardizedEmailAddress = function(emailAddress) {

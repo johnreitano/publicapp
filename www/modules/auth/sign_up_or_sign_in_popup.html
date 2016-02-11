@@ -1,0 +1,11 @@
+<div class="row auth-content-outer">
+  <div class="col">
+    <p> {{vm.explanation || "In order to proceed, you'll need to join Public."}}</p>
+    <br>
+    <p>Please click Sign Up below, or, if you already have a Public account, click Sign in.<p>
+    <div class="text-center">
+      <button ui-sref="{{vm.targetState}}" class="button button-stable">Sign In</button>
+      <button ui-sref="{{vm.targetState}}({viaSignUp: true})" class="button button-positive">Sign Up</button>
+    </div>
+  </div>
+</div>

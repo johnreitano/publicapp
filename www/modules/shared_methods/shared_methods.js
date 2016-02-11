@@ -27,10 +27,11 @@
     identifier: identifier,
     generateUsernameOnTheFly: generateUsernameOnTheFly,
     openBlankAddUserModal: openBlankAddUserModal,
-    closeModal: closeModal,
+    closeAddUserModal: closeAddUserModal,
     placeholderMessage: placeholderMessage,
-    addUserToPublic: addUserToPublic,
-    checkAuthorizationBeforeAddingUser: checkAuthorizationBeforeAddingUser
+    addUser: addUser,
+    authenticateAndAddUser: authenticateAndAddUser,
+    authenticateAndGo: authenticateAndGo
   };
 
   // public methods
@@ -57,7 +58,7 @@
     ctrl.generateUsernameOnTheFly(ctrl.sharedScope);
   };
 
-  function closeModal() {
+  function closeAddUserModal() {
     var ctrl = this;
 
     ctrl.name = '';
@@ -73,16 +74,17 @@
     return "Say something" + s.isBlank(ctrl.name) ? '' : 'to ' + ctrl.name.trim();
   };
 
-  function checkAuthorizationBeforeAddingUser() {
+  function authenticateAndGo(targetState) {
     var ctrl = this;
 
     if (ctrl.signedIn()) {
-      $state.go( "app.addingUser" );
+      $state.go(targetState);
     } else {
       // ask use if he wants to sign up or sign in
-      ctrl.genericSignUpPopup = $ionicPopup.show({
+      ctrl.targetState = targetState
+      var signUpOrSignInPopup = $ionicPopup.show({
         cssClass: 'popup-outer auth-view',
-        templateUrl: 'modules/people/before_adding_user_popup.html',
+        templateUrl: 'modules/auth/sign_up_or_sign_in_popup.html',
         scope: ctrl.sharedScope,
         title: 'Please sign up with Public',
         buttons: [{
@@ -90,21 +92,36 @@
           type: 'close-popup ion-ios-close-outline'
         }]
       });
+
+      ctrl.sharedScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+        if (toState.name == ctrl.targetState) {
+          if (signUpOrSignInPopup) {
+            signUpOrSignInPopup.close();
+          }
+        }
+      });
     }
+  };
+
+  function authenticateAndAddUser() {
+    var ctrl = this;
+
+    ctrl.explanation = "In order to finish adding this user, you'll need to join Public."
+    ctrl.authenticateAndGo("app.addingUser")
 
     // wait until authentication is complete to add the user
     ctrl.sharedScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
       if (toState.name == 'app.addingUser') {
-        if (ctrl.genericSignUpPopup) {
-          ctrl.genericSignUpPopup.close();
-          ctrl.genericSignUpPopup = null;
+        if (ctrl.signUpOrSignInPopup) {
+          ctrl.signUpOrSignInPopup.close();
+          ctrl.signUpOrSignInPopup = null;
         }
-        ctrl.addUserToPublic();
+        ctrl.addUser();
       }
     });
   }
 
-  function addUserToPublic() {
+  function addUser() {
     var ctrl = this;
 
     var user = {
@@ -126,7 +143,7 @@
         if (error) {
           console.log("got an error creating message", error);
         }
-        ctrl.closeModal();
+        ctrl.closeAddUserModal();
         $state.go( "app.profile.messages", { id: subject.id } );
       });
     });
@@ -172,7 +189,6 @@
       queryEnd = queryStart + "z";
       Fireb.ref().child("users").orderByChild("username").startAt(queryStart).endAt(queryEnd).once("value", function(snapshot) {
         ctrl.searchResults = _.values(snapshot.val());
-        ctrl.searchText = '';
         ctrl.showSearchResults = true;
         ctrl.hideSpinner();
       });
@@ -182,7 +198,6 @@
       queryEnd = queryStart + "z";
       Fireb.ref().child("users").orderByChild("searchableName").startAt(queryStart).endAt(queryEnd).once("value", function(snapshot) {
         ctrl.searchResults = _.values(snapshot.val());
-        ctrl.searchText = '';
         ctrl.showSearchResults = true;
         ctrl.hideSpinner();
       });

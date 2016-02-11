@@ -33,7 +33,10 @@ angular.module('Publicapp.profile', [])
 
     .state('app.profile.sendingMessage', {
       url: "/sending-message",
-      authenticate: true
+      authenticate: true,
+      params: {
+        viaSignUp: false
+      }
     })
 
 }])
@@ -52,46 +55,49 @@ angular.module('Publicapp.profile', [])
   var userRef = Fireb.ref().child('users').child($stateParams.id);
   ctrl.user = $firebaseObject(userRef);
 
-  ctrl.startSendingMessage = function(event) {
+  ctrl.authenticateAndSendMessage = function(event) {
     if (event) {
       event.preventDefault();
     }
 
     ctrl.stateBeforeSending = $state.current.name;
-    $state.go("app.profile.sendingMessage");
+    ctrl.explanation = "In order to finish sending this message, you'll need to join Public."
+    ctrl.authenticateAndGo("app.profile.sendingMessage")
+
+    // wait until authentincation is complete before sending the actual message
+    $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+      if (toState.name == 'app.profile.sendingMessage') {
+        ctrl.createMessage({
+          subject: ctrl.user,
+          text: ctrl.newMessage
+        }, function(error) {
+          if (error) {
+            console.log("could not send message", error);
+          } else {
+            ctrl.newMessage = '';
+          }
+          $state.go(ctrl.stateBeforeSending);
+        });
+
+      } else if (/app\.profile\..+/.test($state.current.name)) {
+
+        $timeout(function() {
+          var element = document.getElementById("message-textarea");
+          if (element) {
+            element.focus();
+          }
+          // // scroll to top of messages so you can see new message
+          // var element = document.getElementById("scrollable-content");
+          // if (element) {
+          //   angular.element(element).controller('scrollableContent').scrollTo(0);
+          // }
+        }, 150);
+
+        ctrl.setUpIncomingMessageSound();
+      }
+    });
+
   };
-
-  $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
-    if (toState.name == 'app.profile.sendingMessage') {
-      ctrl.createMessage({
-        subject: ctrl.user,
-        text: ctrl.newMessage
-      }, function(error) {
-        if (error) {
-          console.log("could not send message", error);
-        } else {
-          ctrl.newMessage = '';
-        }
-        $state.go(ctrl.stateBeforeSending);
-      });
-
-    } else if (/app\.profile\..+/.test($state.current.name)) {
-
-      $timeout(function() {
-        var element = document.getElementById("message-textarea");
-        if (element) {
-          element.focus();
-        }
-        // // scroll to top of messages so you can see new message
-        // var element = document.getElementById("scrollable-content");
-        // if (element) {
-        //   angular.element(element).controller('scrollableContent').scrollTo(0);
-        // }
-      }, 150);
-
-      ctrl.setUpIncomingMessageSound();
-    }
-  });
 
   ctrl.claimed = function(user) {
     return !s.isBlank(user.authId);

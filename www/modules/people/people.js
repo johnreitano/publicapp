@@ -53,13 +53,6 @@ angular.module('Publicapp.people', [])
     };
 
     ctrl.showSearchResults = false;
-    ctrl.addUser = function() {
-      // close modal
-      // insert user
-      // get new user id
-      // var newUserId = ...;
-      $state.go( "app.profile", { id: newUserId } );
-    };
 
     ctrl.openAddUserModalUsingContact = function(contact) {
 

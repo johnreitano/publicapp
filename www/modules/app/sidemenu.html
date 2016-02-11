@@ -19,17 +19,17 @@
           <i class="ion-home"></i>
           Home
         </ion-item>
-        <ion-item menu-toggle ui-sref="app.settings" ng-if="vm.signedIn()">
-          <i class="ion-settings"></i>
-          Settings
+        <ion-item menu-toggle ui-sref="app.people.search" ng-if="vm.signedIn()">
+          <i class="ion-person-stalker"></i>
+          Search for People
         </ion-item>
         <ion-item menu-toggle ui-sref="app.listenees" ng-if="vm.signedIn()">
           <i class="ion-ios-volume-high"></i>
           Listening To
         </ion-item>
-        <ion-item menu-toggle ui-sref="app.people.search" ng-if="vm.signedIn()">
-          <i class="ion-person-stalker"></i>
-          Search for People
+        <ion-item menu-toggle ui-sref="app.settings" ng-if="vm.signedIn()">
+          <i class="ion-settings"></i>
+          Settings
         </ion-item>
         <ion-item menu-toggle ui-sref="app.help">
           <i class="ion-help-circled"></i>

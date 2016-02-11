@@ -1,16 +1,17 @@
 <div class="modal">
   <ion-header-bar>
     <h1 class="title">Add New User to Public</h1>
-    <p class="button" ng-click="vm.closeModal()">Cancel</p>
+    <p class="button" ng-click="vm.closeAddUserModal()">Cancel</p>
   </ion-header-bar>
   <ion-content>
-    <form name="vm.form" ng-submit="vm.checkAuthorizationBeforeAddingUser()">
+    <form name="vm.form" ng-submit="vm.authenticateAndAddUser()">
       <div class="list form-group">
         <label class="item item-input">
           <span class="input-label">Name</span>
           <input name="name"
                   type="text"
                   ng-model="vm.name"
+                  ng-pattern="/.*\w+.* .*\w+.*/"
                   placeholder="Full Name"
                   ng-required="true"
                   focus-me>
