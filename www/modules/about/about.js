@@ -33,7 +33,7 @@ angular.module('Publicapp.about', [])
       return;
     }
 
-    ctrl.reSeedDatabase(true);
+    ctrl.reSeedDatabase(false);
   };
 })
 

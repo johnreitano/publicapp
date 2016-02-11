@@ -432,7 +432,7 @@
           admin: true
         }, {
           email: "sarmadhbokhari@gmail.com",
-          name: "Sam Benson",
+          name: "Sarmad Bokhari",
           phone: "+16196746211",
           admin: true
         }, {
