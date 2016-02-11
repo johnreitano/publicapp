@@ -37,7 +37,7 @@
 
       <ion-tab ng-if="vm.viewingOwnProfile()" id="feed-tab" title="Newsfeed" ui-sref="app.profile.feed">
         <ion-nav-view name="feed">
-          <ion-content>
+          <ion-content ng-class="{ 'lower-content': !vm.claimed(vm.user) }">
             <ion-list>
               <div ng-repeat="message in vm.user.feedMessages" class="item item-profile-message item-avatar" ng-click="vm.showMessageViaFeed(message, $event)">
                 <img ng-src="{{ message.author.face }}"  ng-click="vm.showProfile(message.author, $event)">
@@ -74,7 +74,7 @@
 
       <ion-tab ng-if="true" id="messages-tab" title="{{ vm.viewingOwnProfile() ? 'Your Messages' : 'Messages' }}" ui-sref="app.profile.messages">
         <ion-nav-view name="messages">
-          <ion-content>
+          <ion-content ng-class="{ 'lower-content': !vm.claimed(vm.user) }">
             <ion-list>
               <div ng-repeat="message in vm.user.profileMessages" class="item item-profile-message item-avatar" ng-click="vm.showMessageViaFeed(message, $event)">
                 <img ng-src="{{ message.author.face }}"  ng-click="vm.showProfile(message.author, $event)">
@@ -111,7 +111,7 @@
 
       <ion-tab ng-if="true" id="listeners-tab" title="Listeners" ui-sref="app.profile.listeners">
         <ion-nav-view name="listeners">
-          <ion-content>
+          <ion-content ng-class="{ 'lower-content': !vm.claimed(vm.user) }">
             <ion-list ng-repeat="listener in vm.user.listeners | orderBy: '-addedAt'">
               <div class="item item-avatar item-button-right" ui-sref="app.profile({id: listener.id})">
                 <img ng-src="{{ listener.face }}">
