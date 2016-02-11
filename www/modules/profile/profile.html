@@ -13,12 +13,10 @@
           ui-sref="app.claimPage({id: vm.user.id})"
           ng-if="!vm.claimed(vm.user)">Is this you?</a>
 
-
         <button style="width: 60px; font-size: 0.75em; padding: 2px;" class="button"
                 ng-class="vm.isListeningTo(vm.user) ? 'button-energized' : 'button-calm'"
                 ng-click="vm.toggleListeningTo(vm.user, $event)"
                 ng-if="vm.signedIn() && !vm.viewingOwnProfile()">{{ vm.isListeningTo(vm.user) ? 'Unlisten' : 'Listen' }}</button>
-
 
       </div>
 
@@ -28,8 +26,8 @@
     <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
   </ion-nav-buttons>
   <ion-nav-buttons side="right">
-    <button class="button button-icon button-clear ion-person-stalker"  ui-sref="app.people.search"
-            ng-if="vm.viewingOwnProfile()"></button>
+    <!-- <button class="button button-icon button-clear ion-person-stalker"  ui-sref="app.people.search"
+            ng-if="vm.viewingOwnProfile()"></button> -->
 
     <button class="button button-icon button-clear ion-home" ng-click="vm.goHome()" ng-show="!vm.viewingOwnProfile()"></button>
   </ion-nav-buttons>
@@ -62,7 +60,7 @@
         </ion-nav-view>
       </ion-tab>
 
-      <ion-tab id="messages-tab" icon-on="fa fa-file-text" icon-off="fa fa-file-text-o" title="{{ vm.viewingOwnProfile() ? 'Your Messages' : 'Messages' }}" ng-if="true" ui-sref="app.profile.messages">
+      <ion-tab id="messages-tab" icon-on="ion-clipboard" icon-off="ion-clipboard" title="{{ vm.viewingOwnProfile() ? 'Your Messages' : 'Messages' }}" ng-if="true" ui-sref="app.profile.messages">
         <ion-nav-view name="messages">
           <ion-content>
             <ion-list ng-repeat="message in vm.user.profileMessages">
