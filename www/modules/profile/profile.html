@@ -63,7 +63,8 @@
                     <span class="message-created-at" am-time-ago="message.createdAt"></span>
                   </h2>
                   <p>
-                    <em>{{ message.text | limitTo: 125 }}</em><span ng-if="vm.textWithoutProfileLinks(message).length >= 125">...</span>
+                    <em>{{ message.text | limitTo: 125 }}</em>
+                    <span ng-if="message.text.length >= 125">...</span>
                   </p>
                 </div>
               </div>
@@ -100,7 +101,8 @@
                     <span class="message-created-at" am-time-ago="message.createdAt"></span>
                   </h2>
                   <p>
-                    <em>{{ message.text | limitTo: 125 }}</em><span ng-if="vm.textWithoutProfileLinks(message).length >= 125">...</span>
+                    <em>{{ message.text | limitTo: 125 }}</em>
+                    <span ng-if="message.text.length >= 125">...</span>
                   </p>
                 </div>
               </div>

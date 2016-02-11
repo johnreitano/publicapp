@@ -43,7 +43,7 @@ angular.module('Publicapp.message', [])
 //     },
 //     compile: function(elem) {
 //       var oldText = elem.html();
-//       var newText = "<span class='profile-link' ui-sref='app.profile'>" + oldText + "</span>",
+//       var newText = "<span class='data-profile-link' ui-sref='app.profile'>" + oldText + "</span>",
 //       elem.replaceWith(newText);
 //     }
 //   };
@@ -57,7 +57,7 @@ angular.module('Publicapp.message', [])
 //     scope: {
 //         uid: '=uid'
 //     },
-//     template: "<span class='profile-link' ui-sref='app.profile.feed{id: \"{{uid}}\"}' ng-transclude></span>",
+//     template: "<span class='data-profile-link' ui-sref='app.profile.feed{id: \"{{uid}}\"}' ng-transclude></span>",
 //   };
 // });
 //
@@ -68,11 +68,15 @@ angular.module('Publicapp.message', [])
 
   ctrl.message = MessageData.message;
 
-  // var re = /(<profile-link[^\>]*>[\@_\w \,\.]+<\/profile-link>)/;
+  ctrl.messageTextWithProfileLinks = function(message) {
+    return $sce.trustAsHtml(message.text);
+  };
+
+  // var re = /(<data-profile-link[^\>]*>[\@_\w \,\.]+<\/data-profile-link>)/;
   // ctrl.messageParts = ctrl.message.text.replace(re, '|$1|').split("|");
   //
   // ctrl.linkText = function(part) {
-  //   var re = /<profile-link[^\>]*>([\@_\w \,\.]+)<\/profile-link>/;
+  //   var re = /<data-profile-link[^\>]*>([\@_\w \,\.]+)<\/data-profile-link>/;
   //   if (re.test(part)) {
   //     return RegExp.$1;
   //   } else {
@@ -81,7 +85,7 @@ angular.module('Publicapp.message', [])
   // };
   //
   // ctrl.linkUiSref = function(part) {
-  //   var re = /<profile-link[^\>]*uid\=[\'\"]([\w-]+)[\'\"][^\>]*>[\@_\w \,\.]+<\/profile-link>/;
+  //   var re = /<data-profile-link[^\>]*uid\=[\'\"]([\w-]+)[\'\"][^\>]*>[\@_\w \,\.]+<\/data-profile-link>/;
   //   if (re.test(part)) {
   //     var uid = RegExp.$1
   //     return "app.profile.messages({id: '" + uid + "'})";
@@ -89,7 +93,7 @@ angular.module('Publicapp.message', [])
   //     return null;
   //   }
   // };
-  //
+
 })
 
 ;

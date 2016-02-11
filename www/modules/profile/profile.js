@@ -41,7 +41,7 @@ angular.module('Publicapp.profile', [])
 
 }])
 
-.controller('ProfileCtrl', function($scope, $location, SharedMethods, $stateParams, Fireb, $firebaseObject, $firebaseArray, $state, $cordovaNativeAudio, MessageData, $ionicPopup, $timeout) {
+.controller('ProfileCtrl', function($scope, $location, SharedMethods, $stateParams, Fireb, $firebaseObject, $firebaseArray, $state, $cordovaNativeAudio, MessageData, $ionicPopup, $timeout, $sce) {
   var ctrl = this;
 
   ctrl.sharedScope = $scope;
@@ -160,6 +160,11 @@ angular.module('Publicapp.profile', [])
     event.preventDefault();
     MessageData.message = message;
     $state.go("app.messageViaProfile", {profileId: $stateParams.id, id: message.$id});
+  };
+
+  ctrl.messageTextWithProfileLinks = function(message, lengthLimit) {
+    var text = message.text.length > lengthLimit - 3 ? message.text.slice(0,lengthLimit - 3) + '...' : message.text;
+    return $sce.trustAsHtml(text);
   };
 
 

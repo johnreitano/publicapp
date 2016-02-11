@@ -302,12 +302,13 @@
     };
 
     function storeMessage() {
-      // convert usernames to profile-link tags
+      // convert usernames to data-profile-link tags
       _.each(mentionedUsers, function(mentionedUser, mentionedUserId) {
         var re = new RegExp(mentionedUser.username, 'ig');
-        var nameAndUsername = s.isBlank(mentionedUser.name) ? mentionedUser.name + " " + mentionedUser.username : mentionedUser.username;
-        var linkText = "<a profile-link='" + mentionedUserId + "'>" + nameAndUsername + "</a>";
-        message.text = message.text.replace(re, linkText);
+        var nameAndUsername = s.isBlank(mentionedUser.name) ? mentionedUser.username : mentionedUser.name + " " + mentionedUser.username;
+        var linkText = "<a ui-sref=\"app.profile({id: '" + mentionedUserId + "'})\">" + nameAndUsername + "</a>";
+        // TODO: implement this properly
+        // message.text = message.text.replace(re, linkText);
       });
 
       message.createdAt = message.createdAt || Date.now();

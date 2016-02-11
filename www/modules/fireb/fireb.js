@@ -221,7 +221,7 @@ angular.module('Publicapp.fireb', [])
 
     var feedDestination = signedInUserRef().child("feedMessages");
     signedInUserRef().child("listenees").on("value", function(snapshot) {
-      var sourceUserIds = _.union(_.keys(snapshot.val()), [_signedInUserId]);
+      var sourceUserIds = _.compact(_.union(_.keys(snapshot.val()), [_signedInUserId]));
       _.each(sourceUserIds, function(sourceUserId) {
         var feedSource = _ref.child("users").child(sourceUserId).child("profileMessages");
         feedSource.limitToLast(50).on("child_added", function(snapshot) {
