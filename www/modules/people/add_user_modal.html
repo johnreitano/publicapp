@@ -1,0 +1,44 @@
+<div class="modal">
+  <ion-header-bar>
+    <h1 class="title">Add New User to Public</h1>
+    <p class="button" ng-click="vm.closeModal()">Cancel</p>
+  </ion-header-bar>
+  <ion-content>
+    <form name="vm.form" ng-submit="vm.checkAuthorizationBeforeAddingUser()">
+      <div class="list form-group">
+        <label class="item item-input">
+          <span class="input-label">Name</span>
+          <input name="name"
+                  type="text"
+                  ng-model="vm.name"
+                  placeholder="Full Name"
+                  ng-required="true"
+                  focus-me>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Email</span>
+          <input name="email"
+                  type="email"
+                  ng-model="vm.email"
+                  placeholder="Email (optional)">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Phone</span>
+          <input name="phone"
+                  type="tel"
+                  ng-model="vm.phone"
+                  placeholder="Mobile Phone (optional)">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Message</span>
+          <input type="text" ng-model="vm.message" placeholder="Say something to {{ (vm.name || '').length > 0 ? vm.name : 'this user' }}" required>
+        </label>
+      </div>
+      <p style="color:red">{{ vm.errorMessage }}</p>
+
+      <button
+        class="button button-full button-positive"
+        ng-disabled="vm.form.$invalid">Add User</button>
+    </form>
+  </ion-content>
+</div>

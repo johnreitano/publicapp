@@ -1,6 +1,6 @@
   angular.module('Publicapp.sharedMethods', [])
 
-.service('SharedMethods', function($timeout, $state, Fireb, $ionicPopup, $ionicLoading, $ionicPopup, $firebaseObject, Fireb) {
+.service('SharedMethods', function($timeout, $state, Fireb, $ionicPopup, $ionicLoading, $ionicPopup, $firebaseObject, Fireb, $ionicModal) {
 
   return {
     createMessage: createMessage,
@@ -23,10 +23,135 @@
     goHome: goHome,
     primaryName: primaryName,
     paddedSecondaryName: paddedSecondaryName,
-    search: search
+    search: search,
+    identifier: identifier,
+    generateUsernameOnTheFly: generateUsernameOnTheFly,
+    openBlankAddUserModal: openBlankAddUserModal,
+    closeModal: closeModal,
+    placeholderMessage: placeholderMessage,
+    addUserToPublic: addUserToPublic,
+    checkAuthorizationBeforeAddingUser: checkAuthorizationBeforeAddingUser
   };
 
   // public methods
+
+  function openBlankAddUserModal() {
+    var ctrl = this;
+
+    ctrl.sharedScope.vm = ctrl.sharedScope.vm || ctrl;
+    $ionicModal.fromTemplateUrl('modules/people/add_user_modal.html', {
+      scope: ctrl.sharedScope,
+      animation: 'slide-in-up'
+    }).then(function(modal) {
+      ctrl.modal = modal;
+      ctrl.name = '';
+      ctrl.email = '';
+      ctrl.phone = '';
+      ctrl.message = '';
+      ctrl.modal.show();
+      ctrl.sharedScope.$on('$destroy', function() {
+        ctrl.modal.remove();
+      });
+
+    });
+    ctrl.generateUsernameOnTheFly(ctrl.sharedScope);
+  };
+
+  function closeModal() {
+    var ctrl = this;
+
+    ctrl.name = '';
+    ctrl.email = '';
+    ctrl.phone = '';
+    ctrl.message = '';
+    ctrl.modal.hide();
+  };
+
+  function placeholderMessage() {
+    var ctrl = this;
+
+    return "Say something" + s.isBlank(ctrl.name) ? '' : 'to ' + ctrl.name.trim();
+  };
+
+  function checkAuthorizationBeforeAddingUser() {
+    var ctrl = this;
+
+    if (ctrl.signedIn()) {
+      $state.go( "app.addingUser" );
+    } else {
+      // ask use if he wants to sign up or sign in
+      ctrl.genericSignUpPopup = $ionicPopup.show({
+        cssClass: 'popup-outer auth-view',
+        templateUrl: 'modules/people/before_adding_user_popup.html',
+        scope: ctrl.sharedScope,
+        title: 'Please sign up with Public',
+        buttons: [{
+          text: '',
+          type: 'close-popup ion-ios-close-outline'
+        }]
+      });
+    }
+
+    // wait until authentication is complete to add the user
+    ctrl.sharedScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+      if (toState.name == 'app.addingUser') {
+        ctrl.genericSignUpPopup.close();
+        ctrl.addUserToPublic();
+      }
+    });
+  }
+
+  function addUserToPublic() {
+    var ctrl = this;
+
+    var user = {
+      name: ctrl.name,
+      email: ctrl.email,
+      phone: ctrl.phone
+    };
+    Fireb.createUserObject(user, function(error, subject) {
+      if (error) {
+        console.log("got an error creating user", error);
+        ctrl.errorMessage = error;
+        return;
+      }
+      ctrl.startListeningTo(subject);
+      ctrl.createMessage({
+        subject: subject,
+        text: ctrl.message
+      }, function(error) {
+        if (error) {
+          console.log("got an error creating message", error);
+        }
+        ctrl.closeModal();
+        $state.go( "app.profile.messages", { id: subject.id } );
+      });
+    });
+  };
+
+  function generateUsernameOnTheFly(scope) {
+    var ctrl = this;
+
+    ctrl.form = {};
+    scope.$watch('vm.name', function() {
+      form = ctrl.form;
+      if (form.username && form.username.$pristine && !s.isBlank(ctrl.name)) {
+        ctrl.username = Fireb.generateUsername(ctrl.name);
+      }
+    }, true);
+  };
+
+  function identifier(user) {
+    if (s.isBlank(user.name) && s.isBlank(user.username)) {
+      return 'this user';
+    } if (s.isBlank(user.name)) {
+      return user.username;
+    } else if (s.isBlank(user.username)) {
+      return user.name;
+    } else {
+      return user.name + " (" + user.username + ")";
+    }
+  };
 
   function search() {
     var ctrl = this;

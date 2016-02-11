@@ -25,14 +25,6 @@ angular.module('Publicapp.people', [])
         authenticate: true
       })
 
-      .state('app.addingUser', {
-        url: "/adding-user",
-        authenticate: true,
-        params: {
-          viaSignUp: false
-        }
-      })
-
       ;
   }])
 
@@ -52,7 +44,6 @@ angular.module('Publicapp.people', [])
       return ionic.Platform.isWebView();
     };
 
-    ctrl.showSearchResults = false;
     ctrl.addUser = function() {
       // close modal
       // insert user

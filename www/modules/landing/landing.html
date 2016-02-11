@@ -39,7 +39,7 @@
       <div class="text-center" style="margin-top:1em">
         <p ng-if="vm.searchResults.length">None of these users is the one you're looking for?</p>
         <p ng-if="!vm.searchResults.length">No matching users found.</p>
-        <button class="button button-positive add-user-button" ng-click="openModal()">Add User To Public</button>
+        <button class="button button-positive add-user-button" ng-click="vm.openBlankAddUserModal()()">Add User To Public</button>
       </div>
     </div>
 
