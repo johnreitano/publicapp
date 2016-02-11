@@ -95,7 +95,10 @@
     // wait until authentication is complete to add the user
     ctrl.sharedScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
       if (toState.name == 'app.addingUser') {
-        ctrl.genericSignUpPopup.close();
+        if (ctrl.genericSignUpPopup) {
+          ctrl.genericSignUpPopup.close();
+          ctrl.genericSignUpPopup = null;
+        }
         ctrl.addUserToPublic();
       }
     });
