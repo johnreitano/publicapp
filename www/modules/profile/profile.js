@@ -90,22 +90,26 @@ angular.module('Publicapp.profile', [])
 
     ctrl.stateBeforeSending = $state.current.name;
     ctrl.explanation = "In order to finish sending this message, you'll need to join Public."
+    ctrl.messageSendingComplete = false;
     ctrl.authenticateAndGo("app.profile.sendingMessage")
 
     // wait until authentincation is complete before sending the actual message
     $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
       if (toState.name == 'app.profile.sendingMessage') {
-        ctrl.createMessage({
-          subject: ctrl.user,
-          text: ctrl.newMessage
-        }, function(error) {
-          if (error) {
-            console.log("could not send message", error);
-          } else {
-            ctrl.newMessage = '';
-          }
-          $state.go(ctrl.stateBeforeSending);
-        });
+        if (!ctrl.messageSendingComplete) { // HACK: using this flag to prevent message being sent twice
+          ctrl.messageSendingComplete = true;
+          ctrl.createMessage({
+            subject: ctrl.user,
+            text: ctrl.newMessage
+          }, function(error) {
+            if (error) {
+              console.log("could not send message", error);
+            } else {
+              ctrl.newMessage = '';
+            }
+            $state.go(ctrl.stateBeforeSending);
+          });
+        }
       }
     });
   };

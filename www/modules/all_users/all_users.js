@@ -25,5 +25,20 @@ angular.module('Publicapp.allUsers', [])
 
   var allUsersRef = Fireb.ref().child("users")
   ctrl.allUsers = $firebaseArray(allUsersRef);
+
+
+  // ctrl.setAddedBy = function() {
+  //   allUsersRef.on("child_added", function(snapshot) {
+  //     var user = snapshot.val();
+  //     var addedBy = _.compactObject({
+  //       id: user.id,
+  //       name: user.name,
+  //       username: user.username,
+  //       email: user.email
+  //     });
+  //     allUsersRef.child(user.id).update({addedBy: addedBy});
+  //   });
+  // };
 })
+
 ;

@@ -442,34 +442,23 @@
 
       var userDataRecords = [];
 
-      // if (fakeData) {
-      //   _.each(_.range(10), function() {
-      //     userDataRecords.push({
-      //       email: faker.directive('email')(),
-      //       name: faker.directive('firstName')() + ' ' + faker.directive('lastName')(),
-      //       phone: "+1" + faker.directive('phone')().replace(/\D/g, '').replace(/^(\d{10}).*/, '$1')
-      //     });
-      //   });
-      // }
-      //
-      userDataRecords = userDataRecords.concat([{
-          email: "jreitano@gmail.com",
-          name: "John Reitano",
-          phone: "+16196746211",
+      userDataRecords = userDataRecords.concat([
+        {
+          name: "Nicolas Bourbaki",
+          email: "nicolas.bourbaki@getpublic.co",
+          phone: "+13072228301.",
           admin: true
-        }, {
-          email: "sarmadhbokhari@gmail.com",
-          name: "Sarmad Bokhari",
-          phone: "+16196746211",
+        },
+        {
+          name: "Sam Bourbaki",
+          email: "sam.bourbaki@getpublic.com",
+          phone: "+13072228302",
           admin: true
-        }, {
-          email: "jasminereitano7@gmail.com",
-          name: "Jenny Rellis",
-          phone: "+16196746211"
-        }, {
-          email: "jack@black.com",
-          name: "Jack Black",
-          phone: "+16196746211"
+        },
+        {
+          name: "Jenny Bourbaki",
+          email: "jenny.bourbaki@getpublic.com",
+          phone: "+13072228303"
         }
       ]);
 

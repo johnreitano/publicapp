@@ -173,6 +173,7 @@ angular.module('Publicapp.fireb', [])
     if (!s.isBlank(user.phone)) {
       newUser.phone = user.phone;
     }
+
     if (!s.isBlank(user.email)) {
       newUser.email = user.email;
     }
@@ -181,6 +182,18 @@ angular.module('Publicapp.fireb', [])
     findAvailableUsername(preferredUsername, function(availableUsername) {
       // store new user in db
       newUser.username = availableUsername;
+
+      if (!newUser.addedBy) {
+        // record the the user who added this new user
+        var addedBy = signedIn() ? signedInUser() : newUser;
+        newUser.addedBy = _.compactObject({
+          id: signedIn() ? signedInUserId() : newUserRef.key(),
+          name: addedBy.name,
+          username: addedBy.username,
+          email: addedBy.email
+        });
+      }
+
       newUserRef.set(newUser, function(error) {
         if (error) {
           console.log('error saving profile data for user', newUser, error);
@@ -188,7 +201,7 @@ angular.module('Publicapp.fireb', [])
           return
         }
         console.log('successfully saved profile data for user', newUser);
-        // TODO: consider adding signed-in-user to listerners of the
+        // TODO: consider adding signed-in-user to listerners of this user
         callback(null, newUser);
       });
     });
