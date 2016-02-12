@@ -1,6 +1,6 @@
 angular.module('Publicapp.fireb', [])
 
-.factory('Fireb', function (FeedLoader, $firebaseAuth, $rootScope) {
+.factory('Fireb', function ($firebaseAuth, $rootScope) {
 
   var _ref = new Firebase("https://publicapp-dev.firebaseio.com");
   var _signedInUserId = null;
@@ -29,7 +29,7 @@ angular.module('Publicapp.fireb', [])
   function doUnauth() {
     _ref.unauth();
     _signedInUserId = null;
-    _signedInUse = null;
+    _signedInUser = null;
   };
 
   var _oneTimeAuthCallback = null;

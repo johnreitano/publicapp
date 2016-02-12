@@ -1,3 +1,5 @@
+// TODO: clean up all this scss
+
 // Include Sass mixins
 @import "scss/utils/mixins";
 
@@ -13,11 +15,11 @@
 
 // Include custom styles
 @import "scss/common/common.styles";
-@import "scss/login/popups"; // TODO: move this to scss/app/popups
-@import "scss/login/auth2";  // TODO: merge this with scss/app/auth
+@import "scss/login/popups";
+@import "scss/login/auth2";
 
 // Include puplic items
-@import "scss/app/app"; // TODO: merge this with scss/common/common.styles
+@import "scss/app/app";
 @import "scss/app/auth";
 @import "scss/app/claim";
 @import "scss/app/landing";

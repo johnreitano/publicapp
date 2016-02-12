@@ -28,7 +28,6 @@ angular.module('Publicapp', [
   'Publicapp.claimPage',
   'Publicapp.fireb',
   'Publicapp.help',
-  'Publicapp.feedLoader',
   'Publicapp.landing',
   'Publicapp.listenees',
   'Publicapp.message',

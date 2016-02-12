@@ -9,6 +9,7 @@
     isListeningTo: isListeningTo,
     reSeedDatabase: reSeedDatabase,
     showListenButton: showListenButton,
+    showProfileByUserId: showProfileByUserId,
     showProfile: showProfile,
     showUnlistenButton: showUnlistenButton,
     signedIn: signedIn,
@@ -302,13 +303,11 @@
     };
 
     function storeMessage() {
-      // convert usernames to data-profile-link tags
       _.each(mentionedUsers, function(mentionedUser, mentionedUserId) {
-        var re = new RegExp(mentionedUser.username, 'ig');
         var nameAndUsername = s.isBlank(mentionedUser.name) ? mentionedUser.username : mentionedUser.name + " " + mentionedUser.username;
-        var linkText = "<a ui-sref=\"app.profile({id: '" + mentionedUserId + "'})\">" + nameAndUsername + "</a>";
-        // TODO: implement this properly
-        // message.text = message.text.replace(re, linkText);
+        var linkText = '<a class="profile-user-id-' + mentionedUserId + '">' + nameAndUsername + '</a>';
+        var re = new RegExp(mentionedUser.username, 'ig');
+        message.text = message.text.replace(re, linkText);
       });
 
       message.createdAt = message.createdAt || Date.now();
@@ -395,17 +394,17 @@
     var oldUsers;
     var newUsers = {};
 
-    step1();
+    seedStep1();
 
-    function step1() {
+    function seedStep1() {
       Fireb.ref().child("users").once("value", function(snapshot) {
 
         oldUsers = snapshot.val();
-        nextStep = step2;
+        nextStep = seedStep2;
         remainingItemsInStep = _.keys(oldUsers).length;
 
         if (remainingItemsInStep == 0) {
-          step2();
+          seedStep2();
           return;
         }
         _.each(oldUsers, function(oldUser, userId) {
@@ -436,7 +435,7 @@
       }
     };
 
-    function step2() {
+    function seedStep2() {
       console.log("removed all user auth records");
       Fireb.ref().child("users").remove();
       console.log("removed all user objects");
@@ -474,7 +473,7 @@
         }
       ]);
 
-      nextStep = step3;
+      nextStep = seedStep3;
       remainingItemsInStep = userDataRecords.length;
 
       _.each(userDataRecords, function(userDataRecord) {
@@ -498,13 +497,13 @@
       });
     };
 
-    function step3() {
+    function seedStep3() {
       if (!fakeData) {
-        step4();
+        seedStep4();
         return;
       }
 
-      nextStep = step4;
+      nextStep = seedStep4;
       remainingItemsInStep = _.keys(newUsers).length;
 
       console.log("created " + remainingItemsInStep + " users")
@@ -534,7 +533,7 @@
       });
     };
 
-    function step4() {
+    function seedStep4() {
       console.log("database successfully re-seeded");
     };
 
@@ -545,11 +544,11 @@
   };
 
   function showProfile(user, event) {
-    if (user) {
-      $state.go("app.profile", {
-        id: user.id
-      });
-    }
+    showProfileByUserId(user ? user.id : null, event);
+  };
+
+  function showProfileByUserId(userId, event) {
+    $state.go("app.profile", {id: userId});
     if (event) {
       event.stopPropagation(); // prevent ng-click of enclosing item from being processed
     }

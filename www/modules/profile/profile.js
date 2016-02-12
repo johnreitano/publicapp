@@ -41,15 +41,43 @@ angular.module('Publicapp.profile', [])
 
 }])
 
-.controller('ProfileCtrl', function($scope, $location, SharedMethods, $stateParams, Fireb, $firebaseObject, $firebaseArray, $state, $cordovaNativeAudio, MessageData, $ionicPopup, $timeout, $sce) {
-  var ctrl = this;
+.directive('messageWithProfileLinks', function ($compile, $sanitize) {
+  return {
+    restrict: 'A',
+    replace: true,
+    link: function (scope, ele, attrs) {
+      return linkMessage(scope, ele, attrs, null, $compile, $sanitize);
+    }
+  };
+})
 
-  ctrl.sharedScope = $scope;
-  angular.extend(ctrl, SharedMethods);
+.directive('shortenedMessageWithProfileLinks', function ($compile, $sanitize) {
+  return {
+    restrict: 'A',
+    replace: true,
+    link: function (scope, ele, attrs) {
+      return linkMessage(scope, ele, attrs, 125, $compile, $sanitize);
+    }
+  };
+})
+
+.controller('ProfileCtrl', function($scope, $location, SharedMethods, $stateParams, Fireb, $firebaseObject, $firebaseArray, $state, $cordovaNativeAudio, MessageData, $ionicPopup, $timeout, $sce, $sanitize) {
+  var ctrl = this;
 
   if (s.isBlank($stateParams.id)) {
     return; // TODO: find out why we sometimes enter this controller without an id
   }
+
+  ctrl.sharedScope = $scope;
+  angular.extend(ctrl, SharedMethods);
+
+  $timeout( function() {
+    if (Fireb.signedIn()) {
+      ctrl.turnOnincomingMessageSound();
+    } else {
+      ctrl.turnOffincomingMessageSound();
+    }
+  }, 3000 );
 
   // retrueve user data for specfied id
   var userRef = Fireb.ref().child('users').child($stateParams.id);
@@ -78,25 +106,8 @@ angular.module('Publicapp.profile', [])
           }
           $state.go(ctrl.stateBeforeSending);
         });
-
-      } else if (/app\.profile\..+/.test($state.current.name)) {
-
-        $timeout(function() {
-          var element = document.getElementById("message-textarea");
-          if (element) {
-            element.focus();
-          }
-          // // scroll to top of messages so you can see new message
-          // var element = document.getElementById("scrollable-content");
-          // if (element) {
-          //   angular.element(element).controller('scrollableContent').scrollTo(0);
-          // }
-        }, 150);
-
-        ctrl.setUpIncomingMessageSound();
       }
     });
-
   };
 
   ctrl.claimed = function(user) {
@@ -106,44 +117,6 @@ angular.module('Publicapp.profile', [])
   ctrl.firstName = function(user) {
     var name = s.isBlank(user.name) ? user.username : user.name
     return s.isBlank(name) ? null : name.split(/ /)[0];
-  };
-
-  ctrl.setUpIncomingMessageSound = function() {
-
-    // play incoming message sound for recent messages when viewing signed in users' profile page
-    if ($stateParams.id == ctrl.signedInUserId()) {
-
-      // load sounds
-      var webAudio;
-      ionic.Platform.ready(function() {
-        if (ionic.Platform.isWebView()) {
-        $cordovaNativeAudio
-          .preloadSimple('incoming', 'sounds/dewdrop_touchdown.ogg')
-          .then(function (msg) {
-            console.log("loaded sound: " + msg);
-          }, function (error) {
-            alert(error);
-          });
-        } else {
-          webAudio = new buzz.sound('/sounds/dewdrop_touchdown.ogg');
-        }
-      });
-
-      userRef.child("profileMessages").orderByChild("createdAt").startAt(Date.now() - 60000).on("child_added", function(snapshot) {
-        var message = snapshot.val();
-
-        if (message.author.id != ctrl.signedInUserId()) {
-          if (ionic.Platform.isWebView()) {
-            $cordovaNativeAudio.play('incoming').then(function (msg) {
-            }, function (error) {
-              console.log("got error trying to play sound on cordova")
-            });
-          } else {
-            webAudio.play();
-          }
-        }
-      });
-    }
   };
 
   ctrl.viewingOwnProfile = function() {
@@ -162,12 +135,74 @@ angular.module('Publicapp.profile', [])
     $state.go("app.messageViaProfile", {profileId: $stateParams.id, id: message.$id});
   };
 
-  ctrl.messageTextWithProfileLinks = function(message, lengthLimit) {
-    var text = message.text.length > lengthLimit - 3 ? message.text.slice(0,lengthLimit - 3) + '...' : message.text;
-    return $sce.trustAsHtml(text);
+  ctrl.shortMessageText = function(message, lengthLimit) {
+    var text = ctrl.baseMessageText(message);
+    text = text.length > lengthLimit - 3 ? text.slice(0,lengthLimit - 3) + '...' : text;
+    return text;
+  };
+
+  ctrl.turnOnincomingMessageSound = function() {
+    // load sounds
+    ionic.Platform.ready(function() {
+      if (ionic.Platform.isWebView()) {
+      $cordovaNativeAudio
+        .preloadSimple('incoming', 'sounds/dewdrop_touchdown.ogg')
+        .then(function (msg) {
+          console.log("loaded sound: " + msg);
+        }, function (error) {
+          alert(error);
+        });
+      } else {
+        ctrl._webAudio = new buzz.sound('/sounds/dewdrop_touchdown.ogg');
+      }
+    });
+
+    ctrl.profileMessagesRef = Fireb.signedInUserRef().child("profileMessages").orderByChild("createdAt").startAt(Date.now() - 60000);
+    ctrl.profileMessagesRef.on( "child_added", ctrl.playSoundIfMessageIsNotFromSignedInUser );
+  };
+
+  ctrl.turnOffincomingMessageSound = function() {
+    if (ctrl.profileMessagesRef) {
+      ctrl.profileMessagesRef.off( "child_added", ctrl.playSoundIfMessageIsNotFromSignedInUser );
+      ctrl.profileMessagesRef = null;
+    }
+  };
+
+
+  ctrl.playSoundIfMessageIsNotFromSignedInUser = function(snapshot) {
+    var message = snapshot.val();
+    if (message.author.id != ctrl.signedInUserId()) {
+      if (ionic.Platform.isWebView()) {
+        $cordovaNativeAudio.play('incoming').then(function (msg) {
+        }, function (error) {
+          console.log("got error trying to play sound on cordova")
+        });
+      } else {
+        ctrl._webAudio.play();
+      }
+    }
   };
 
 
 })
 
 ;
+
+
+function linkMessage(scope, ele, attrs, maxLength, $compile, $sanitize) {
+  scope.$watch(attrs.messageWithProfileLinks, function(html) {
+    var sanitizedHtml = $sanitize(html);
+    var re = /<a [^>]+profile-user-id-([\w\-\_]+)\b[^>]*>/;
+    while (matches = sanitizedHtml.match(re)) {
+      var originalString = matches[0];
+      var userId = matches[1];
+      var newString = "<a ng-click=\"vm.showProfileByUserId('" + userId + "', $event)\">";
+      sanitizedHtml = sanitizedHtml.replace(re,  newString);
+    }
+    if (maxLength && sanitizedHtml.length > maxLength - 3) {
+      sanitizedHtml = sanitizedHtml.slice(0,maxLength - 3) + '...';
+    }
+    ele.html(sanitizedHtml);
+    $compile(ele.contents())(scope);
+  });
+}
