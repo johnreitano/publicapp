@@ -70,8 +70,9 @@ angular.module('Publicapp', [
         $state.go("app.landing");
       }
     } else if (toState.name == "app.testing") {
+      event.preventDefault();
       window.localStorage['testingId'] = toParams.id;
-      $state.go("app.home");
+      $state.go("app.landing");
     } else if (toState.name == "app.landing" && Fireb.signedIn()) {
       event.preventDefault();
       $state.go("app.profile.feed");
