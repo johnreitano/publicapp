@@ -178,6 +178,10 @@ angular.module('Publicapp.fireb', [])
       newUser.email = user.email;
     }
 
+    if (window.localStorage['testingId']) {
+      newUser.testingId = window.localStorage['testingId'];
+    }
+
     var preferredUsername = s.isBlank(user.username) ? generateUsername(newUser.name) : user.username;
     findAvailableUsername(preferredUsername, function(availableUsername) {
       // store new user in db

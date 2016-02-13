@@ -27,18 +27,26 @@ angular.module('Publicapp.allUsers', [])
   ctrl.allUsers = $firebaseArray(allUsersRef);
 
 
-  // ctrl.setAddedBy = function() {
-  //   allUsersRef.on("child_added", function(snapshot) {
-  //     var user = snapshot.val();
-  //     var addedBy = _.compactObject({
-  //       id: user.id,
-  //       name: user.name,
-  //       username: user.username,
-  //       email: user.email
+  // ctrl.removeEmptyMessages = function() {
+  //   allUsersRef.on("value", function(snapshot) {
+  //     var users = snapshot.val();
+  //     _.each(users, function(user,userId) {
+  //       _.each(user.profileMessages, function(message, messageId) {
+  //         if (s.isBlank(message.text)) {
+  //           allUsersRef.child(userId).child("profileMessages").child(messageId).remove();
+  //         }
+  //       });
+  //       _.each(user.feedeMessages, function(message, messageId) {
+  //         if (s.isBlank(message.text)) {
+  //           allUsersRef.child(userId).child("feedMessages").child(messageId).remove();
+  //         }
+  //       });
   //     });
-  //     allUsersRef.child(user.id).update({addedBy: addedBy});
   //   });
   // };
+  //
+  // ctrl.removeEmptyMessages();
+
 })
 
 ;

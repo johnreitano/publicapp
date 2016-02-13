@@ -69,6 +69,9 @@ angular.module('Publicapp', [
       } else {
         $state.go("app.landing");
       }
+    } else if (toState.name == "app.testing") {
+      window.localStorage['testingId'] = toParams.id;
+      $state.go("app.home");
     } else if (toState.name == "app.landing" && Fireb.signedIn()) {
       event.preventDefault();
       $state.go("app.profile.feed");
@@ -130,6 +133,10 @@ angular.module('Publicapp', [
 
   .state('app.home', {
     url: "/home"
+  })
+
+  .state('app.testing', {
+    url: "/testing/:id"
   })
 
   $urlRouterProvider.otherwise('/landing');
