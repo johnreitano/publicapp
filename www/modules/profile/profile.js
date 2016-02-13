@@ -1,7 +1,7 @@
 angular.module('Publicapp.profile', [])
 
 .config(['$urlRouterProvider', '$stateProvider',
-  function($urlRouterProvider, $stateProvider, $stateParams, $scope){
+  function($urlRouterProvider, $stateProvider, $stateParams, $scope) {
 
     $stateProvider
 
@@ -39,27 +39,54 @@ angular.module('Publicapp.profile', [])
       }
     })
 
-}])
+  }
+])
 
-.directive('messageWithProfileLinks', function ($compile, $sanitize) {
+.directive('messageWithProfileLinks', function($compile, $sanitize) {
   return {
     restrict: 'A',
     replace: true,
-    link: function (scope, ele, attrs) {
+    link: function(scope, ele, attrs) {
       return linkMessage(scope, ele, attrs, null, $compile, $sanitize);
     }
   };
 })
 
-.directive('shortenedMessageWithProfileLinks', function ($compile, $sanitize) {
+.directive('shortenedMessageWithProfileLinks', function($compile, $sanitize) {
   return {
     restrict: 'A',
     replace: true,
-    link: function (scope, ele, attrs) {
+    link: function(scope, ele, attrs) {
       return linkMessage(scope, ele, attrs, 125, $compile, $sanitize);
     }
   };
 })
+
+.directive('openInTab', function() {
+  return {
+    restrict: 'A',
+    link: function(scope, element, attrs) {
+      element.bind('click', function(event) {
+        event.preventDefault()
+        event.stopPropagation()
+        window.open(attrs.href, '_blank');
+      });
+    }
+  }
+})
+
+// .directive('a', function() {
+//   return {
+//     restrict: 'E',
+//     link: function(scope, elem, attrs) {
+//       if (attrs.target == '_blank') {
+//         elem.on('click', function(e) {
+//           e.preventDefault();
+//         });
+//       }
+//     }
+//   };
+// })
 
 .controller('ProfileCtrl', function($scope, $location, SharedMethods, $stateParams, Fireb, $firebaseObject, $firebaseArray, $state, $cordovaNativeAudio, MessageData, $ionicPopup, $timeout, $sce, $sanitize) {
   var ctrl = this;
@@ -71,13 +98,13 @@ angular.module('Publicapp.profile', [])
   ctrl.sharedScope = $scope;
   angular.extend(ctrl, SharedMethods);
 
-  $timeout( function() {
+  $timeout(function() {
     if (Fireb.signedIn()) {
       ctrl.turnOnincomingMessageSound();
     } else {
       ctrl.turnOffincomingMessageSound();
     }
-  }, 3000 );
+  }, 3000);
 
   // retrueve user data for specfied id
   var userRef = Fireb.ref().child('users').child($stateParams.id);
@@ -130,18 +157,24 @@ angular.module('Publicapp.profile', [])
   ctrl.showMessageViaFeed = function(message, event) {
     event.preventDefault();
     MessageData.message = message;
-    $state.go("app.messageViaFeed", {profileId: $stateParams.id, id: message.$id});
+    $state.go("app.messageViaFeed", {
+      profileId: $stateParams.id,
+      id: message.$id
+    });
   };
 
   ctrl.showMessageViaProfile = function(message, event) {
     event.preventDefault();
     MessageData.message = message;
-    $state.go("app.messageViaProfile", {profileId: $stateParams.id, id: message.$id});
+    $state.go("app.messageViaProfile", {
+      profileId: $stateParams.id,
+      id: message.$id
+    });
   };
 
   ctrl.shortMessageText = function(message, lengthLimit) {
     var text = ctrl.baseMessageText(message);
-    text = text.length > lengthLimit - 3 ? text.slice(0,lengthLimit - 3) + '...' : text;
+    text = text.length > lengthLimit - 3 ? text.slice(0, lengthLimit - 3) + '...' : text;
     return text;
   };
 
@@ -149,25 +182,25 @@ angular.module('Publicapp.profile', [])
     // load sounds
     ionic.Platform.ready(function() {
       if (ionic.Platform.isWebView()) {
-      $cordovaNativeAudio
-        .preloadSimple('incoming', 'sounds/dewdrop_touchdown.ogg')
-        .then(function (msg) {
-          console.log("loaded sound: " + msg);
-        }, function (error) {
-          alert(error);
-        });
+        $cordovaNativeAudio
+          .preloadSimple('incoming', 'sounds/dewdrop_touchdown.ogg')
+          .then(function(msg) {
+            console.log("loaded sound: " + msg);
+          }, function(error) {
+            alert(error);
+          });
       } else {
         ctrl._webAudio = new buzz.sound('/sounds/dewdrop_touchdown.ogg');
       }
     });
 
     ctrl.profileMessagesRef = Fireb.signedInUserRef().child("profileMessages").orderByChild("createdAt").startAt(Date.now() - 60000);
-    ctrl.profileMessagesRef.on( "child_added", ctrl.playSoundIfMessageIsNotFromSignedInUser );
+    ctrl.profileMessagesRef.on("child_added", ctrl.playSoundIfMessageIsNotFromSignedInUser);
   };
 
   ctrl.turnOffincomingMessageSound = function() {
     if (ctrl.profileMessagesRef) {
-      ctrl.profileMessagesRef.off( "child_added", ctrl.playSoundIfMessageIsNotFromSignedInUser );
+      ctrl.profileMessagesRef.off("child_added", ctrl.playSoundIfMessageIsNotFromSignedInUser);
       ctrl.profileMessagesRef = null;
     }
   };
@@ -177,8 +210,7 @@ angular.module('Publicapp.profile', [])
     var message = snapshot.val();
     if (message.author.id != ctrl.signedInUserId()) {
       if (ionic.Platform.isWebView()) {
-        $cordovaNativeAudio.play('incoming').then(function (msg) {
-        }, function (error) {
+        $cordovaNativeAudio.play('incoming').then(function(msg) {}, function(error) {
           console.log("got error trying to play sound on cordova")
         });
       } else {
@@ -195,18 +227,22 @@ angular.module('Publicapp.profile', [])
 
 function linkMessage(scope, ele, attrs, maxLength, $compile, $sanitize) {
   scope.$watch(attrs.messageWithProfileLinks, function(html) {
-    var sanitizedHtml = $sanitize(html);
-    var re = /<a [^>]+profile-user-id-([\w\-\_]+)\b[^>]*>/;
-    while (matches = sanitizedHtml.match(re)) {
+    var text = $sanitize(html);
+    var profileLinkPattern = /<a [^>]+profile-user-id-([\w\-\_]+)\b[^>]*>/;
+    while (matches = text.match(profileLinkPattern)) {
       var originalString = matches[0];
       var userId = matches[1];
       var newString = "<a ng-click=\"vm.showProfileByUserId('" + userId + "', $event)\">";
-      sanitizedHtml = sanitizedHtml.replace(re,  newString);
+      text = text.replace(profileLinkPattern, newString);
     }
-    if (maxLength && sanitizedHtml.length > maxLength - 3) {
-      sanitizedHtml = sanitizedHtml.slice(0,maxLength - 3) + '...';
+
+    var urlPattern = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/gi;
+    text = text.replace(urlPattern, '<a open-in-tab href="$&">$&</a>');
+
+    if (maxLength && text.length > maxLength - 3) {
+      text = text.slice(0, maxLength - 3) + '...';
     }
-    ele.html(sanitizedHtml);
+    ele.html(text);
     $compile(ele.contents())(scope);
   });
 }
