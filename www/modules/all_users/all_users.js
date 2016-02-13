@@ -26,25 +26,26 @@ angular.module('Publicapp.allUsers', [])
   var allUsersRef = Fireb.ref().child("users")
   ctrl.allUsers = $firebaseArray(allUsersRef);
 
-
   // ctrl.removeEmptyMessages = function() {
   //   allUsersRef.on("value", function(snapshot) {
   //     var users = snapshot.val();
+  //     console.log("There are " + _.keys(users).length + " users");
   //     _.each(users, function(user,userId) {
   //       _.each(user.profileMessages, function(message, messageId) {
   //         if (s.isBlank(message.text)) {
   //           allUsersRef.child(userId).child("profileMessages").child(messageId).remove();
+  //           console.log("Removed profile message " + messageId);
   //         }
   //       });
   //       _.each(user.feedeMessages, function(message, messageId) {
   //         if (s.isBlank(message.text)) {
   //           allUsersRef.child(userId).child("feedMessages").child(messageId).remove();
+  //           console.log("Removed feed message " + messageId);
   //         }
   //       });
   //     });
   //   });
   // };
-  //
   // ctrl.removeEmptyMessages();
 
 })
