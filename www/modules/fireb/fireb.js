@@ -178,8 +178,8 @@ angular.module('Publicapp.fireb', [])
       newUser.email = user.email;
     }
 
-    if (window.localStorage['testingId']) {
-      newUser.testingId = window.localStorage['testingId'];
+    if (window.localStorage['marketingId']) {
+      newUser.marketingId = window.localStorage['marketingId'];
     }
 
     var preferredUsername = s.isBlank(user.username) ? generateUsername(newUser.name) : user.username;
