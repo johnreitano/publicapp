@@ -140,20 +140,14 @@ angular.module('Publicapp.allUsers', [])
       _.each(users, function(user) {
         var userRef = allUsersRef.child(user.id);
 
-        userRef.child("addedBy").child("email").remove();
-        if (_.isNull(user.addedBy.face) || _.isUndefined(user.addedBy.face)) {
-          userRef.child("addedBy").child("face").set(user.face);
-        }
-
+        // do something with user here...
       });
 
-      console.log("successfully merged user " + sourceUser.username + " into " + targetUser.username);
+      console.log("successfully did i!");
 
     });
 
   };
-
-  ctrl.foo("@johnreitano", ["@johnreitano1", "@johnreitano3"]);
 })
 
 ;

@@ -42,22 +42,26 @@ angular.module('Publicapp.profile', [])
   }
 ])
 
-.directive('messageWithProfileLinks', function($compile, $sanitize) {
+.directive('longMessageWithProfileLinks', function($compile, $sanitize) {
   return {
     restrict: 'A',
     replace: true,
     link: function(scope, ele, attrs) {
-      return linkMessage(scope, ele, attrs, null, $compile, $sanitize);
+      scope.$watch(attrs.longMessageWithProfileLinks, function(html) {
+        linkMessage(scope, ele, attrs, null, $compile, $sanitize, html);
+      });
     }
   };
 })
 
-.directive('shortenedMessageWithProfileLinks', function($compile, $sanitize) {
+.directive('shortMessageWithProfileLinks', function($compile, $sanitize) {
   return {
     restrict: 'A',
     replace: true,
     link: function(scope, ele, attrs) {
-      return linkMessage(scope, ele, attrs, 125, $compile, $sanitize);
+      scope.$watch(attrs.shortMessageWithProfileLinks, function(html) {
+        linkMessage(scope, ele, attrs, null, $compile, $sanitize, html);
+      });
     }
   };
 })
@@ -88,7 +92,7 @@ angular.module('Publicapp.profile', [])
 //   };
 // })
 
-.controller('ProfileCtrl', function($scope, $location, SharedMethods, $stateParams, Fireb, $firebaseObject, $firebaseArray, $state, $cordovaNativeAudio, MessageData, $ionicPopup, $timeout, $sce, $sanitize) {
+.controller('ProfileCtrl', function($scope, $location, SharedMethods, $stateParams, Fireb, $firebaseObject, $firebaseArray, $state, $cordovaNativeAudio, $ionicPopup, $timeout, $sce, $sanitize) {
   var ctrl = this;
 
   if (s.isBlank($stateParams.id)) {
@@ -154,20 +158,18 @@ angular.module('Publicapp.profile', [])
     return $stateParams.id && ctrl.signedInUserId() && $stateParams.id == ctrl.signedInUserId();
   };
 
-  ctrl.showMessageViaFeed = function(message, event) {
+  ctrl.showMessageViaFeed = function(messageId, message, event) {
     event.preventDefault();
-    MessageData.message = message;
     $state.go("app.messageViaFeed", {
-      profileId: $stateParams.id,
-      id: message.$id
+      userId: $stateParams.id,
+      id: messageId
     });
   };
 
   ctrl.showMessageViaProfile = function(message, event) {
     event.preventDefault();
-    MessageData.message = message;
     $state.go("app.messageViaProfile", {
-      profileId: $stateParams.id,
+      userId: $stateParams.id,
       id: message.$id
     });
   };
@@ -224,25 +226,23 @@ angular.module('Publicapp.profile', [])
 
 ;
 
+function linkMessage(scope, ele, attrs, maxLength, $compile, $sanitize, html) {
+  var text = $sanitize(html);
+  var profileLinkPattern = /<a [^>]+profile-user-id-([\w\-\_]+)\b[^>]*>/;
+  while (matches = text.match(profileLinkPattern)) {
+    var originalString = matches[0];
+    var userId = matches[1];
+    var newString = "<a ng-click=\"vm.showProfileByUserId('" + userId + "', $event)\">";
+    text = text.replace(profileLinkPattern, newString);
+  }
 
-function linkMessage(scope, ele, attrs, maxLength, $compile, $sanitize) {
-  scope.$watch(attrs.messageWithProfileLinks, function(html) {
-    var text = $sanitize(html);
-    var profileLinkPattern = /<a [^>]+profile-user-id-([\w\-\_]+)\b[^>]*>/;
-    while (matches = text.match(profileLinkPattern)) {
-      var originalString = matches[0];
-      var userId = matches[1];
-      var newString = "<a ng-click=\"vm.showProfileByUserId('" + userId + "', $event)\">";
-      text = text.replace(profileLinkPattern, newString);
-    }
+  var urlPattern = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/gi;
+  text = text.replace(urlPattern, '<a open-in-tab href="$&">$&</a>');
 
-    var urlPattern = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/gi;
-    text = text.replace(urlPattern, '<a open-in-tab href="$&">$&</a>');
+  if (maxLength && text.length > maxLength) {
+    text = text.slice(0, maxLength - 3) + '...';
+  }
+  ele.html(text);
+  $compile(ele.contents())(scope);
+};
 
-    if (maxLength && text.length > maxLength - 3) {
-      text = text.slice(0, maxLength - 3) + '...';
-    }
-    ele.html(text);
-    $compile(ele.contents())(scope);
-  });
-}

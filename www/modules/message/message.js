@@ -5,94 +5,44 @@ angular.module('Publicapp.message', [])
   $stateProvider
 
   .state('app.messageViaFeed', {
-    url: "/profile/:profileId/feed/message/:id",
+    url: "/profile/:userId/feed/message/:id",
     views: {
       'menuContent': {
         templateUrl: "modules/message/message.html",
-        controller: "MessageCtrl as vm"
+        controller: "MessageViaFeedCtrl as vm"
       }
     }
   })
 
   .state('app.messageViaProfile', {
-    url: "/profile/:profileId/messages/message/:id",
+    url: "/profile/:userId/messages/message/:id",
     views: {
       'menuContent': {
         templateUrl: "modules/message/message.html",
-        controller: "MessageCtrl as vm"
+        controller: "MessageViaProfileCtrl as vm"
       }
     }
   })
 
 }])
 
-.service('MessageData', function($timeout, $state, Fireb) {
-  var message;
-
-  return {
-    message: message
-  };
-
-})
-
-// .directive('profileLink', function() {
-//   return {
-//     restrict: 'E',
-//     scope: {
-//         uid: '=uid'
-//     },
-//     compile: function(elem) {
-//       var oldText = elem.html();
-//       var newText = "<span class='data-profile-link' ui-sref='app.profile'>" + oldText + "</span>",
-//       elem.replaceWith(newText);
-//     }
-//   };
-// })
-
-// .directive('profileLink', function() {
-//   return {
-//     restrict: 'E',
-//     replace: true,
-//     transclude: true,
-//     scope: {
-//         uid: '=uid'
-//     },
-//     template: "<span class='data-profile-link' ui-sref='app.profile.feed{id: \"{{uid}}\"}' ng-transclude></span>",
-//   };
-// });
-//
-.controller('MessageCtrl', function($scope, $stateParams, SharedMethods, Fireb, $firebaseObject, MessageData, $sce) {
+.controller('MessageViaFeedCtrl', function($scope, $stateParams, SharedMethods, Fireb, $firebaseObject) {
   var ctrl = this;
 
   angular.extend(ctrl, SharedMethods);
 
-  ctrl.message = MessageData.message;
+  var messageRef = Fireb.ref().child('users').child($stateParams.userId).child("feedMessages").child($stateParams.id);
+  ctrl.message = $firebaseObject(messageRef);
 
-  ctrl.messageTextWithProfileLinks = function(message) {
-    return $sce.trustAsHtml(message.text);
-  };
+})
 
-  // var re = /(<data-profile-link[^\>]*>[\@_\w \,\.]+<\/data-profile-link>)/;
-  // ctrl.messageParts = ctrl.message.text.replace(re, '|$1|').split("|");
-  //
-  // ctrl.linkText = function(part) {
-  //   var re = /<data-profile-link[^\>]*>([\@_\w \,\.]+)<\/data-profile-link>/;
-  //   if (re.test(part)) {
-  //     return RegExp.$1;
-  //   } else {
-  //     return null;
-  //   }
-  // };
-  //
-  // ctrl.linkUiSref = function(part) {
-  //   var re = /<data-profile-link[^\>]*uid\=[\'\"]([\w-]+)[\'\"][^\>]*>[\@_\w \,\.]+<\/data-profile-link>/;
-  //   if (re.test(part)) {
-  //     var uid = RegExp.$1
-  //     return "app.profile.messages({id: '" + uid + "'})";
-  //   } else {
-  //     return null;
-  //   }
-  // };
+.controller('MessageViaProfileCtrl', function($scope, $stateParams, SharedMethods, Fireb, $firebaseObject) {
+  var ctrl = this;
+
+  angular.extend(ctrl, SharedMethods);
+
+  var messageRef = Fireb.ref().child('users').child($stateParams.userId).child("profileMessages").child($stateParams.id);
+  ctrl.message = $firebaseObject(messageRef);
 
 })
 
