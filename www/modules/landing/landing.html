@@ -28,7 +28,7 @@
     </form>
 
     <div class="search-results" ng-if="vm.showSearchResults">
-      <ion-list ng-repeat="user in vm.searchResults | orderBy: '-addedAt'">
+      <ion-list ng-repeat="user in vm.searchResults | orderBy: '-createdAt'">
           <div class="item item-avatar item-button-right" ng-click="vm.showProfile(user)">
           <img ng-src="{{ user.face }}">
           <h2>{{ user.name }}</h2>

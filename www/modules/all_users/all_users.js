@@ -71,8 +71,10 @@ angular.module('Publicapp.allUsers', [])
         }
 
         // save a copy of source user
-        var deepCopyOfSourceUser = JSON.parse(JSON.stringify(sourceUser))
-        targetUserRef.child("mergedUsers").child(sourceUser.id).setWithPriority(deepCopyOfSourceUser, Date.now());
+        if (!targetUser.mergedUsers[sourceUser.id]) {
+          var deepCopyOfSourceUser = JSON.parse(JSON.stringify(sourceUser))
+          targetUserRef.child("mergedUsers").child(sourceUser.id).setWithPriority(deepCopyOfSourceUser, 0 - Date.now());
+        }
 
         // copy source user's profile messages to target user
         var targetUserStub = _.pick(targetUser, ["id", "name", "username", "face"]);
@@ -81,39 +83,43 @@ angular.module('Publicapp.allUsers', [])
         _.each(users, function(user) {
           var userRef = allUsersRef.child(user.id);
 
-          _.each(user.profileMessages, function(message, messageId) {
-            if (message.author.id == sourceUser.id) {
-              userRef.child("feedMessages.author").set(targetUserStub);
-            }
-            if (message.subject.id == sourceUser.id) {
-              userRef.child("feedMessages.subject").set(targetUserStub);
-            }
-          });
+          if (user.addedBy.id == sourceUser.id) {
+            userRef.child("addedBy").set(targetUserStub);
+          }
 
-          _.each(user.feedMessages, function(message, messageId) {
-            if (message.author.id == sourceUser.id) {
-              userRef.child("feedMessages.author").set(targetUserStub);
-            }
-            if (message.subject.id == sourceUser.id) {
-              userRef.child("feedMessages.subject").set(targetUserStub);
-            }
-          });
+          function adjustMessages(profileOrFeedMessages) {
+            _.each(user[profileOrFeedMessages], function(message, messageId) {
+              var re = new RegExp(sourceUsername, 'g');
+              if (re.test(message.text)) {
+                var newText = message.text.replace(re, targetUsername);
+                userRef.child(profileOrFeedMessages).child(messageId).child("text").set(newText);
+              }
+              if (message.author.id == sourceUser.id) {
+                userRef.child(profileOrFeedMessages).child(messageId).child("author").set(targetUserStub);
+              }
+              if (message.subject.id == sourceUser.id) {
+                userRef.child(profileOrFeedMessages).child(messageId).child("subject").set(targetUserStub);
+              }
+            });
+          };
 
-          _.each(user.listeners, function(listener) {
-            if (listener.id == sourceUser.id) {
-              var newListener = _.extend(targetUserStub,{addedAt: listener.addedAt });
-              userRef.child("listeners").child(targetUser.id).add(newListener);
-              userRef.child("listeners").child(listener.id).remove();
-            }
-          });
+          adjustMessages("feedMessages");
+          adjustMessages("profileMessages");
 
-          _.each(user.listenees, function(listenee) {
-            if (listenee.id == sourceUser.id) {
-              var newListenee = _.extend(targetUserStub,{addedAt: listenee.addedAt });
-              userRef.child("listenees").child(targetUser.id).add(newListenee);
-              userRef.child("listenees").child(listenee.id).remove();
-            }
-          });
+          function adjustListenersOrListenees(listenersOrListenees) {
+            _.each(user[listenersOrListenees], function(listenerOrListenee) {
+              if (listenerOrListenee.id == sourceUser.id) {
+                userRef.child(listenersOrListenees).child(targetUser.id).setWithPriority(
+                  _.extend({addedAt: listenerOrListenee.addedAt }, targetUserStub),
+                  0 - listenerOrListenee.addedAt
+                );
+                userRef.child(listenersOrListenees).child(sourceUser.id).remove();
+              }
+            });
+          };
+          adjustListenersOrListenees("listeners");
+          adjustListenersOrListenees("listenees");
+
         });
 
         usersRef.child(sourceUser.id).remove();
@@ -125,6 +131,29 @@ angular.module('Publicapp.allUsers', [])
   };
 
 
+  ctrl.foo = function(targetUsername, sourceUsernames) {
+    allUsersRef.once("value", function(snapshot) {
+
+      var users = snapshot.val();
+      console.log("There are " + _.keys(users).length + " users");
+
+      _.each(users, function(user) {
+        var userRef = allUsersRef.child(user.id);
+
+        userRef.child("addedBy").child("email").remove();
+        if (_.isNull(user.addedBy.face) || _.isUndefined(user.addedBy.face)) {
+          userRef.child("addedBy").child("face").set(user.face);
+        }
+
+      });
+
+      console.log("successfully merged user " + sourceUser.username + " into " + targetUser.username);
+
+    });
+
+  };
+
+  ctrl.foo("@johnreitano", ["@johnreitano1", "@johnreitano3"]);
 })
 
 ;

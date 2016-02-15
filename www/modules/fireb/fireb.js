@@ -194,11 +194,11 @@ angular.module('Publicapp.fireb', [])
           id: signedIn() ? signedInUserId() : newUserRef.key(),
           name: addedBy.name,
           username: addedBy.username,
-          email: addedBy.email
+          face: addedBy.face
         });
       }
 
-      newUserRef.set(newUser, function(error) {
+      newUserRef.setWithPriority(newUser, 0 - newUser.createdAt, function(error) {
         if (error) {
           console.log('error saving profile data for user', newUser, error);
           callback(error, null);

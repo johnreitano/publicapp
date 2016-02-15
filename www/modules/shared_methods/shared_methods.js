@@ -607,7 +607,7 @@
       listeneeRecord.username = targetUser.username;
     }
     var sourceUserRef = Fireb.ref().child("users").child(sourceUser.id);
-    sourceUserRef.child("listenees").child(targetUser.id).set(listeneeRecord);
+    sourceUserRef.child("listenees").child(targetUser.id).setWithPriority(listeneeRecord, 0 - listeneeRecord.addedAt);
 
     // add new listener to target user
     listenerRecord = {
@@ -622,7 +622,7 @@
       listenerRecord.username = sourceUser.username;
     }
     var targetUserRef = Fireb.ref().child("users").child(targetUser.id);
-    targetUserRef.child("listeners").child(sourceUser.id).set(listenerRecord);
+    targetUserRef.child("listeners").child(sourceUser.id).setWithPriority(listenerRecord, 0 - listenerRecord.addedAt);
   };
 
   function stopSourceListeningToTarget(sourceUser, targetUser) {
