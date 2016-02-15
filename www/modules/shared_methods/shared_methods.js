@@ -7,6 +7,7 @@
     createPasswordAuthAndUserObject: createPasswordAuthAndUserObject,
     isCurrentState: isCurrentState,
     isListeningTo: isListeningTo,
+    isSourceListeningToTarget: isSourceListeningToTarget,
     reSeedDatabase: reSeedDatabase,
     showListenButton: showListenButton,
     showProfileByUserId: showProfileByUserId,
@@ -16,7 +17,8 @@
     signedInUser: signedInUser,
     signedInUserId: signedInUserId,
     startListeningTo: startListeningTo,
-    startListeningToTargetBySource: startListeningToTargetBySource,
+    startSourceListeningToTarget: startSourceListeningToTarget,
+    stopSourceListeningToTarget: stopSourceListeningToTarget,
     stopListeningTo: stopListeningTo,
     toggleListeningTo: toggleListeningTo,
     showSpinner: showSpinner,
@@ -341,7 +343,7 @@
       // have author start listening to all other users associated with this message
       var otherUsers = _.uniq([message.subject].concat(_.values(mentionedUsers)), false, function(user) { return user.id; });
       _.each(otherUsers, function(otherUser) {
-        startListeningToTargetBySource(message.author, otherUser, message.createdAt);
+        startSourceListeningToTarget(message.author, otherUser, message.createdAt);
       });
 
       console.log("Succesfully added messages for user profiles " + associatedUserIds.join());
@@ -379,6 +381,11 @@
     } else {
       return false;
     }
+  };
+
+  function isSourceListeningToTarget(source, target) {
+    var keys = _.keys(source.listenees);
+    return keys.indexOf(target.id) != -1
   };
 
 
@@ -583,10 +590,10 @@
       event.stopPropagation(); // prevent ng-click of enclosing item from being processed
     }
 
-    startListeningToTargetBySource(signedInUser(), targetUser, Date.now());
+    startSourceListeningToTarget(signedInUser(), targetUser, Date.now());
   }
 
-  function startListeningToTargetBySource(sourceUser, targetUser, addedAt) {
+  function startSourceListeningToTarget(sourceUser, targetUser, addedAt) {
     // add new listenee to source user
     listeneeRecord = {
       id: targetUser.id,
@@ -616,6 +623,16 @@
     }
     var targetUserRef = Fireb.ref().child("users").child(targetUser.id);
     targetUserRef.child("listeners").child(sourceUser.id).set(listenerRecord);
+  };
+
+  function stopSourceListeningToTarget(sourceUser, targetUser) {
+    // remove listenee from signed-in user
+    var sourceUserRef = Fireb.ref().child("users").child(sourceUser.id);
+    sourceUserRef.child("listenees").child(targetUser.id).remove();
+
+    // remove listener from target user
+    var targetUserRef = Fireb.ref().child("users").child(targetUser.id);
+    targetUserRef.child("listeners").child(sourceUser.id).remove();
   };
 
   function stopListeningTo(targetUser, event) {
