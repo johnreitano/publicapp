@@ -341,7 +341,9 @@
       });
 
       // have author start listening to all other users associated with this message
-      var otherUsers = _.uniq([message.subject].concat(_.values(mentionedUsers)), false, function(user) { return user.id; });
+      var otherUsers = [message.subject].concat(_.values(mentionedUsers));
+      otherUsers = _.reject(otherUsers, function(user) { return user.id == message.author.id; });
+      otherUsers = _.uniq(otherUsers, false, function(user) { return user.id; });
       _.each(otherUsers, function(otherUser) {
         startSourceListeningToTarget(message.author, otherUser, message.createdAt);
       });
