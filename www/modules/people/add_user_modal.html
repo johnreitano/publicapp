@@ -7,13 +7,13 @@
     <form name="vm.form" ng-submit="vm.authenticateAndAddUserWithMessage()">
       <div class="list form-group">
         <label class="item item-input">
-          <span class="input-label">Name</span>
+          <span class="input-label">First &amp; Last Name</span>
           <input name="name"
                   type="text"
                   ng-model="vm.name"
                   ng-model-options="{ updateOn: 'blur' }"
                   ng-pattern="/.*\w+.* .*\w+.*/"
-                  placeholder="Full Name"
+                  placeholder="First &amp; Last Name"
                   ng-required="true"
                   focus-me>
         </label>

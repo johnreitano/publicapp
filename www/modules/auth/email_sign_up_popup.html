@@ -8,17 +8,28 @@
           <input name="name"
                   type="text"
                   ng-model="vm.name"
-                  placeholder="Full Name"
+                  ng-pattern="/.*\w+.* .*\w+.*/"
+                  placeholder="First &amp; Last Name"
                   ng-required="true"
                   focus-me>
         </label>
+        <label class="item item-input error-wrapper" style="border-top-style: none;" ng-show="vm.form.name.$touched && vm.form.name.$error.pattern">
+          <div class="error-message" style="color: red;">
+            First AND Last
+          </div>
+        </label>
         <label class="item item-input">
           <input name="username"
-                  type="text" 
+                  type="text"
                   ng-model="vm.username"
-                  ng-minlength="2"
+                  ng-pattern="/^@?[\w\_]+$/"
                   placeholder="Desired Username"
                   ng-required="true">
+        </label>
+        <label class="item item-input error-wrapper" style="border-top-style: none;" ng-show="vm.form.username.$touched && vm.form.username.$error.pattern">
+          <div class="error-message" style="color: red;">
+            Invalid character
+          </div>
         </label>
         <label class="item item-input">
           <input name="email"
@@ -27,12 +38,29 @@
                   placeholder="Email"
                   ng-required="true">
         </label>
+        <label class="item item-input error-wrapper" style="border-top-style: none;" ng-show="vm.form.email.$touched && vm.form.email.$error.email">
+          <div class="error-message" style="color: red;">
+            Invalid email address
+          </div>
+        </label>
         <label class="item item-input">
           <input name="password"
                   type="password"
                   ng-model="vm.password"
+                  ng-pattern="/^[\w\-\_\!\@\#\$\%\^\&\*]{6,}$/"
+                  ng-minlength="6"
                   placeholder="Password"
                   ng-required="true">
+        </label>
+        <label class="item item-input error-wrapper" style="border-top-style: none;" ng-show="vm.form.password.$touched && vm.form.password.$error.minlength">
+          <div class="error-message" style="color: red;">
+            At least 6 characters
+          </div>
+        </label>
+        <label class="item item-input error-wrapper" style="border-top-style: none;" ng-show="vm.form.password.$dirty && vm.form.password.$error.pattern && !vm.form.password.$error.minlength">
+          <div class="error-message" style="color: red;">
+            Invalid character
+          </div>
         </label>
         <p style="color:red">{{ vm.errorMessage }}</p>
       </div>

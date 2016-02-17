@@ -166,12 +166,16 @@ angular.module('Publicapp.profile', [])
     });
   };
 
-  ctrl.showMessageViaProfile = function(message, event) {
+  ctrl.showMessageViaProfile = function(messageId, message, event) {
     event.preventDefault();
     $state.go("app.messageViaProfile", {
       userId: $stateParams.id,
-      id: message.$id
+      id: messageId
     });
+  };
+
+  ctrl.messageBlank = function() {
+    return s.isBlank(ctrl.newMessage);
   };
 
   ctrl.shortMessageText = function(message, lengthLimit) {

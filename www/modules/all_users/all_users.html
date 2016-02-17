@@ -14,13 +14,19 @@
         <h2><a ng-href="/#/profile/{{ user.id }}/messages">{{ user.name }}</a></h2>
         <h2><a ng-href="/#/profile/{{ user.id }}/messages">{{ user.username }}</a></h2>
 
-        <button class="button button-positive"
-            ng-click="vm.startListeningTo(user, $event)"
-            ng-show="vm.showListenButton(user)">Listen</button>
 
-        <button class="button button-energized"
-            ng-click="vm.stopListeningTo(user, $event, this)"
-            ng-show="vm.showUnlistenButton(user)">Unlisten</button>
+          <!-- <button style="width: 50px; font-size: 0.75em; padding: 2px; position: absolute; top: 16px; left: 250px;" class="button button-energized" -->
+
+          <button style="width: 50px; font-size: 0.75em; padding: 2px; position: absolute; top: 16px; right: 70px;" class="button button-energized"
+            ng-click="vm.mergeUserAfterConfirmation(user, $event)"
+            ng-if="vm.signedIn() && vm.signedInUser().admin && !vm.viewingOwnProfile()">
+            Merge
+          </button>
+          <button style="width: 50px; font-size: 0.75em; padding: 2px; position: absolute; top: 16px; right: 10px;" class="button button-assertive"
+            ng-click="vm.removeUserAfterConfirmation(user, $event)"
+            ng-if="vm.signedIn() && vm.signedInUser().admin && !vm.viewingOwnProfile()">
+            Remove
+          </button>
       </div>
     </ion-list>
   </ion-content>

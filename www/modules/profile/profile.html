@@ -76,7 +76,7 @@
         <ion-nav-view name="messages">
           <ion-content ng-class="{ 'lower-content': !vm.claimed(vm.user) }">
             <ion-list>
-              <div ng-repeat="message in vm.user.profileMessages" class="item item-profile-message item-avatar" ng-click="vm.showMessageViaProfile(message, $event)">
+              <div ng-repeat="(messageId,message) in vm.user.profileMessages" class="item item-profile-message item-avatar" ng-click="vm.showMessageViaProfile(messageId, message, $event)">
 
                 <img ng-src="{{ message.author.face }}"  ng-click="vm.showProfile(message.author, $event)">
                 <div>
@@ -137,7 +137,10 @@
     <textarea id="message-textarea" class="message-textarea" type="text" ng-model="vm.newMessage" placeholder="Say something {{ vm.viewingOwnProfile() ? '' : 'to ' + vm.user.name + ' ' }}in Public" focus-me></textarea>
     <div class="buttons">
       <button class="button button-light"
-              ng-click="vm.authenticateAndSendMessage($event)">Send</button>
+        ng-disabled="vm.messageBlank()"
+        ng-click="vm.authenticateAndSendMessage($event)">
+        Send
+      </button>
     </div>
   </ion-footer-bar>
 
