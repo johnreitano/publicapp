@@ -37,7 +37,7 @@ angular.module('Publicapp.allUsers', [])
             console.log("Removed profile message " + messageId);
           }
         });
-        _.each(user.feedeMessages, function(message, messageId) {
+        _.each(user.feedMessages, function(message, messageId) {
           if (s.isBlank(message.text)) {
             allUsersRef.child(userId).child("feedMessages").child(messageId).remove();
             console.log("Removed feed message " + messageId);
@@ -218,25 +218,7 @@ angular.module('Publicapp.allUsers', [])
     });
   };
 
-  ctrl.foo = function(targetUsername, sourceUsernames) {
-    allUsersRef.once("value", function(snapshot) {
-
-      var users = snapshot.val();
-      console.log("There are " + _.keys(users).length + " users");
-
-      _.each(users, function(user) {
-        var userRef = allUsersRef.child(user.id);
-
-        // do something with user here...
-      });
-
-      console.log("successfully did i!");
-
-    });
-
-  };
-
-  // ctrl.removeUser("@testsignup" );
+  // ctrl.removeEmptyMessages();
 })
 
 ;
