@@ -127,7 +127,7 @@ angular.module('Publicapp', [
 
   .state('app', {
     url: "",
-    templateUrl: "modules/app/sidemenu.html",
+    templateUrl: "modules/app/side_menu.html",
     controller: 'AppCtrl as app',
     abstract: true
   })
