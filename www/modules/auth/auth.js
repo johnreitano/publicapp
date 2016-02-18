@@ -173,7 +173,7 @@ angular.module('Publicapp.auth', [])
           ctrl.originalToParams = null;
         }, 10 );
       } else {
-        $state.go('app.home');
+        $state.go("app.home");
       }
     });
   };

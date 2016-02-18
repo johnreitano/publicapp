@@ -65,7 +65,7 @@ angular.module('Publicapp', [
     if (toState.name == "app.home") {
       event.preventDefault();
       if (Fireb.signedIn()) {
-        $state.go("app.profile.feed");
+        $state.go("app.profile.feed", {id: Fireb.signedInUserId()});
       } else {
         $state.go("app.landing");
       }
@@ -75,7 +75,7 @@ angular.module('Publicapp', [
       $state.go("app.landing");
     } else if (toState.name == "app.landing" && Fireb.signedIn()) {
       event.preventDefault();
-      $state.go("app.profile.feed");
+      $state.go("app.profile.feed", {id: Fireb.signedInUserId()});
     } else if (toState.name == "app.signOut") {
       event.preventDefault();
       if (Fireb.signedIn()) {
@@ -127,9 +127,9 @@ angular.module('Publicapp', [
 
   .state('app', {
     url: "",
-    abstract: true,
     templateUrl: "modules/app/sidemenu.html",
     controller: 'AppCtrl as app',
+    abstract: true
   })
 
   .state('app.home', {
@@ -140,8 +140,10 @@ angular.module('Publicapp', [
     url: "/go/:id"
   })
 
-  $urlRouterProvider.otherwise('/landing');
-
+  $urlRouterProvider.otherwise( function($injector, $location) {
+    var state = $injector.get("$state");
+    state.go("app.home");
+  });
 })
 
 .controller('AppCtrl', function($scope, $rootScope, $ionicPopup) {

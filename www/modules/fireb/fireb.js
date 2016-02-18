@@ -3,7 +3,6 @@ angular.module('Publicapp.fireb', [])
 .factory('Fireb', function ($firebaseAuth, $rootScope) {
 
   var _ref = new Firebase("https://publicapp-dev.firebaseio.com");
-  var _signedInUserId = null;
   var _signedInUser = null;
 
   function ref() {
@@ -11,25 +10,31 @@ angular.module('Publicapp.fireb', [])
   };
 
   function signedIn() {
-    return !!_signedInUserId;
+    return !!signedInUserId();
   };
 
   function signedInUserId() {
-    return _signedInUserId;
+    return signedInUser() ? signedInUser().id : undefined;
   };
 
   function signedInUser() {
+    if (!_signedInUser) {
+      var signedInUserData = window.localStorage['signedInUserData'];
+      if (signedInUserData) {
+        _signedInUser = JSON.parse(signedInUserData)
+      }
+    }
     return _signedInUser;
   };
 
   function signedInUserRef() {
-    return _ref.child("users").child(_signedInUserId);
+    return _ref.child("users").child(signedInUserId());
   };
 
   function doUnauth() {
     _ref.unauth();
-    _signedInUserId = null;
-    _signedInUser = null;
+    _signedInUser = undefined;
+    window.localStorage.removeItem('signedInUserData')
   };
 
   var _oneTimeAuthCallback = null;
@@ -64,9 +69,9 @@ angular.module('Publicapp.fireb', [])
       _ref.child("users").orderByChild("authId").equalTo(authDataCopy.uid).once ("value", function(snapshot) {
 
         _signedInUser = _.values(snapshot.val())[0];
-        _signedInUserId = _signedInUser ? _signedInUser.id : null;
 
         if (_signedInUser) {
+          window.localStorage['signedInUserData'] = JSON.stringify(_signedInUser);
           $rootScope.$broadcast('signedInUserSet', _signedInUser);
           keepSignedInUserAndFeedFresh();
           doOneTimeCallback();
@@ -98,15 +103,14 @@ angular.module('Publicapp.fireb', [])
 
           createUserObject(user, function(error, newUser) {
             _signedInUser = newUser;
-            _signedInUserId = newUser.id;
             doOneTimeCallback(error);
           });
         }
       });
     } else {
       // TODO: undo watches in keepSignedInUserAndFeedFresh()
-      _signedInUserId = null;
-      _signedInUser = null;
+      _signedInUser = undefined;
+      window.localStorage.removeItem('signedInUserData')
     }
   });
 
@@ -238,7 +242,7 @@ angular.module('Publicapp.fireb', [])
 
     var feedDestination = signedInUserRef().child("feedMessages");
     signedInUserRef().child("listenees").on("value", function(snapshot) {
-      var sourceUserIds = _.compact(_.union(_.keys(snapshot.val()), [_signedInUserId]));
+      var sourceUserIds = _.compact(_.union(_.keys(snapshot.val()), [signedInUserId()]));
       _.each(sourceUserIds, function(sourceUserId) {
         var feedSource = _ref.child("users").child(sourceUserId).child("profileMessages");
         feedSource.limitToLast(50).on("child_added", function(snapshot) {
