@@ -22,6 +22,7 @@ angular.module('Publicapp', [
   'angularMoment',
   'internationalPhoneNumber',
   'Publicapp.about',
+  'Publicapp.admin',
   'Publicapp.allUsers',
   'Publicapp.auth',
   'Publicapp.contacts',

@@ -1,0 +1,55 @@
+<ion-view>
+  <ion-nav-title>
+    Admin
+  </ion-nav-title>
+  <ion-nav-buttons side="right">
+    <button class="button button-icon button-clear ion-home" ng-click="vm.goHome()"></button>
+  </ion-nav-buttons>
+
+
+  <ion-content>
+
+    <!-- <ion-list>
+      <div ng-repeat="message in vm.messages" class="item item-profile-message item-avatar">
+        <div>{{message.author.username}}</div>
+        <div> to {{message.subject.username}}</div>
+        <div> {{message.subject.username}}</div>
+        <div class="message-created-at" am-time-ago="message.createdAt"></div>
+
+        <div style="width: 250px; padding: 2px; position: absolute; top: 16px; right: 270px;">{{message.text}}</div>
+      </div>
+    </ion-list> -->
+
+    <ion-list>
+      <div ng-repeat="user in vm.allUsers" class="item item-profile-message item-avatar">
+        <div class="item item-avatar item-button-right">
+        <img ng-src="{{ user.face }}">
+        <h2>{{ user.name }}</h2>
+        <h2>{{ user.username }}</h2>
+        <h2>Id: {{ user.id }}</h2>
+        <h2>authProvider: {{ user.authProvider }}</h2>
+        <h2>email: {{ user.email }}</h2>
+        <h2>phone: {{ user.phone }}</h2>
+        <h2>Signed Up By: {{ user.addedBy.username }}</h2>
+        <h2>Created: <span class="message-created-at" am-time-ago="user.createdAt"></span></h2>
+        <h2 ng-if="user.marketingId">Marketing Id: {{ user.marketingId }}</h2>
+
+        <button style="width: 50px; font-size: 0.75em; padding: 2px; position: absolute; top: 16px; right: 130px;" class="button button-positive"
+          ng-click="vm.showProfile(user)"
+          ng-if="vm.signedIn() && vm.signedInUser().admin">
+          View
+        </button>
+        <button style="width: 50px; font-size: 0.75em; padding: 2px; position: absolute; top: 16px; right: 70px;" class="button button-energized"
+          ng-click="vm.mergeUserAfterConfirmation(user, $event)"
+          ng-if="vm.signedIn() && vm.signedInUser().admin && !vm.viewingOwnProfile()">
+          Merge
+        </button>
+        <button style="width: 50px; font-size: 0.75em; padding: 2px; position: absolute; top: 16px; right: 10px;" class="button button-assertive"
+          ng-click="vm.removeUserAfterConfirmation(user, $event)"
+          ng-if="vm.signedIn() && vm.signedInUser().admin && !vm.viewingOwnProfile()">
+          Remove
+        </button>
+      </div>
+    </ion-list>
+  </ion-content>
+</ion-view>
