@@ -45,7 +45,7 @@ angular.module('Publicapp', [
 
   // Disable BACK button on home
   $ionicPlatform.registerBackButtonAction(function(event) {
-    var viewingOwnProfile = app.profile.test($state.current.name) && $stateParams.id == Fireb.signedInUserId();
+    var viewingOwnProfile = /^app\.profile/.test($state.current.name) && $stateParams.id == Fireb.signedInUserId();
     if (viewingOwnProfile) {
       $ionicPopup.confirm({
         title: 'Leaving Public',
@@ -103,7 +103,14 @@ angular.module('Publicapp', [
   ionic.Platform.ready(function() {
     Contacts.load(); // TODO: check whether this preloading of the contacts will trigger a warning in iOS
 
-    if(window.cordova && window.cordova.plugins.Keyboard) {
+    if (typeof analytics !== undefined) {
+      analytics.startTrackerWithId("UA-73781579-2");
+      console.log("started Google Analytics");
+    } else {
+      console.log("Google Analytics Unavailable");
+    }
+
+    if(window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
       // for form inputs)
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -147,9 +154,8 @@ angular.module('Publicapp', [
   });
 })
 
-.controller('AppCtrl', function($scope, $rootScope, $ionicPopup) {
+.controller('AppCtrl', function($scope, $rootScope) {
   ctrl = this;
-
 
 })
 
