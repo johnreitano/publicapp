@@ -2,7 +2,7 @@ angular.module('Publicapp.fireb', [])
 
 .factory('Fireb', function ($firebaseAuth, $rootScope) {
 
-  var _ref = new Firebase("https://publicapp-dev.firebaseio.com");
+  var _ref = new Firebase("https://publicapp-production.firebaseio.com");
   var _signedInUser = null;
 
   function ref() {

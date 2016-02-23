@@ -1,5 +1,5 @@
 {
-  "firebase": "publicapp-dev",
+  "firebase": "publicapp-production",
   "public": "www",
   "ignore": [
     "firebase.json",
