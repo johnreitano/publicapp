@@ -161,12 +161,12 @@ angular.module('Publicapp.fireb', [])
     };
 
     if (!s.isBlank(user.name)) {
-      newUser.name = user.name.trim().replace(/ +/, ' ');
+      newUser.name = user.name.trim().replace(/ +/g, ' ');
       newUser.searchableName = newUser.name.toLowerCase();
     }
 
     if (s.isBlank(user.username)) {
-      newUser.username = '@' + newUser.name.replace(/[^\w_]/, '');
+      newUser.username = '@' + newUser.name.replace(/[^\w_]/g, '');
     } else {
       newUser.username = user.username;
     }

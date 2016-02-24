@@ -69,9 +69,10 @@ angular.module('Publicapp.people', [])
 
       var standardizedPhone = function(phone) {
         if (phone) {
+          phone = phone.replace(/^\+1/, '');
           phone = phone.replace(/^\+/, '011');
           phone = phone.replace(/\D/g, '');
-          phone = phone.replace(/1(\d{10})/, '$1');
+          phone = phone.replace(/^1(\d{10})/, '$1');
 
           var re = /^((\d{10})|(011\d{7,}))$/
           if (re.test(phone)) {
